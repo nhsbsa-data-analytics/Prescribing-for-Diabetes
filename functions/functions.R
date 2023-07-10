@@ -140,28 +140,19 @@ imd_extract <- function(con,
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
     ) |>
-    
-    collect
+    collect()
   #add descriptors to imd levels
   fact_imd <- fact_imd |>
-    dplyr::mutate(`IMD Decile` = factor(
-      `IMD Decile`,
-      levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Unknown"),
-      labels = c(
-        "1 - Most deprived",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10 - Least deprived",
-        "Unknown"
+    dplyr::mutate(
+      `IMD Quintile` = case_when(
+        `IMD Decile` %in% c("1", "2") ~ "1 - Most deprived",
+        `IMD Decile` %in% c("3", "4") ~ "2",
+        `IMD Decile` %in% c("5", "6") ~ "3",
+        `IMD Decile` %in% c("7", "8") ~ "4",
+        `IMD Decile` %in% c("9", "10") ~ "5 - Least deprived",
+        TRUE ~ "Unknown",
       )
-    )) |>
-    
+    ) |>
     dplyr::arrange(`Financial Year`,
                    `IMD Decile`) |>
     return(fact_imd)
@@ -530,7 +521,7 @@ capture_rate_extract <- function(con,
         levels = c("060101", "060102", "060104", "060106")
       )
     ) |>
-    dplyr::select(-Y, -N) |>
+    dplyr::select(-Y,-N) |>
     dplyr::arrange(`Financial Year`, `BNF Paragraph Code`)
   return(fact)
 }
@@ -550,7 +541,7 @@ capture_rate_extract_dt <- function(con,
     tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
                        values_from = ITEM_COUNT) |>
     mutate(RATE = Y / (Y + N) * 100) |>
-    dplyr::select(-Y, -N) |>
+    dplyr::select(-Y,-N) |>
     tidyr::pivot_wider(names_from = FINANCIAL_YEAR,
                        values_from = RATE) |>
     dplyr::arrange(`BNF Paragraph code`)
