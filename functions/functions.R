@@ -34,17 +34,18 @@ national_extract <- function(con,
 }
 
 paragraph_extract <- function(con,
-                              table = "PFD_FACT") {
+                              schema,
+                              table) {
   fact <- dplyr::tbl(con,
-                     from = table) |>
+                     from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
       PATIENT_IDENTIFIED,
-      PARAGRAPH_NAME,
-      PARAGRAPH_CODE,
+      PARAGRAPH_DESCR,
+      BNF_PARAGRAPH,
       PATIENT_COUNT
     ) |>
     dplyr::summarise(
@@ -54,8 +55,8 @@ paragraph_extract <- function(con,
   fact_paragraph <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
-      `BNF Paragraph Name` = PARAGRAPH_NAME,
-      `BNF Paragraph Code` = PARAGRAPH_CODE,
+      `BNF Paragraph Name` = PARAGRAPH_DESCR,
+      `BNF Paragraph Code` = BNF_PARAGRAPH,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
@@ -67,7 +68,7 @@ paragraph_extract <- function(con,
     dplyr::arrange(`Financial Year`,
                    `BNF Paragraph Code`,
                    desc(`Identified Patient Flag`)) |>
-    collect
+    collect()
   return(fact_paragraph)
 }
 
@@ -78,11 +79,13 @@ child_adult_extract <- function(con,
                      from = table) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
-    dplyr::group_by(FINANCIAL_YEAR,
-                    IDENTIFIED_PATIENT_ID,
-                    PATIENT_IDENTIFIED,
-                    CALC_AGE,
-                    PATIENT_COUNT) |>
+    dplyr::group_by(
+      FINANCIAL_YEAR,
+      IDENTIFIED_PATIENT_ID,
+      PATIENT_IDENTIFIED,
+      CALC_AGE,
+      PATIENT_COUNT
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
@@ -229,11 +232,13 @@ ageband_extract <- function(con,
                      from = table) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
-    dplyr::group_by(FINANCIAL_YEAR,
-                    IDENTIFIED_PATIENT_ID,
-                    PATIENT_IDENTIFIED,
-                    CALC_AGE,
-                    PATIENT_COUNT) |>
+    dplyr::group_by(
+      FINANCIAL_YEAR,
+      IDENTIFIED_PATIENT_ID,
+      PATIENT_IDENTIFIED,
+      CALC_AGE,
+      PATIENT_COUNT
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
@@ -524,7 +529,7 @@ capture_rate_extract <- function(con,
         levels = c("060101", "060102", "060104", "060106")
       )
     ) |>
-    dplyr::select(-Y,-N) |>
+    dplyr::select(-Y, -N) |>
     dplyr::arrange(`Financial Year`, `BNF Paragraph Code`)
   return(fact)
 }
@@ -544,7 +549,7 @@ capture_rate_extract_dt <- function(con,
     tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
                        values_from = ITEM_COUNT) |>
     mutate(RATE = Y / (Y + N) * 100) |>
-    dplyr::select(-Y,-N) |>
+    dplyr::select(-Y, -N) |>
     tidyr::pivot_wider(names_from = FINANCIAL_YEAR,
                        values_from = RATE) |>
     dplyr::arrange(`BNF Paragraph code`)
@@ -858,28 +863,35 @@ age_gender_chart <- function(data,
 }
 
 ### CSV Download button
-get_download_button <- function(data = data, title = "Download chart data", filename = "data") { 
-  dt <- datatable(data, rownames = FALSE,
-                  extensions = 'Buttons',
-                  options = list(
-                    searching = FALSE,
-                    paging = TRUE,
-                    bInfo = FALSE,
-                    pageLength = 1,
-                    dom = '<"datatable-wrapper"B>',
-                    buttons = list(
-                      list(extend = 'csv',
-                           text = title,
-                           filename = filename,
-                           className = "nhs-button-style")
-                    ),
-                    initComplete = JS(
-                      "function(settings, json) {",
-                      "$(this.api().table().node()).css('visibility', 'collapse');",
-                      "}"
-                    )
-                  )
-  )
-  
-  return(dt)
-}
+get_download_button <-
+  function(data = data,
+           title = "Download chart data",
+           filename = "data") {
+    dt <- datatable(
+      data,
+      rownames = FALSE,
+      extensions = 'Buttons',
+      options = list(
+        searching = FALSE,
+        paging = TRUE,
+        bInfo = FALSE,
+        pageLength = 1,
+        dom = '<"datatable-wrapper"B>',
+        buttons = list(
+          list(
+            extend = 'csv',
+            text = title,
+            filename = filename,
+            className = "nhs-button-style"
+          )
+        ),
+        initComplete = JS(
+          "function(settings, json) {",
+          "$(this.api().table().node()).css('visibility', 'collapse');",
+          "}"
+        )
+      )
+    )
+    
+    return(dt)
+  }
