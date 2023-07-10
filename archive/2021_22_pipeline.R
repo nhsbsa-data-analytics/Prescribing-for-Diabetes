@@ -72,6 +72,7 @@ cost_per_patienticb <- costpericb_patient_extract(con = con,table = "PFD_FACT")
 
 # 5. write data to .xlsx -
 max_fy <- max(pfd_age_gender_data$`Financial Year`)
+
 excel_column_to_numeric <- function(column_letter){
   # Uppercase
   s_upper <- toupper(column_letter)

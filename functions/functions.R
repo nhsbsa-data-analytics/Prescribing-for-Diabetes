@@ -1,32 +1,33 @@
 ### data warehouse extracts from fact table
 
 national_extract <- function(con,
-                             table = "PFD_FACT") {
+                             schema,
+                             table) {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = dbplyr::in_schema(schema, table)) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(FINANCIAL_YEAR,
                     IDENTIFIED_PATIENT_ID,
-                    IDENTIFIED_FLAG,
-                    PATIENT_COUNT) %>%
+                    PATIENT_IDENTIFIED,
+                    PATIENT_COUNT) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
   
-  fact_national <- fact %>%
+  fact_national <- fact |>
     dplyr::group_by(`Financial Year` = FINANCIAL_YEAR,
-                    `Identified Patient Flag` = IDENTIFIED_FLAG) %>%
+                    `Identified Patient Flag` = PATIENT_IDENTIFIED) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     dplyr::arrange(`Financial Year`,
-                   desc(`Identified Patient Flag`)) %>%
-    collect
+                   desc(`Identified Patient Flag`)) |>
+    collect()
   
   return(fact_national)
   
@@ -35,37 +36,37 @@ national_extract <- function(con,
 paragraph_extract <- function(con,
                               table = "PFD_FACT") {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
-      IDENTIFIED_FLAG,
+      PATIENT_IDENTIFIED,
       PARAGRAPH_NAME,
       PARAGRAPH_CODE,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
-  fact_paragraph <- fact %>%
+  fact_paragraph <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `BNF Paragraph Name` = PARAGRAPH_NAME,
       `BNF Paragraph Code` = PARAGRAPH_CODE,
-      `Identified Patient Flag` = IDENTIFIED_FLAG
-    ) %>%
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     dplyr::arrange(`Financial Year`,
                    `BNF Paragraph Code`,
-                   desc(`Identified Patient Flag`)) %>%
+                   desc(`Identified Patient Flag`)) |>
     collect
   return(fact_paragraph)
 }
@@ -74,36 +75,36 @@ paragraph_extract <- function(con,
 child_adult_extract <- function(con,
                                 table = "PFD_FACT") {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(FINANCIAL_YEAR,
                     IDENTIFIED_PATIENT_ID,
-                    IDENTIFIED_FLAG,
+                    PATIENT_IDENTIFIED,
                     CALC_AGE,
-                    PATIENT_COUNT) %>%
+                    PATIENT_COUNT) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
   
-  child_adult_extract <- fact %>%
+  child_adult_extract <- fact |>
     mutate(AGE_BAND = case_when(
       CALC_AGE < 0 ~ "Unknown",
       CALC_AGE <= 17 ~ "17 and under",
       TRUE ~ "18 and over"
-    )) %>%
+    )) |>
     dplyr::group_by(`Financial Year` = FINANCIAL_YEAR,
-                    `Age Band` = AGE_BAND) %>%
+                    `Age Band` = AGE_BAND) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
-    ungroup() %>%
+    ) |>
+    ungroup() |>
     dplyr::arrange(FINANCIAL_YEAR,
-                   AGE_BAND) %>%
+                   AGE_BAND) |>
     collect
   
   return(child_adult_extract)
@@ -112,33 +113,33 @@ child_adult_extract <- function(con,
 imd_extract <- function(con,
                         table = "PFD_FACT") {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
-      IDENTIFIED_FLAG,
+      PATIENT_IDENTIFIED,
       IMD_DECILE,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
-  fact_imd <- fact %>%
+  fact_imd <- fact |>
     dplyr::group_by(`Financial Year` = FINANCIAL_YEAR,
-                    `IMD Decile` = IMD_DECILE) %>%
+                    `IMD Decile` = IMD_DECILE) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     
     collect
   #add descriptors to imd levels
-  fact_imd <- fact_imd %>%
+  fact_imd <- fact_imd |>
     dplyr::mutate(`IMD Decile` = factor(
       `IMD Decile`,
       levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Unknown"),
@@ -155,49 +156,49 @@ imd_extract <- function(con,
         "10 - Least deprived",
         "Unknown"
       )
-    )) %>%
+    )) |>
     
     dplyr::arrange(`Financial Year`,
-                   `IMD Decile`) %>%
+                   `IMD Decile`) |>
     return(fact_imd)
 }
 
 imd_paragraph_extract <- function(con,
                                   table = "PFD_FACT") {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
-      IDENTIFIED_FLAG,
+      PATIENT_IDENTIFIED,
       PARAGRAPH_NAME,
       PARAGRAPH_CODE,
       IMD_DECILE,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
-  fact_imd_paragraph <- fact %>%
+  fact_imd_paragraph <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `IMD Decile` = IMD_DECILE,
       `BNF Paragraph Name` = PARAGRAPH_NAME,
       `BNF Paragraph Code` = PARAGRAPH_CODE
-    ) %>%
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     
     collect
   #add descriptors to imd levels
-  fact_imd_paragraph <-  fact_imd_paragraph %>%
+  fact_imd_paragraph <-  fact_imd_paragraph |>
     dplyr::mutate(`IMD Decile` = factor(
       `IMD Decile`,
       levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Unknown"),
@@ -214,50 +215,50 @@ imd_paragraph_extract <- function(con,
         "10 - Least deprived",
         "Unknown"
       )
-    )) %>%
+    )) |>
     
     arrange(`Financial Year`,
             `BNF Paragraph Code`,
-            `IMD Decile`) %>%
+            `IMD Decile`) |>
     return(fact_imd_paragraph)
 }
 
 ageband_extract <- function(con,
                             table = "PFD_FACT") {
   fact <- dplyr::tbl(src = con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(FINANCIAL_YEAR,
                     IDENTIFIED_PATIENT_ID,
-                    IDENTIFIED_FLAG,
+                    PATIENT_IDENTIFIED,
                     CALC_AGE,
-                    PATIENT_COUNT) %>%
+                    PATIENT_COUNT) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
   
-  fact_age <- fact %>%
+  fact_age <- fact |>
     dplyr::inner_join(dplyr::tbl(con,
                                  from = dbplyr::in_schema("DIM", "AGE_DIM")),
-                      by = c("CALC_AGE" = "AGE")) %>%
+                      by = c("CALC_AGE" = "AGE")) |>
     dplyr::mutate(AGE_BAND = dplyr::case_when(is.na(DALL_5YR_BAND) ~ "Unknown",
-                                              TRUE ~ DALL_5YR_BAND)) %>%
+                                              TRUE ~ DALL_5YR_BAND)) |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
-      `Identified Patient Flag` = IDENTIFIED_FLAG
-    ) %>%
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     dplyr::arrange(FINANCIAL_YEAR,
                    AGE_BAND,
-                   desc(IDENTIFIED_FLAG)) %>%
+                   desc(PATIENT_IDENTIFIED)) |>
     collect
   
   return(fact_age)
@@ -266,46 +267,46 @@ ageband_extract <- function(con,
 ageband_paragraph_extract <- function(con,
                                       table = "PFD_FACT") {
   fact <- dplyr::tbl(src = con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
-      IDENTIFIED_FLAG,
+      PATIENT_IDENTIFIED,
       PARAGRAPH_NAME,
       PARAGRAPH_CODE,
       CALC_AGE,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
   
-  fact_age <- fact %>%
+  fact_age <- fact |>
     dplyr::inner_join(dplyr::tbl(con,
                                  from = dbplyr::in_schema("DIM", "AGE_DIM")),
-                      by = c("CALC_AGE" = "AGE")) %>%
+                      by = c("CALC_AGE" = "AGE")) |>
     dplyr::mutate(AGE_BAND = dplyr::case_when(is.na(DALL_5YR_BAND) ~ "Unknown",
-                                              TRUE ~ DALL_5YR_BAND)) %>%
+                                              TRUE ~ DALL_5YR_BAND)) |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
       `BNF Paragraph Name` = PARAGRAPH_NAME,
       `BNF Paragraph Code` = PARAGRAPH_CODE,
-      `Identified Patient Flag` = IDENTIFIED_FLAG
-    ) %>%
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     dplyr::arrange(FINANCIAL_YEAR,
                    PARAGRAPH_CODE,
                    AGE_BAND,
-                   desc(IDENTIFIED_FLAG)) %>%
+                   desc(PATIENT_IDENTIFIED)) |>
     collect
   
   return(fact_age)
@@ -314,36 +315,36 @@ ageband_paragraph_extract <- function(con,
 gender_extract <- function(con,
                            table = "PFD_FACT") {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
-      IDENTIFIED_FLAG,
+      PATIENT_IDENTIFIED,
       GENDER_DESCR,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
   
-  fact_gender <- fact %>%
+  fact_gender <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Patient Sex` = GENDER_DESCR,
-      `Identified Patient Flag` = IDENTIFIED_FLAG
-    ) %>%
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     dplyr::arrange(`Financial Year`,
                    `Patient Sex`,
-                   desc(`Identified Patient Flag`)) %>%
+                   desc(`Identified Patient Flag`)) |>
     collect
   return(fact_gender)
   
@@ -352,41 +353,41 @@ gender_extract <- function(con,
 gender_paragraph_extract <- function(con,
                                      table = "PFD_FACT") {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
-      IDENTIFIED_FLAG,
+      PATIENT_IDENTIFIED,
       PARAGRAPH_NAME,
       PARAGRAPH_CODE,
       GENDER_DESCR,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
   
-  fact_gender <- fact %>%
+  fact_gender <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Paragraph Name` = PARAGRAPH_NAME,
       `Paragraph Code` = PARAGRAPH_CODE,
       `Patient Sex` = GENDER_DESCR,
-      `Identified Patient Flag` = IDENTIFIED_FLAG
-    ) %>%
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     dplyr::arrange(`Financial Year`,
                    `Paragraph Code`,
                    `Patient Sex`,
-                   desc(`Identified Patient Flag`)) %>%
+                   desc(`Identified Patient Flag`)) |>
     
     collect
   
@@ -401,47 +402,47 @@ gender_paragraph_extract <- function(con,
 age_gender_extract <- function(con,
                                table = "PFD_FACT") {
   fact <- dplyr::tbl(src = con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
-      IDENTIFIED_FLAG,
+      PATIENT_IDENTIFIED,
       CALC_AGE,
       GENDER_DESCR,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
-    ) %>%
+    ) |>
     ungroup()
   
-  fact_age_gender <- fact %>%
-    filter(GENDER_DESCR != "Unknown") %>%
+  fact_age_gender <- fact |>
+    filter(GENDER_DESCR != "Unknown") |>
     dplyr::inner_join(dplyr::tbl(con,
                                  from = dbplyr::in_schema("DIM", "AGE_DIM")),
-                      by = c("CALC_AGE" = "AGE")) %>%
+                      by = c("CALC_AGE" = "AGE")) |>
     dplyr::mutate(AGE_BAND = dplyr::case_when(is.na(DALL_5YR_BAND) ~ "Unknown",
-                                              TRUE ~ DALL_5YR_BAND)) %>%
+                                              TRUE ~ DALL_5YR_BAND)) |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
       `Patient Sex` = GENDER_DESCR,
-      `Identified Patient Flag` = IDENTIFIED_FLAG
-    ) %>%
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
       
-    ) %>%
+    ) |>
     dplyr::arrange(FINANCIAL_YEAR,
                    AGE_BAND,
-                   desc(IDENTIFIED_FLAG)) %>%
-    ungroup() %>%
+                   desc(PATIENT_IDENTIFIED)) |>
+    ungroup() |>
     collect
   
   return(fact_age_gender)
@@ -451,51 +452,51 @@ age_gender_extract <- function(con,
 age_gender_paragraph_extract <- function(con,
                                          table = "PFD_FACT") {
   fact <- dplyr::tbl(src = con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
-      IDENTIFIED_FLAG,
+      PATIENT_IDENTIFIED,
       PARAGRAPH_NAME,
       PARAGRAPH_CODE,
       CALC_AGE,
       GENDER_DESCR,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
-    ) %>%
+    ) |>
     ungroup()
   
-  fact_age_gender <- fact %>%
-    filter(GENDER_DESCR != "Unknown") %>%
+  fact_age_gender <- fact |>
+    filter(GENDER_DESCR != "Unknown") |>
     dplyr::inner_join(dplyr::tbl(con,
                                  from = dbplyr::in_schema("DIM", "AGE_DIM")),
-                      by = c("CALC_AGE" = "AGE")) %>%
+                      by = c("CALC_AGE" = "AGE")) |>
     dplyr::mutate(AGE_BAND = dplyr::case_when(is.na(DALL_5YR_BAND) ~ "Unknown",
-                                              TRUE ~ DALL_5YR_BAND)) %>%
+                                              TRUE ~ DALL_5YR_BAND)) |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
       `Patient Sex` = GENDER_DESCR,
       `Paragraph Name` = PARAGRAPH_NAME,
       `Paragraph Code` = PARAGRAPH_CODE,
-      `Identified Patient Flag` = IDENTIFIED_FLAG
-    ) %>%
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
       
-    ) %>%
+    ) |>
     dplyr::arrange(FINANCIAL_YEAR,
                    AGE_BAND,
-                   desc(IDENTIFIED_FLAG)) %>%
-    ungroup() %>%
+                   desc(PATIENT_IDENTIFIED)) |>
+    ungroup() |>
     collect
   
   return(fact_age_gender)
@@ -504,48 +505,48 @@ age_gender_paragraph_extract <- function(con,
 
 capture_rate_extract <- function(con,
                                  table = "PFD_FACT") {
-  fact <- dplyr::tbl(src = con, from = table) %>%
+  fact <- dplyr::tbl(src = con, from = table) |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `BNF Paragraph Name` = PARAGRAPH_NAME,
       `BNF Paragraph Code` = PARAGRAPH_CODE,
-      IDENTIFIED_FLAG
-    ) %>%
-    dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT, na.rm = T)) %>%
-    dplyr::arrange(`Financial Year`) %>%
-    collect %>%
-    tidyr::pivot_wider(names_from = IDENTIFIED_FLAG,
-                       values_from = ITEM_COUNT) %>%
+      PATIENT_IDENTIFIED
+    ) |>
+    dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT, na.rm = T)) |>
+    dplyr::arrange(`Financial Year`) |>
+    collect |>
+    tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
+                       values_from = ITEM_COUNT) |>
     mutate(
       RATE = Y / (Y + N) * 100,
       `BNF Paragraph Code` = factor(
         `BNF Paragraph Code`,
         levels = c("060101", "060102", "060104", "060106")
       )
-    ) %>%
-    dplyr::select(-Y,-N) %>%
+    ) |>
+    dplyr::select(-Y,-N) |>
     dplyr::arrange(`Financial Year`, `BNF Paragraph Code`)
   return(fact)
 }
 
 capture_rate_extract_dt <- function(con,
                                     table = "PFD_FACT") {
-  fact <- dplyr::tbl(src = con, from = table) %>%
+  fact <- dplyr::tbl(src = con, from = table) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       `BNF Paragraph name` = PARAGRAPH_NAME,
       `BNF Paragraph code` = PARAGRAPH_CODE,
-      IDENTIFIED_FLAG
-    ) %>%
-    dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT, na.rm = T)) %>%
-    dplyr::arrange(FINANCIAL_YEAR) %>%
-    collect %>%
-    tidyr::pivot_wider(names_from = IDENTIFIED_FLAG,
-                       values_from = ITEM_COUNT) %>%
-    mutate(RATE = Y / (Y + N) * 100) %>%
-    dplyr::select(-Y,-N) %>%
+      PATIENT_IDENTIFIED
+    ) |>
+    dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT, na.rm = T)) |>
+    dplyr::arrange(FINANCIAL_YEAR) |>
+    collect |>
+    tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
+                       values_from = ITEM_COUNT) |>
+    mutate(RATE = Y / (Y + N) * 100) |>
+    dplyr::select(-Y,-N) |>
     tidyr::pivot_wider(names_from = FINANCIAL_YEAR,
-                       values_from = RATE) %>%
+                       values_from = RATE) |>
     dplyr::arrange(`BNF Paragraph code`)
   
   return(fact)
@@ -553,10 +554,10 @@ capture_rate_extract_dt <- function(con,
 costpericb_extract <- function(con,
                                table = "PFD_FACT") {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    #    dplyr::filter(CCG_FLAG=="Y") %>%
+                     from = table) |>
+    #    dplyr::filter(CCG_FLAG=="Y") |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                                            TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
@@ -564,29 +565,29 @@ costpericb_extract <- function(con,
       ICB_NAME,
       ICB_CODE,
       PATIENT_COUNT
-    ) %>%
+    ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
   
-  fact_icb <- fact %>%
+  fact_icb <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Identified Patient Flag` = PATIENT_IDENTIFIED,
       `Integrated Care Board Name` = ICB_NAME,
       `Integrated Care Board Code` = ICB_CODE
-    ) %>%
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
       
-    ) %>%
+    ) |>
     dplyr::arrange(`Financial Year`,
                    `Integrated Care Board Code`,
-                   desc(`Identified Patient Flag`)) %>%
+                   desc(`Identified Patient Flag`)) |>
     
     collect
   
@@ -597,30 +598,30 @@ costpericb_extract <- function(con,
 costper_patient_extract <- function(con,
                                     table = "PFD_FACT") {
   fact <- dplyr::tbl(con,
-                     from = table) %>%
-    dplyr::mutate(PATIENT_COUNT = case_when(IDENTIFIED_FLAG == "Y" ~ 1,
-                                            TRUE ~ 0)) %>%
+                     from = table) |>
+    dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
+                                            TRUE ~ 0)) |>
     dplyr::group_by(FINANCIAL_YEAR,
-                    IDENTIFIED_FLAG,
-                    PATIENT_COUNT) %>%
+                    PATIENT_IDENTIFIED,
+                    PATIENT_COUNT) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
       PATIENT_COUNT = sum(PATIENT_COUNT, na.rm = T)
     )
   
-  fact_pat <- fact %>%
-    dplyr::filter(IDENTIFIED_FLAG == "Y") %>%
-    dplyr::group_by(`Financial Year` = FINANCIAL_YEAR) %>%
+  fact_pat <- fact |>
+    dplyr::filter(PATIENT_IDENTIFIED == "Y") |>
+    dplyr::group_by(`Financial Year` = FINANCIAL_YEAR) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
-    ) %>%
+    ) |>
     dplyr::mutate(`Total NIC per patient (GBP)` = `Total Net Ingredient Cost (GBP)` /
-                    `Total Identified Patients`)  %>%
-    dplyr::arrange(`Financial Year`) %>%
+                    `Total Identified Patients`)  |>
+    dplyr::arrange(`Financial Year`) |>
     
     collect
   
@@ -737,10 +738,10 @@ infoBox_no_border <- function(header = "Header here",
 
 age_gender_chart <- function(data,
                              labels = FALSE) {
-  age_gender_chart_data <- data %>%
+  age_gender_chart_data <- data |>
     dplyr::select(`Age Band`,
                   `Patient Gender`,
-                  `Total Identified Patients`) %>%
+                  `Total Identified Patients`) |>
     tidyr::complete(`Patient Gender`,
                     `Age Band`,
                     fill = list(`Total Identified Patients` = 0))
@@ -752,16 +753,16 @@ age_gender_chart <- function(data,
   min <-
     max(age_gender_chart_data$`Total Identified Patients`) * -1
   
-  male <- age_gender_chart_data %>%
+  male <- age_gender_chart_data |>
     dplyr::filter(`Patient Gender` == "Male")
   
-  female <- age_gender_chart_data %>%
-    dplyr::filter(`Patient Gender` == "Female") %>%
+  female <- age_gender_chart_data |>
+    dplyr::filter(`Patient Gender` == "Female") |>
     dplyr::mutate(`Total Identified Patients` = 0 - `Total Identified Patients`)
   
-  hc <- highcharter::highchart() %>%
-    highcharter::hc_chart(type = 'bar') %>%
-    hc_chart(style = list(fontFamily = "Arial")) %>%
+  hc <- highcharter::highchart() |>
+    highcharter::hc_chart(type = 'bar') |>
+    hc_chart(style = list(fontFamily = "Arial")) |>
     highcharter::hc_xAxis(
       list(
         title = list(text = "Age group"),
@@ -776,7 +777,7 @@ age_gender_chart <- function(data,
         linkedTo = 0,
         labels = list(step = 1)
       )
-    ) %>%
+    ) |>
     highcharter::hc_tooltip(
       shared = FALSE,
       formatter = JS(
@@ -785,7 +786,7 @@ age_gender_chart <- function(data,
                    '<b>' + this.series.name + '</b> ' +
                    Highcharts.numberFormat(Math.abs(this.point.y), 0);}"
       )
-    ) %>%
+    ) |>
     highcharter::hc_yAxis(
       title = list(text = "Identified patients"),
       max = max,
@@ -802,8 +803,8 @@ age_gender_chart <- function(data,
              }'
         )
       )
-    ) %>%
-    highcharter::hc_plotOptions(series = list(stacking = 'normal')) %>%
+    ) |>
+    highcharter::hc_plotOptions(series = list(stacking = 'normal')) |>
     highcharter::hc_series(
       list(
         dataLabels = list(
@@ -849,7 +850,7 @@ age_gender_chart <- function(data,
         fontFamily = "Ariel",
         data = c(female$`Total Identified Patients`)
       )
-    ) %>%
+    ) |>
     highcharter::hc_legend(reversed = T)
   
   return(hc)
