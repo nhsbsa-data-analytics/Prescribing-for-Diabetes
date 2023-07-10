@@ -74,9 +74,10 @@ paragraph_extract <- function(con,
 
 
 child_adult_extract <- function(con,
-                                table = "PFD_FACT") {
+                                schema,
+                                table) {
   fact <- dplyr::tbl(con,
-                     from = table) |>
+                     from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
     dplyr::group_by(
@@ -106,9 +107,9 @@ child_adult_extract <- function(con,
         100
     ) |>
     ungroup() |>
-    dplyr::arrange(FINANCIAL_YEAR,
-                   AGE_BAND) |>
-    collect
+    dplyr::arrange(`Financial Year`,
+                   `Age Band`) |>
+    collect()
   
   return(child_adult_extract)
   

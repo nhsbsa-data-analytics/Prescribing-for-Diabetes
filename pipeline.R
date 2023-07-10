@@ -99,7 +99,7 @@ pfd_national_data <- national_extract(con = con, schema = "KIGRA", table = "PFD_
 
 pfd_paragraph_data <- paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
-pfd_u18_data <- child_adult_extract(con, table = "PFD_FACT")
+pfd_u18_data <- child_adult_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
 pfd_imd_data <- imd_extract(con = con,table = "PFD_FACT")
 
