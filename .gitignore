@@ -2,3 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
+*.xlsx
+*.xls
+*.xlsb
+*.csv
+*.html
+*.pdf
+*.doc
+*.docx
