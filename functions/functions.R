@@ -114,10 +114,12 @@ child_adult_extract <- function(con,
   return(child_adult_extract)
   
 }
+
 imd_extract <- function(con,
-                        table = "PFD_FACT") {
+                        schema,
+                        table) {
   fact <- dplyr::tbl(con,
-                     from = table) |>
+                     from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
     dplyr::group_by(
@@ -131,6 +133,7 @@ imd_extract <- function(con,
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
     )
+  
   fact_imd <- fact |>
     dplyr::group_by(`Financial Year` = FINANCIAL_YEAR,
                     `IMD Decile` = IMD_DECILE) |>
@@ -154,7 +157,8 @@ imd_extract <- function(con,
       )
     ) |>
     dplyr::arrange(`Financial Year`,
-                   `IMD Decile`) |>
+                   `IMD Decile`)
+  
     return(fact_imd)
 }
 
