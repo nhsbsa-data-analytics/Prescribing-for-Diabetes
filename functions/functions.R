@@ -360,30 +360,32 @@ gender_extract <- function(con,
 }
 
 gender_paragraph_extract <- function(con,
-                                     table = "PFD_FACT") {
+                                     schema,
+                                     table) {
   fact <- dplyr::tbl(con,
-                     from = table) |>
+                     from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
       PATIENT_IDENTIFIED,
-      PARAGRAPH_NAME,
-      PARAGRAPH_CODE,
+      PARAGRAPH_DESCR,
+      BNF_PARAGRAPH,
       GENDER_DESCR,
       PATIENT_COUNT
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
-      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
+      .groups = "drop"
     )
   
   fact_gender <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
-      `Paragraph Name` = PARAGRAPH_NAME,
-      `Paragraph Code` = PARAGRAPH_CODE,
+      `Paragraph Name` = PARAGRAPH_DESCR,
+      `Paragraph Code` = BNF_PARAGRAPH,
       `Patient Sex` = GENDER_DESCR,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
@@ -391,14 +393,15 @@ gender_paragraph_extract <- function(con,
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
+        100,
+      .groups = "drop"
     ) |>
     dplyr::arrange(`Financial Year`,
                    `Paragraph Code`,
                    `Patient Sex`,
                    desc(`Identified Patient Flag`)) |>
     
-    collect
+    collect()
   
   
   return(fact_gender)
