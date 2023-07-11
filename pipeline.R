@@ -54,6 +54,8 @@ req_pkgs <-
     "tcltk",
     "DT",
     "htmltools",
+    "geojsonsf",
+    "readxl",
     "nhsbsa-data-analytics/nhsbsaR",
     "nhsbsa-data-analytics/nhsbsaExternalData",
     "nhsbsa-data-analytics/accessibleTables",

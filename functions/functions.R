@@ -13,7 +13,8 @@ national_extract <- function(con,
                     PATIENT_COUNT) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
-      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
+      .groups = "drop"
     )
   
   fact_national <- fact |>
@@ -23,7 +24,8 @@ national_extract <- function(con,
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
+        100,
+      .groups = "drop"
     ) |>
     dplyr::arrange(`Financial Year`,
                    desc(`Identified Patient Flag`)) |>
@@ -50,7 +52,8 @@ paragraph_extract <- function(con,
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
-      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
+      .groups = "drop"
     )
   fact_paragraph <- fact |>
     dplyr::group_by(
@@ -63,7 +66,8 @@ paragraph_extract <- function(con,
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
+        100,
+      .groups = "drop"
     ) |>
     dplyr::arrange(`Financial Year`,
                    `BNF Paragraph Code`,
@@ -89,7 +93,8 @@ child_adult_extract <- function(con,
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
-      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
+      .groups = "drop"
     )
   
   child_adult_extract <- fact |>
@@ -104,7 +109,8 @@ child_adult_extract <- function(con,
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
+        100,
+      .groups = "drop"
     ) |>
     ungroup() |>
     dplyr::arrange(`Financial Year`,
@@ -131,35 +137,33 @@ imd_extract <- function(con,
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
-      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
-    )
-  
-  fact_imd <- fact |>
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
+      .groups = "drop"
+    ) |> 
+    dplyr::mutate(
+      `IMD Quintile` = case_when(
+        IMD_DECILE %in% c("1", "2") ~ "1 - Most deprived",
+        IMD_DECILE %in% c("3", "4") ~ "2",
+        IMD_DECILE %in% c("5", "6") ~ "3",
+        IMD_DECILE %in% c("7", "8") ~ "4",
+        IMD_DECILE %in% c("9", "10") ~ "5 - Least deprived",
+        is.na(IMD_DECILE) ~ "Unknown"
+      )
+    ) |>
     dplyr::group_by(`Financial Year` = FINANCIAL_YEAR,
-                    `IMD Decile` = IMD_DECILE) |>
+                    `IMD Quintile`) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
-    ) |>
-    collect()
-  #add descriptors to imd levels
-  fact_imd <- fact_imd |>
-    dplyr::mutate(
-      `IMD Quintile` = case_when(
-        `IMD Decile` %in% c("1", "2") ~ "1 - Most deprived",
-        `IMD Decile` %in% c("3", "4") ~ "2",
-        `IMD Decile` %in% c("5", "6") ~ "3",
-        `IMD Decile` %in% c("7", "8") ~ "4",
-        `IMD Decile` %in% c("9", "10") ~ "5 - Least deprived",
-        TRUE ~ "Unknown",
-      )
+        100,
+      .groups = "drop"
     ) |>
     dplyr::arrange(`Financial Year`,
-                   `IMD Decile`)
+                   `IMD Quintile`) |>
+    collect()
   
-    return(fact_imd)
+    return(fact)
 }
 
 imd_paragraph_extract <- function(con,
@@ -194,8 +198,7 @@ imd_paragraph_extract <- function(con,
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100
     ) |>
-    
-    collect
+    collect()
   #add descriptors to imd levels
   fact_imd_paragraph <-  fact_imd_paragraph |>
     dplyr::mutate(`IMD Decile` = factor(
