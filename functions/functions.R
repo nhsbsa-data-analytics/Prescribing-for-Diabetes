@@ -512,17 +512,20 @@ age_gender_paragraph_extract <- function(con,
 }
 
 capture_rate_extract <- function(con,
-                                 table = "PFD_FACT") {
-  fact <- dplyr::tbl(src = con, from = table) |>
+                                 schema,
+                                 table) {
+  fact <- dplyr::tbl(con,
+                     from = dbplyr::in_schema(schema, table))  |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
-      `BNF Paragraph Name` = PARAGRAPH_NAME,
-      `BNF Paragraph Code` = PARAGRAPH_CODE,
+      `BNF Paragraph Name` = PARAGRAPH_DESCR,
+      `BNF Paragraph Code` = BNF_PARAGRAPH,
       PATIENT_IDENTIFIED
     ) |>
-    dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT, na.rm = T)) |>
+    dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
+                     .groups = "drop") |>
     dplyr::arrange(`Financial Year`) |>
-    collect |>
+    collect() |>
     tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
                        values_from = ITEM_COUNT) |>
     mutate(

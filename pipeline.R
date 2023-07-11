@@ -93,46 +93,62 @@ con <- nhsbsaR::con_nhsbsa(dsn = "FBS_8192k",
 # 3. collect data from DWH ---------------------------------------------------
 costpericb_data <- costpericb_extract (con = con)
 
-costpericb_patdata <- costpericb_patient_extract (con = con, table = "PFD_FACT")
+costpericb_patdata <- costpericb_patient_extract (con = con, table = "PFD_FACT") |>
+  apply_sdc(rounding = F)
 
-costper_patdata <- costper_patient_extract (con = con, table = "PFD_FACT")
+costper_patdata <- costper_patient_extract (con = con, table = "PFD_FACT") |>
+  apply_sdc(rounding = F)
 
-pfd_national_data <- national_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_national_data <- national_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_paragraph_data <- paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_paragraph_data <- paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_u18_data <- child_adult_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_u18_data <- child_adult_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_imd_data <- imd_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_imd_data <- imd_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_imd_paragraph_data <- imd_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_imd_paragraph_data <- imd_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_ageband_data <- ageband_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_ageband_data <- ageband_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_ageband_paragraph_data <- ageband_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_ageband_paragraph_data <- ageband_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_gender_data <- gender_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_gender_data <- gender_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_gender_paragraph_data <- gender_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_gender_paragraph_data <- gender_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_age_gender_data <- age_gender_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_age_gender_data <- age_gender_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-pfd_age_gender_paragraph_data <- age_gender_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
+pfd_age_gender_paragraph_data <- age_gender_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  apply_sdc(rounding = F)
 
-patient_identification_dt <- capture_rate_extract_dt(con = con,table = "PFD_FACT")
+patient_identification_dt <- capture_rate_extract_dt(con = con,table = "PFD_FACT") 
 
-patient_identification <- capture_rate_extract(con = con,table = "PFD_FACT")
+patient_identification <- capture_rate_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") 
 
 pfd_national_overall <- tbl(con, dbplyr::in_schema("KIGRA", "PFD_FACT_OVERALL")) |>
-  collect()
+  collect() |>
+  apply_sdc(rounding = F)
 
-cost_per_patienticb1 <- costpericb_data|>
+cost_per_patienticb1 <- costpericb_data |>
   dplyr::filter(`Identified Patient Flag`=="Y") |>
   dplyr::mutate(`Total NIC per patient (GBP)`=`Total Net Ingredient Cost (GBP)`/`Total Identified Patients`)  |>
   dplyr::select(`Financial Year`,
                 `Integrated Care Board Name`,
                 `Integrated Care Board Code`,
-                `Total NIC per patient (GBP)`)`
+                `Total NIC per patient (GBP)`)` |>
+  apply_sdc(rounding = F)
 
-cost_per_patienticb <- costpericb_patient_extract(con = con,table = "PFD_FACT")
+cost_per_patienticb <- costpericb_patient_extract(con = con,table = "PFD_FACT") |>
+  apply_sdc(rounding = F)
 
