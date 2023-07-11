@@ -139,7 +139,7 @@ imd_extract <- function(con,
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
       .groups = "drop"
-    ) |> 
+    ) |>
     dplyr::mutate(
       `IMD Quintile` = case_when(
         IMD_DECILE %in% c("1", "2") ~ "1 - Most deprived",
@@ -163,7 +163,7 @@ imd_extract <- function(con,
                    `IMD Quintile`) |>
     collect()
   
-    return(fact)
+  return(fact)
 }
 
 imd_paragraph_extract <- function(con,
@@ -211,12 +211,12 @@ imd_paragraph_extract <- function(con,
       .groups = "drop"
     ) |>
     arrange(`Financial Year`,
-           `BNF Paragraph Code`,
-           `IMD Quintile`) |>
+            `BNF Paragraph Code`,
+            `IMD Quintile`) |>
     collect()
-    
   
-    return(fact)
+  
+  return(fact)
 }
 
 ageband_extract <- function(con,
@@ -266,23 +266,25 @@ ageband_extract <- function(con,
   
 }
 ageband_paragraph_extract <- function(con,
-                                      table = "PFD_FACT") {
-  fact <- dplyr::tbl(src = con,
-                     from = table) |>
+                                      schema,
+                                      table) {
+  fact <- dplyr::tbl(con,
+                     from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
       PATIENT_IDENTIFIED,
-      PARAGRAPH_NAME,
-      PARAGRAPH_CODE,
+      PARAGRAPH_DESCR,
+      BNF_PARAGRAPH,
       CALC_AGE,
       PATIENT_COUNT
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
-      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
+      .groups = "drop"
     )
   
   fact_age <- fact |>
@@ -294,21 +296,22 @@ ageband_paragraph_extract <- function(con,
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
-      `BNF Paragraph Name` = PARAGRAPH_NAME,
-      `BNF Paragraph Code` = PARAGRAPH_CODE,
+      `BNF Paragraph Name` = PARAGRAPH_DESCR,
+      `BNF Paragraph Code` = BNF_PARAGRAPH,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
+        100,
+      .groups = "drop"
     ) |>
-    dplyr::arrange(FINANCIAL_YEAR,
-                   PARAGRAPH_CODE,
-                   AGE_BAND,
-                   desc(PATIENT_IDENTIFIED)) |>
-    collect
+    dplyr::arrange(`Financial Year`,
+                   `BNF Paragraph Code`,
+                   `Age Band`,
+                   desc(`Identified Patient Flag`)) |>
+    collect()
   
   return(fact_age)
   
@@ -525,7 +528,7 @@ capture_rate_extract <- function(con,
         levels = c("060101", "060102", "060104", "060106")
       )
     ) |>
-    dplyr::select(-Y,-N) |>
+    dplyr::select(-Y, -N) |>
     dplyr::arrange(`Financial Year`, `BNF Paragraph Code`)
   return(fact)
 }
@@ -545,7 +548,7 @@ capture_rate_extract_dt <- function(con,
     tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
                        values_from = ITEM_COUNT) |>
     mutate(RATE = Y / (Y + N) * 100) |>
-    dplyr::select(-Y,-N) |>
+    dplyr::select(-Y, -N) |>
     tidyr::pivot_wider(names_from = FINANCIAL_YEAR,
                        values_from = RATE) |>
     dplyr::arrange(`BNF Paragraph code`)

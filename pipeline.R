@@ -109,7 +109,7 @@ pfd_imd_paragraph_data <- imd_paragraph_extract(con = con, schema = "KIGRA", tab
 
 pfd_ageband_data <- ageband_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
-pfd_ageband_paragraph_data <- ageband_paragraph_extract(con = con,table = "PFD_FACT")
+pfd_ageband_paragraph_data <- ageband_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
 pfd_gender_data <- gender_extract(con = con,table = "PFD_FACT")
 
