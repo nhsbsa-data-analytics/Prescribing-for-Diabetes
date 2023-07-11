@@ -105,7 +105,7 @@ pfd_u18_data <- child_adult_extract(con = con, schema = "KIGRA", table = "PFD_FA
 
 pfd_imd_data <- imd_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
-pfd_imd_paragraph_data <- imd_paragraph_extract(con = con,table = "PFD_FACT")
+pfd_imd_paragraph_data <- imd_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
 pfd_ageband_data <- ageband_extract(con = con,table = "PFD_FACT")
 

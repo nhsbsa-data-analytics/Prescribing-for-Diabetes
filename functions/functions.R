@@ -167,62 +167,56 @@ imd_extract <- function(con,
 }
 
 imd_paragraph_extract <- function(con,
-                                  table = "PFD_FACT") {
+                                  schema,
+                                  table) {
   fact <- dplyr::tbl(con,
-                     from = table) |>
+                     from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
       PATIENT_IDENTIFIED,
-      PARAGRAPH_NAME,
-      PARAGRAPH_CODE,
+      PARAGRAPH_DESCR,
+      BNF_PARAGRAPH,
       IMD_DECILE,
       PATIENT_COUNT
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
-      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
-    )
-  fact_imd_paragraph <- fact |>
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      `IMD Quintile` = case_when(
+        IMD_DECILE %in% c("1", "2") ~ "1 - Most deprived",
+        IMD_DECILE %in% c("3", "4") ~ "2",
+        IMD_DECILE %in% c("5", "6") ~ "3",
+        IMD_DECILE %in% c("7", "8") ~ "4",
+        IMD_DECILE %in% c("9", "10") ~ "5 - Least deprived",
+        is.na(IMD_DECILE) ~ "Unknown"
+      )
+    ) |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
-      `IMD Decile` = IMD_DECILE,
-      `BNF Paragraph Name` = PARAGRAPH_NAME,
-      `BNF Paragraph Code` = PARAGRAPH_CODE
+      `IMD Quintile`,
+      `BNF Paragraph Name` = PARAGRAPH_DESCR,
+      `BNF Paragraph Code` = BNF_PARAGRAPH
     ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
+        100,
+      .groups = "drop"
     ) |>
-    collect()
-  #add descriptors to imd levels
-  fact_imd_paragraph <-  fact_imd_paragraph |>
-    dplyr::mutate(`IMD Decile` = factor(
-      `IMD Decile`,
-      levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Unknown"),
-      labels = c(
-        "1 - Most deprived",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10 - Least deprived",
-        "Unknown"
-      )
-    )) |>
-    
     arrange(`Financial Year`,
-            `BNF Paragraph Code`,
-            `IMD Decile`) |>
-    return(fact_imd_paragraph)
+           `BNF Paragraph Code`,
+           `IMD Quintile`) |>
+    collect()
+    
+  
+    return(fact)
 }
 
 ageband_extract <- function(con,
