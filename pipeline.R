@@ -117,7 +117,7 @@ pfd_gender_paragraph_data <- gender_paragraph_extract(con = con, schema = "KIGRA
 
 pfd_age_gender_data <- age_gender_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
-pfd_age_gender_paragraph_data <- age_gender_paragraph_extract (con,table = "PFD_FACT")
+pfd_age_gender_paragraph_data <- age_gender_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
 patient_identification_dt <- capture_rate_extract_dt(con = con,table = "PFD_FACT")
 
