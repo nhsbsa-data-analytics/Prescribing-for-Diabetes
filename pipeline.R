@@ -111,7 +111,7 @@ pfd_ageband_data <- ageband_extract(con = con, schema = "KIGRA", table = "PFD_FA
 
 pfd_ageband_paragraph_data <- ageband_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
-pfd_gender_data <- gender_extract(con = con,table = "PFD_FACT")
+pfd_gender_data <- gender_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")
 
 pfd_gender_paragraph_data <- gender_paragraph_extract(con = con,table = "PFD_FACT")
 
@@ -123,15 +123,16 @@ patient_identification_dt <- capture_rate_extract_dt(con = con,table = "PFD_FACT
 
 patient_identification <- capture_rate_extract(con = con,table = "PFD_FACT")
 
-pfd_national_overall <- tbl(con, dbplyr::in_schema("KIGRA", "PFD_FACT_OVERALL")) %>%
+pfd_national_overall <- tbl(con, dbplyr::in_schema("KIGRA", "PFD_FACT_OVERALL")) |>
   collect()
 
-cost_per_patienticb1 <- costpericb_data%>%
-  dplyr::filter(`Identified Patient Flag`=="Y") %>%
-  dplyr::mutate(`Total NIC per patient (GBP)`=`Total Net Ingredient Cost (GBP)`/`Total Identified Patients`)  %>%
+cost_per_patienticb1 <- costpericb_data|>
+  dplyr::filter(`Identified Patient Flag`=="Y") |>
+  dplyr::mutate(`Total NIC per patient (GBP)`=`Total Net Ingredient Cost (GBP)`/`Total Identified Patients`)  |>
   dplyr::select(`Financial Year`,
                 `Integrated Care Board Name`,
                 `Integrated Care Board Code`,
                 `Total NIC per patient (GBP)`)`
+
 cost_per_patienticb <- costpericb_patient_extract(con = con,table = "PFD_FACT")
 
