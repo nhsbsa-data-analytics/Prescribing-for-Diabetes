@@ -132,7 +132,8 @@ pfd_age_gender_data <- age_gender_extract(con = con, schema = "KIGRA", table = "
 pfd_age_gender_paragraph_data <- age_gender_paragraph_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
   apply_sdc(rounding = F)
 
-patient_identification_dt <- capture_rate_extract_dt(con = con,table = "PFD_FACT") 
+patient_identification_dt <- capture_rate_extract_dt(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
+  select(1,2,last_col(4):last_col())
 
 patient_identification <- capture_rate_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") 
 

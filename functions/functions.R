@@ -532,7 +532,7 @@ capture_rate_extract <- function(con,
       RATE = Y / (Y + N) * 100,
       `BNF Paragraph Code` = factor(
         `BNF Paragraph Code`,
-        levels = c("060101", "060102", "060104", "060106")
+        levels = c("060101", "060102", "060104", "060106", "2148")
       )
     ) |>
     dplyr::select(-Y, -N) |>
@@ -541,17 +541,20 @@ capture_rate_extract <- function(con,
 }
 
 capture_rate_extract_dt <- function(con,
-                                    table = "PFD_FACT") {
-  fact <- dplyr::tbl(src = con, from = table) |>
+                                    schema,
+                                    table) {
+  fact <- dplyr::tbl(con,
+                     from = dbplyr::in_schema(schema, table)) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
-      `BNF Paragraph name` = PARAGRAPH_NAME,
-      `BNF Paragraph code` = PARAGRAPH_CODE,
+      `BNF Paragraph name` = PARAGRAPH_DESCR,
+      `BNF Paragraph code` = BNF_PARAGRAPH,
       PATIENT_IDENTIFIED
     ) |>
-    dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT, na.rm = T)) |>
+    dplyr::summarise(ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
+                     .groups = "drop") |>
     dplyr::arrange(FINANCIAL_YEAR) |>
-    collect |>
+    collect() |>
     tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
                        values_from = ITEM_COUNT) |>
     mutate(RATE = Y / (Y + N) * 100) |>
