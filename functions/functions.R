@@ -529,7 +529,7 @@ capture_rate_extract <- function(con,
     tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
                        values_from = ITEM_COUNT) |>
     mutate(
-      RATE = Y / (Y + N) * 100,
+      `Identified Patient Rate` = Y / (Y + N) * 100,
       `BNF Paragraph Code` = factor(
         `BNF Paragraph Code`,
         levels = c("060101", "060102", "060104", "060106", "2148")
@@ -557,10 +557,10 @@ capture_rate_extract_dt <- function(con,
     collect() |>
     tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
                        values_from = ITEM_COUNT) |>
-    mutate(RATE = Y / (Y + N) * 100) |>
+    mutate(`Identified Patient Rate` = Y / (Y + N) * 100) |>
     dplyr::select(-Y, -N) |>
     tidyr::pivot_wider(names_from = FINANCIAL_YEAR,
-                       values_from = RATE) |>
+                       values_from = `Identified Patient Rate`) |>
     dplyr::arrange(`BNF Paragraph code`)
   
   return(fact)
@@ -932,11 +932,11 @@ apply_sdc <-
     data %>% dplyr::mutate(dplyr::across(
       where(is.numeric),
       .fns = ~ dplyr::case_when(
-        .x >= level & rounding == T ~ type(rnd * round(.x / rnd)),
-        .x < level & .x > 0 & rounding == T ~ mask,
-        .x < level & .x > 0 & rounding == F ~ mask,
-        TRUE ~ type(.x)
+        .x >= level & rounding == T ~ as.numeric(type(rnd * round(.x / rnd))),
+        .x < level & .x > 0 & rounding == T ~ as.numeric(mask),
+        .x < level & .x > 0 & rounding == F ~ as.numeric(mask),
+        TRUE ~ as.numeric(type(.x))
       ),
-      .names = "sdc_{.col}"
+      .names = "{.col}"
     ))
   }
