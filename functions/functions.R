@@ -565,10 +565,12 @@ capture_rate_extract_dt <- function(con,
   
   return(fact)
 }
+
 costpericb_extract <- function(con,
-                               table = "PFD_FACT") {
+                               schema,
+                               table) {
   fact <- dplyr::tbl(con,
-                     from = table) |>
+                     from = dbplyr::in_schema(schema, table)) |>
     #    dplyr::filter(CCG_FLAG=="Y") |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
@@ -582,7 +584,8 @@ costpericb_extract <- function(con,
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
-      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T)
+      ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
+      .groups = "drop"
     )
   
   fact_icb <- fact |>
@@ -596,23 +599,23 @@ costpericb_extract <- function(con,
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
-      
+        100,
+      .groups = "drop"
     ) |>
     dplyr::arrange(`Financial Year`,
                    `Integrated Care Board Code`,
                    desc(`Identified Patient Flag`)) |>
-    
-    collect
+    collect()
   
   return(fact_icb)
   
 }
 
 costper_patient_extract <- function(con,
-                                    table = "PFD_FACT") {
+                                    schema,
+                                    table) {
   fact <- dplyr::tbl(con,
-                     from = table) |>
+                     from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
     dplyr::group_by(FINANCIAL_YEAR,
@@ -621,7 +624,8 @@ costper_patient_extract <- function(con,
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
       ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC, na.rm = T),
-      PATIENT_COUNT = sum(PATIENT_COUNT, na.rm = T)
+      PATIENT_COUNT = sum(PATIENT_COUNT, na.rm = T),
+      .groups = "drop"
     )
   
   fact_pat <- fact |>
@@ -631,13 +635,13 @@ costper_patient_extract <- function(con,
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
       `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
-        100
+        100,
+      .groups = "drop"
     ) |>
     dplyr::mutate(`Total NIC per patient (GBP)` = `Total Net Ingredient Cost (GBP)` /
                     `Total Identified Patients`)  |>
     dplyr::arrange(`Financial Year`) |>
-    
-    collect
+    collect()
   
   return(fact_pat)
   

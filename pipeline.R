@@ -91,12 +91,10 @@ con <- nhsbsaR::con_nhsbsa(dsn = "FBS_8192k",
 
 
 # 3. collect data from DWH ---------------------------------------------------
-costpericb_data <- costpericb_extract (con = con)
-
-costpericb_patdata <- costpericb_patient_extract (con = con, table = "PFD_FACT") |>
+costpericb_data <- costpericb_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
   apply_sdc(rounding = F)
 
-costper_patdata <- costper_patient_extract (con = con, table = "PFD_FACT") |>
+costper_patdata <- costper_patient_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307")  |>
   apply_sdc(rounding = F)
 
 pfd_national_data <- national_extract(con = con, schema = "KIGRA", table = "PFD_FACT_202307") |>
