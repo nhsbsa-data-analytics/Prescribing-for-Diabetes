@@ -103,8 +103,11 @@ child_adult_extract <- function(con,
       CALC_AGE <= 17 ~ "17 and under",
       TRUE ~ "18 and over"
     )) |>
-    dplyr::group_by(`Financial Year` = FINANCIAL_YEAR,
-                    `Age Band` = AGE_BAND) |>
+    dplyr::group_by(
+      `Financial Year` = FINANCIAL_YEAR,
+      `Age Band` = AGE_BAND,
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
+    ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
@@ -113,7 +116,8 @@ child_adult_extract <- function(con,
       .groups = "drop"
     ) |>
     dplyr::arrange(`Financial Year`,
-                   `Age Band`) |>
+                   `Age Band`,
+                   desc(`Identified Patient Flag`)) |>
     collect()
   
   return(child_adult_extract)
@@ -401,7 +405,7 @@ gender_paragraph_extract <- function(con,
                    desc(`Identified Patient Flag`)) |>
     
     collect()
-
+  
   return(fact_gender)
   
 }
@@ -511,6 +515,41 @@ age_gender_paragraph_extract <- function(con,
   
 }
 
+national_presentation <- function(con,
+                                  schema,
+                                  table) {
+  fact <- dplyr::tbl(con,
+                     from = dbplyr::in_schema(schema, table)) |>
+    group_by(
+      `Financial Year` = FINANCIAL_YEAR,
+      `BNF Section Code` = BNF_SECTION,
+      `BNF Section Name` = SECTION_DESCR,
+      `BNF Paragraph Code` = BNF_PARAGRAPH,
+      `BNF Paragraph Name` = PARAGRAPH_DESCR,
+      `BNF Chemical Substance Code` = BNF_CHEMICAL_SUBSTANCE,
+      `BNF Chemical Substance Name` = CHEMICAL_SUBSTANCE_BNF_DESCR,
+      `BNF Presentation Code` = PRESENTATION_BNF,
+      `BNF Presentation Name` = PRESENTATION_BNF_DESCR
+    ) |>
+    summarise(
+      `Total Items` = sum(ITEM_COUNT, na.rm = T),
+      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+        100,
+      .groups = "drop"
+    ) |>
+    arrange(
+      `Financial Year`,
+      `BNF Section Code`,
+      `BNF Paragraph Code`,
+      `BNF Chemical Substance Code`,
+      `BNF Presentation Code`
+    ) |>
+    collect()
+  
+  return(fact)
+  
+}
+
 capture_rate_extract <- function(con,
                                  schema,
                                  table) {
@@ -535,7 +574,7 @@ capture_rate_extract <- function(con,
         levels = c("060101", "060102", "060104", "060106", "2148")
       )
     ) |>
-    dplyr::select(-Y, -N) |>
+    dplyr::select(-Y,-N) |>
     dplyr::arrange(`Financial Year`, `BNF Paragraph Code`)
   return(fact)
 }
@@ -558,7 +597,7 @@ capture_rate_extract_dt <- function(con,
     tidyr::pivot_wider(names_from = PATIENT_IDENTIFIED,
                        values_from = ITEM_COUNT) |>
     mutate(`Identified Patient Rate` = Y / (Y + N) * 100) |>
-    dplyr::select(-Y, -N) |>
+    dplyr::select(-Y,-N) |>
     tidyr::pivot_wider(names_from = FINANCIAL_YEAR,
                        values_from = `Identified Patient Rate`) |>
     dplyr::arrange(`BNF Paragraph code`)
@@ -932,7 +971,8 @@ apply_sdc <-
     data %>% dplyr::mutate(dplyr::across(
       where(is.numeric),
       .fns = ~ dplyr::case_when(
-        .x >= level & rounding == T ~ as.numeric(type(rnd * round(.x / rnd))),
+        .x >= level &
+          rounding == T ~ as.numeric(type(rnd * round(.x / rnd))),
         .x < level & .x > 0 & rounding == T ~ as.numeric(mask),
         .x < level & .x > 0 & rounding == F ~ as.numeric(mask),
         TRUE ~ as.numeric(type(.x))
