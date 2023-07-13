@@ -409,21 +409,25 @@ format_data(wb,
 write_sheet(
   wb,
   "Cost_per_Patient",
-  paste0("Table 4: Prescribing for Diabetes - England 2015/16 to ", config$full_year, " average cost per patient per ICB per financial year"),
+  paste0(
+    "Table 4: Prescribing for Diabetes - England 2015/16 to ",
+    config$full_year,
+    " average cost per patient per ICB per financial year"
+  ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. The patient counts shown in these statistics should only be analysed at the level at which they are presented. Adding together any patient counts is likely to result in an overestimate of the number of patients.",
     "3. Integrated Care Boards (ICBs) succeeded sustainability and transformation plans (STPs) and replaced the functions of clinical commissioning groups (CCGs) in July 2022 with ICB sub locations replacing CCGs during the transition period of 2022/23. This table now displays data at ICB level to reflect the current intended structure.",
     "4. Only costs where the patient was known have been included in the Total NIC per patient (GBP) calculation. "
   ),
- cost_per_patienticb |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
+  cost_per_patienticb |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
   14
 )
 
 #left align columns A to D
 format_data(wb,
             "Cost_per_Patient",
-            c("A", "B","C"),
+            c("A", "B", "C"),
             "left",
             "")
 
@@ -441,13 +445,20 @@ accessibleTables::makeCoverSheet(
   "Publication date: 10 August 2023",
   wb,
   sheetNames,
-  c("Metadata","Patient Identification Rates","Table 1: Total items","Table 2: Diabetes Items","Table 3: Costs Per ICB","Table 4: Costs Per Patient"),
+  c(
+    "Metadata",
+    "Patient Identification Rates",
+    "Table 1: Total items",
+    "Table 2: Diabetes Items",
+    "Table 3: Costs Per ICB",
+    "Table 4: Costs Per Patient"
+  ),
   c("Metadata", sheetNames)
 )
 
 #save file into outputs folder
 openxlsx::saveWorkbook(wb,
-                       "outputs/PfD_2021_2022_costs_and_items_v001.xlsx",
+                       "outputs/PfD_2022_2023_costs_and_items_v001.xlsx",
                        overwrite = TRUE)
 
 
