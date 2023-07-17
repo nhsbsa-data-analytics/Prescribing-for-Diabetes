@@ -1024,6 +1024,40 @@ openxlsx::saveWorkbook(wb,
                        overwrite = TRUE)
 
 
+# 6. build charts and data ------------------------------------------------
+
+figure_1_data <- pfd_national_overall |>
+  filter(`Drug Type` == "Diabetes") |>
+  group_by(`Financial Year`) |> 
+  summarise(`Prescription items` = sum(`Total Items`),
+            `Identified patients` = sum(`Total Identified Patients`)) |> 
+  pivot_longer(cols = c(`Prescription items`, `Identified patients`),
+               names_to = "Measure",
+               values_to = "Value") |>
+  rename_with(~ gsub("\\s+", "_", .), everything())
+  
+figure_1 <- nhsbsaVis::group_chart_hc(
+    data = figure_1_data,
+    x = Financial_Year,
+    y = Value,
+    group = Measure,
+    type = "line",
+    xLab = "Financial year",
+    yLab = "Number of prescription items/identified patients",
+    title = ""
+    
+  )
+
+# 7. create markdowns -------
+
+rmarkdown::render("pfd-narrative.Rmd",
+                  output_format = "html_document",
+                  output_file = "outputs/pfd_summary_narrative_2022_23_v001.html")
+
+rmarkdown::render("pfd-narrative.Rmd",
+                  output_format = "word_document",
+                  output_file = "outputs/pfd_summary_narrative_2022_23_v001.docx")
+
 # 13. disconnect from DWH  ---------
 DBI::dbDisconnect(con)
 log_print("Disconnected from DWH", hide_notes = TRUE)
