@@ -174,22 +174,11 @@ The number of identified patients that received prescribing for drugs used in di
 
 ```{r total_costs, out.width = "100%"}
 
-# pfd_national_overall %>%
-#   filter(DRUG_TYPE == "Drugs used in diabetes") %>%
-#   group_by(FINANCIAL_YEAR) %>% 
-#   summarise(ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC)) %>% 
-#   
-#   basic_chart_hc(
-#     x = FINANCIAL_YEAR,
-#     y = ITEM_PAY_DR_NIC,
-#     type = "line",
-#     xLab = "Financial year",
-#     yLab = "Cost (GBP)",
-#     title = "",
-#     currency = TRUE
-#   )
+figure_2
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_2_data, filename = "figure_2")`
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 

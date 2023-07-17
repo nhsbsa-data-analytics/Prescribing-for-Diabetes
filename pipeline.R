@@ -453,9 +453,7 @@ write_sheet(
     config$full_year,
     " total items and costs by BNF Presentation"
   ),
-  c(
-    "1. Field definitions can be found on the 'Metadata' tab."
-  ),
+  c("1. Field definitions can be found on the 'Metadata' tab."),
   pfd_national_presentation,
   14
 )
@@ -1028,25 +1026,50 @@ openxlsx::saveWorkbook(wb,
 
 figure_1_data <- pfd_national_overall |>
   filter(`Drug Type` == "Diabetes") |>
-  group_by(`Financial Year`) |> 
-  summarise(`Prescription items` = sum(`Total Items`),
-            `Identified patients` = sum(`Total Identified Patients`)) |> 
-  pivot_longer(cols = c(`Prescription items`, `Identified patients`),
-               names_to = "Measure",
-               values_to = "Value") |>
-  rename_with(~ gsub("\\s+", "_", .), everything())
-  
+  group_by(`Financial Year`) |>
+  summarise(
+    `Prescription items` = sum(`Total Items`),
+    `Identified patients` = sum(`Total Identified Patients`),
+    .groups = "drop"
+  ) |>
+  pivot_longer(
+    cols = c(`Prescription items`, `Identified patients`),
+    names_to = "Measure",
+    values_to = "Value"
+  ) |>
+  rename_with( ~ gsub("\\s+", "_", .), everything())
+
 figure_1 <- nhsbsaVis::group_chart_hc(
-    data = figure_1_data,
-    x = Financial_Year,
-    y = Value,
-    group = Measure,
-    type = "line",
-    xLab = "Financial year",
-    yLab = "Number of prescription items/identified patients",
-    title = ""
-    
-  )
+  data = figure_1_data,
+  x = Financial_Year,
+  y = Value,
+  group = Measure,
+  type = "line",
+  xLab = "Financial year",
+  yLab = "Number of prescription items/identified patients",
+  title = ""
+  
+)
+
+figure_2_data <- pfd_national_overall |>
+  filter(`Drug Type` == "Diabetes") |>
+  group_by(`Financial Year`) |>
+  summarise(
+    `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
+    .groups = "drop"
+  ) |>
+  rename_with( ~ gsub("\\s+", "_", .), everything())
+
+figure_2 <- basic_chart_hc(
+  figure_2_data,
+  x = Financial_Year,
+  y = `Total_Net_Ingredient_Cost_(GBP)`,
+  type = "line",
+  xLab = "Financial year",
+  yLab = "Cost (GBP)",
+  title = "",
+  currency = TRUE
+)
 
 # 7. create markdowns -------
 
