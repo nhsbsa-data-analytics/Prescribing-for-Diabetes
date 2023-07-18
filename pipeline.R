@@ -1037,13 +1037,13 @@ figure_1_data <- pfd_national_overall |>
     names_to = "Measure",
     values_to = "Value"
   ) |>
-  rename_with( ~ gsub("\\s+", "_", .), everything())
+  rename_with( ~ gsub(" ", "_", toupper(gsub("[^[:alnum:] ]", "", .))), everything())
 
 figure_1 <- nhsbsaVis::group_chart_hc(
   data = figure_1_data,
-  x = Financial_Year,
-  y = Value,
-  group = Measure,
+  x = FINANCIAL_YEAR,
+  y = VALUE,
+  group = MEASURE,
   type = "line",
   xLab = "Financial year",
   yLab = "Number of prescription items/identified patients",
@@ -1058,12 +1058,12 @@ figure_2_data <- pfd_national_overall |>
     `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
     .groups = "drop"
   ) |>
-  rename_with( ~ gsub("\\s+", "_", .), everything())
+  rename_with( ~ gsub(" ", "_", toupper(gsub("[^[:alnum:] ]", "", .))), everything())
 
 figure_2 <- basic_chart_hc(
   figure_2_data,
-  x = Financial_Year,
-  y = `Total_Net_Ingredient_Cost_(GBP)`,
+  x = FINANCIAL_YEAR,
+  y = TOTAL_NET_INGREDIENT_COST_GBP,
   type = "line",
   xLab = "Financial year",
   yLab = "Cost (GBP)",
