@@ -1078,9 +1078,11 @@ figure_2 <- basic_chart_hc(
 figure_3_data <- pfd_national_overall |>
   group_by(`Financial Year`, `Drug Type`) |>
   
-  summarise(`Total Items` = sum(`Total Items`),
-            `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
-            .groups = "drop") |>
+  summarise(
+    `Total Items` = sum(`Total Items`),
+    `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
+    .groups = "drop"
+  ) |>
   group_by(`Financial Year`) |>
   mutate(
     `Proportion of items` = `Total Items` / sum(`Total Items`) * 100,
@@ -1097,17 +1099,161 @@ figure_3_data <- pfd_national_overall |>
   rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
+
+figure_3 <- group_chart_hc(
+  figure_3_data,
+  x = FINANCIAL_YEAR,
+  y = VALUE,
+  group = MEASURE,
+  type = "line",
+  xLab = "Financial year",
+  yLab = "Proportion (%)",
+  title = ""
+)
+
+figure_4_data <- pfd_paragraph_data |>
+  group_by(`Financial Year`, `BNF Paragraph Name`) |>
+  summarise(`Total Items` = sum(`Total Items`),
+            .groups = "drop") |>
+  pivot_longer(
+    cols = c(`Total Items`),
+    names_to = "measure",
+    values_to = "value"
+  ) |>
+  rename_with(~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything()) |>
+  mutate(ROUNDED_VALUE = signif(VALUE, 3))
+
+
+figure_4 <- group_chart_hc(
+  figure_4_data,
+  x = FINANCIAL_YEAR,
+  y = ROUNDED_VALUE,
+  group = BNF_PARAGRAPH_NAME,
+  type = "line",
+  xLab = "Financial year",
+  yLab = "Number of prescribed items",
+  title = "",
+  dlOn = F
+) |>
+  hc_tooltip(enabled = TRUE,
+             shared = TRUE,
+             sort = TRUE) |>
+  hc_legend(enabled = TRUE)
+
+figure_5_data <- pfd_paragraph_data |>
+  group_by(`Financial Year`, `BNF Paragraph Name`) |>
+  summarise(
+    `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
+    .groups = "drop"
+  ) |>
+  pivot_longer(
+    cols = c(`Total Net Ingredient Cost (GBP)`),
+    names_to = "measure",
+    values_to = "value"
+  ) |>
+  rename_with(~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything()) |>
+  mutate(ROUNDED_VALUE = signif(VALUE, 3))
+
+figure_5 <- group_chart_hc(
+  figure_5_data,
+  x = FINANCIAL_YEAR,
+  y = ROUNDED_VALUE,
+  group = BNF_PARAGRAPH_NAME,
+  type = "line",
+  xLab = "Financial year",
+  yLab = "Cost (GBP)",
+  title = "",
+  dlOn = F
+) |>
+  hc_tooltip(enabled = TRUE,
+             shared = TRUE,
+             sort = TRUE) |>
+  hc_legend(enabled = TRUE)
+
+figure_6_data <- pfd_national_overall |>
+  filter(`Identified Patient Flag` == "Y", `Drug Type` == "Diabetes") |>
+  rename_with(~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything()) |>
+  mutate(ITEMS_PER_PATIENT = TOTAL_ITEMS  / TOTAL_IDENTIFIED_PATIENTS)
+
+
+figure_6 <- basic_chart_hc(
+  figure_6_data,
+  x = FINANCIAL_YEAR,
+  y = ITEMS_PER_PATIENT,
+  type = "line",
+  xLab = "Financial year",
+  yLab = "Prescription items per patient",
+  title = ""
+)
+
+
+figure_7_data_boxplot <- costpericb_data |>
+  group_by(`Financial Year`) |>
+  filter(`Identified Patient Flag` == "Y",`Integrated Care Board Name`!="UNKNOWN ICB") |>
+  mutate(COST_PER_PAT = `Total Net Ingredient Cost (GBP)`  / `Total Identified Patients` ) |>
+  data_to_boxplot(var = COST_PER_PAT,
+                  add_outliers = T,
+                  group_var = `Financial Year`,
+                  color = "#005EB8",
+                  fillColor = "rgba(0,94,184,0.5)")
+
+
+figure_7_data_raw <- data.frame()
+
+for(i in 1:length(figure_7_data$data[[1]])) {
+  FINANCIAL_YEAR = figure_7_data_boxplot$data[[1]][[i]]$name
+  MINIMUM = figure_7_data_boxplot$data[[1]][[i]]$low
+  LOWER_QUARTILE = figure_7_data_boxplot$data[[1]][[i]]$q1
+  MEDIAN = figure_7_data_boxplot$data[[1]][[i]]$median
+  UPPER_QUARTILE = figure_7_data_boxplot$data[[1]][[i]]$q3
+  MAXIMUM = figure_7_data_boxplot$data[[1]][[i]]$high
   
-  figure_3 <- group_chart_hc(
-    figure_3_data,
-    x = FINANCIAL_YEAR,
-    y = VALUE,
-    group = MEASURE,
-    type = "line",
-    xLab = "Financial year",
-    yLab = "Proportion (%)",
-    title = ""
+  tmp_df <- data.frame(
+    FINANCIAL_YEAR = FINANCIAL_YEAR,
+    MINIMUM = MINIMUM,
+    LOWER_QUARTILE = LOWER_QUARTILE,
+    MEDIAN = MEDIAN,
+    UPPER_QUARTILE = UPPER_QUARTILE,
+    MAXIMUM = MAXIMUM
   )
+  
+  figure_7_data_raw <- figure_7_data_raw |>
+    bind_rows(tmp_df)
+}
+
+tooltip <- JS("function () {
+
+              var result = '<b>' + this.point.options.name + '</b>' +
+              '<br>Maximum: <b>£' + this.point.options.high.toFixed(2) +
+              '</b><br>Upper quartile: <b>£' + this.point.options.q3.toFixed(2) +
+              '</b><br>Median: <b>£' + this.point.options.median.toFixed(2) +
+              '</b><br>Lower quartile: <b>£' + this.point.options.q1.toFixed(2) +
+              '</b><br> Minimum: <b>£' + this.point.options.low.toFixed(2) + '</b>';
+
+              return result
+
+              }")
+
+figure_7 <- highchart() |>
+  hc_chart(style = list(fontFamily = "Arial")) |>
+  hc_xAxis(type = "category",
+           title = list(text = "Financial year")) |>
+  hc_yAxis(min = 0,
+           title = list(text = "Cost per patient (GBP)")) |>
+  hc_add_series_list(figure_7_data_boxplot) |>
+  hc_legend(enabled = FALSE) |>
+  hc_title(text = "",
+           style = list(fontSize = "16px",
+                        fontWeight = "bold")) |>
+  hc_tooltip(formatter = tooltip) |>
+  hc_credits(enabled = TRUE)
+
 
 # 7. create markdowns -------
 

@@ -204,30 +204,11 @@ In 2021/22, the cost of drugs used in diabetes accounted for 13.0% of the total 
 
 ```{r items_per_drug, out.width = "100%"}
 
-# pfd_paragraph_data %>% 
-#   group_by(`Financial Year`,`BNF Paragraph Name`) %>%
-#   summarise(`Total Items` = signif(
-#     sum(`Total Items` )
-#     ,3)) %>%
-#   pivot_longer(cols = c(`Total Items`),
-#                names_to = "measure",
-#                values_to = "value") %>% 
-#   group_chart_hc(
-#     x = `Financial Year`,
-#     y = value,
-#     group = `BNF Paragraph Name`,
-#     type = "line",
-#     xLab = "Financial year",
-#     yLab = "Number of prescribed items",
-#     title = "",
-#     dlOn = F
-#   ) %>% 
-#   hc_tooltip(enabled = TRUE,
-#              shared = TRUE,
-#              sort = TRUE) %>% 
-#   hc_legend(enabled = TRUE)
+figure_4
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_4_data, filename = "figure_4")`
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
@@ -239,32 +220,11 @@ Prescribing of diabetic diagnostic and monitoring agents decreased by 1.39% from
 
 ```{r cost_per_drug, out.width = "100%"}
 
-# pfd_paragraph_data %>%
-#   group_by(`Financial Year`,`BNF Paragraph Name`) %>% 
-#   summarise(`Total Net Ingredient Cost (GBP)` = signif(
-#     sum(
-#       `Total Net Ingredient Cost (GBP)`
-#       )
-#     ,3)) %>% 
-#   pivot_longer(cols = c(`Total Net Ingredient Cost (GBP)`),
-#                names_to = "measure",
-#                values_to = "value") %>% 
-#   group_chart_hc(
-#     x = `Financial Year`,
-#     y = value,
-#     group = `BNF Paragraph Name`,
-#     type = "line",
-#     xLab = "Financial year",
-#     yLab = "Cost (GBP)",
-#     title = "",
-#     dlOn = F
-#   ) %>% 
-#   hc_tooltip(enabled = TRUE,
-#              shared = TRUE,
-#              sort = TRUE) %>% 
-#   hc_legend(enabled = TRUE)
+figure_5
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_5_data, filename = "figure_5")`
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
@@ -276,21 +236,11 @@ Of the remaining BNF paragraphs, two observed changes in cost between 2020/21 an
 
 ```{r items_per_pat, out.width = "100%"}
 
-# pfd_national_overall %>%
-#   filter(IDENTIFIED_FLAG == "Y", DRUG_TYPE == "Drugs used in diabetes") %>%
-#   
-#   mutate(ITEMS_PER_PAT = signif(ITEM_COUNT  / PATIENT_COUNT, 3)) %>%
-# 
-#   basic_chart_hc(
-#     x = FINANCIAL_YEAR,
-#     y = ITEMS_PER_PAT,
-#     type = "line",
-#     xLab = "Financial year",
-#     yLab = "Prescription items per patient",
-#     title = ""
-#   )
+figure_6
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_6_data, filename = "figure_6")`
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
@@ -302,46 +252,11 @@ This measure only includes prescribing of drugs used in diabetes and does not in
 
 ```{r cost_per_patient, out.width = "100%"}
 
-
-# 
-# dtb <- costpericb_data %>%
-#   group_by(`Financial Year`) %>% 
-#   filter(`Identified Patient Flag` == "Y",`Integrated Care Board Name`!="UNKNOWN ICB") %>% 
-#   mutate(COST_PER_PAT = `Total Net Ingredient Cost (GBP)`  / `Total Identified Patients` ) %>% 
-#   data_to_boxplot(var = COST_PER_PAT,
-#                   add_outliers = T,
-#                   group_var = `Financial Year`,
-#                   color = "#005EB8",
-#                   fillColor = "rgba(0,94,184,0.5)") 
-# 
-# tooltip <- JS("function () {
-#              
-#               var result = '<b>' + this.point.options.name + '</b>' +
-#               '<br>Maximum: <b>£' + this.point.options.high.toFixed(2) +
-#               '</b><br>Upper quartile: <b>£' + this.point.options.q3.toFixed(2) +
-#               '</b><br>Median: <b>£' + this.point.options.median.toFixed(2) +
-#               '</b><br>Lower quartile: <b>£' + this.point.options.q1.toFixed(2) +
-#               '</b><br> Minimum: <b>£' + this.point.options.low.toFixed(2) + '</b>';
-#              
-#               return result
-#              
-#               }")
-# 
-# highchart() %>% 
-#   hc_chart(style = list(fontFamily = "Arial")) %>% 
-#   hc_xAxis(type = "category",
-#            title = list(text = "Financial year")) %>% 
-#   hc_yAxis(min = 0,
-#            title = list(text = "Cost per patient (GBP)")) %>% 
-#   hc_add_series_list(dtb) %>% 
-#   hc_legend(enabled = FALSE) %>% 
-#   hc_title(text = "",
-#            style = list(fontSize = "16px",
-#                         fontWeight = "bold")) %>%
-#   hc_tooltip(formatter = tooltip) %>% 
-#   hc_credits(enabled = TRUE) 
+figure_7
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_7_data_raw, filename = "figure_7")`
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 4)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
