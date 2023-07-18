@@ -49,9 +49,9 @@ colors <- c("#005EB8","#768692")
 
 <main>
 
-# England 2015/16 to 2021/22 {.toc-ignore}
+# England 2015/16 to 2022/23 {.toc-ignore}
 
-  Published 11 August 2022
+  Published 10 August 2023
 
 ## Key findings
 
@@ -188,31 +188,11 @@ Costs for drugs used in diabetes also increased to £1.25 billion in 2021/22. Th
 
 ```{r items_and_costs_proportions, out.width = "100%"}
 
-# pfd_national_overall %>%
-#   group_by(FINANCIAL_YEAR, DRUG_TYPE) %>% 
-# 
-#   summarise(ITEM_COUNT = sum(ITEM_COUNT),
-#             ITEM_PAY_DR_NIC = sum(ITEM_PAY_DR_NIC)) %>% 
-#   group_by(FINANCIAL_YEAR) %>% 
-#   mutate(`Proportion of items` = ITEM_COUNT / sum(ITEM_COUNT) * 100,
-#          `Proportion of costs` = ITEM_PAY_DR_NIC / sum(ITEM_PAY_DR_NIC) * 100) %>% 
-#   filter(DRUG_TYPE == "Drugs used in diabetes") %>% 
-#   select(-ITEM_COUNT, -ITEM_PAY_DR_NIC) %>% 
-#   pivot_longer(cols = c(`Proportion of items`, `Proportion of costs`),
-#                names_to = "measure",
-#                values_to = "value") %>% 
-#   
-#   group_chart_hc(
-#     x = FINANCIAL_YEAR,
-#     y = value,
-#     group = measure,
-#     type = "line",
-#     xLab = "Financial year",
-#     yLab = "Proportion (%)",
-#     title = ""
-#   )
+figure_3
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_3_data, filename = "figure_3")`
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 

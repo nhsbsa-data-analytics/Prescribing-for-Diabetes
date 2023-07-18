@@ -1037,7 +1037,9 @@ figure_1_data <- pfd_national_overall |>
     names_to = "Measure",
     values_to = "Value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub("[^[:alnum:] ]", "", .))), everything())
+  rename_with(~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything())
 
 figure_1 <- nhsbsaVis::group_chart_hc(
   data = figure_1_data,
@@ -1058,7 +1060,9 @@ figure_2_data <- pfd_national_overall |>
     `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
     .groups = "drop"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub("[^[:alnum:] ]", "", .))), everything())
+  rename_with(~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything())
 
 figure_2 <- basic_chart_hc(
   figure_2_data,
@@ -1070,6 +1074,40 @@ figure_2 <- basic_chart_hc(
   title = "",
   currency = TRUE
 )
+
+figure_3_data <- pfd_national_overall |>
+  group_by(`Financial Year`, `Drug Type`) |>
+  
+  summarise(`Total Items` = sum(`Total Items`),
+            `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
+            .groups = "drop") |>
+  group_by(`Financial Year`) |>
+  mutate(
+    `Proportion of items` = `Total Items` / sum(`Total Items`) * 100,
+    `Proportion of costs` = `Total Net Ingredient Cost (GBP)` / sum(`Total Net Ingredient Cost (GBP)`) * 100
+  ) |>
+  ungroup() |>
+  filter(`Drug Type` == "Diabetes") |>
+  select(-`Total Items`,-`Total Net Ingredient Cost (GBP)`) |>
+  pivot_longer(
+    cols = c(`Proportion of items`, `Proportion of costs`),
+    names_to = "measure",
+    values_to = "value"
+  ) |>
+  rename_with(~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything())
+  
+  figure_3 <- group_chart_hc(
+    figure_3_data,
+    x = FINANCIAL_YEAR,
+    y = VALUE,
+    group = MEASURE,
+    type = "line",
+    xLab = "Financial year",
+    yLab = "Proportion (%)",
+    title = ""
+  )
 
 # 7. create markdowns -------
 
