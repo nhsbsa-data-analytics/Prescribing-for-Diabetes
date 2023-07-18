@@ -51,7 +51,7 @@ colors <- c("#005EB8","#768692")
 
 # England 2015/16 to 2022/23 {.toc-ignore}
 
-  Published 10 August 2023
+  `r paste0("Published ", config$publication_date)`
 
 ## Key findings
 

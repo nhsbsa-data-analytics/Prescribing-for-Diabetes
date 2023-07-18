@@ -65,7 +65,7 @@ nhsbsaUtils::check_and_install_packages(req_pkgs)
 # set up logging
 lf <-
   logr::log_open(paste0(
-    "Y:/Official Stats/PfD/log/pca_log",
+    "Y:/Official Stats/PfD/log/pfd_log",
     format(Sys.time(), "%d%m%y%H%M%S"),
     ".log"
   ))
@@ -1334,7 +1334,7 @@ rmarkdown::render("pfd-narrative.Rmd",
                   output_format = "word_document",
                   output_file = "outputs/pfd_summary_narrative_2022_23_v001.docx")
 
-# 13. disconnect from DWH  ---------
+# 8. disconnect from DWH  ---------
 DBI::dbDisconnect(con)
 log_print("Disconnected from DWH", hide_notes = TRUE)
 
