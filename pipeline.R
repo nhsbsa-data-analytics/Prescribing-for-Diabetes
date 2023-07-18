@@ -1037,7 +1037,7 @@ figure_1_data <- pfd_national_overall |>
     names_to = "Measure",
     values_to = "Value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1060,7 +1060,7 @@ figure_2_data <- pfd_national_overall |>
     `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
     .groups = "drop"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1090,13 +1090,13 @@ figure_3_data <- pfd_national_overall |>
   ) |>
   ungroup() |>
   filter(`Drug Type` == "Diabetes") |>
-  select(-`Total Items`,-`Total Net Ingredient Cost (GBP)`) |>
+  select(-`Total Items`, -`Total Net Ingredient Cost (GBP)`) |>
   pivot_longer(
     cols = c(`Proportion of items`, `Proportion of costs`),
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1120,7 +1120,7 @@ figure_4_data <- pfd_paragraph_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1153,7 +1153,7 @@ figure_5_data <- pfd_paragraph_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1176,7 +1176,7 @@ figure_5 <- group_chart_hc(
 
 figure_6_data <- pfd_national_overall |>
   filter(`Identified Patient Flag` == "Y", `Drug Type` == "Diabetes") |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ITEMS_PER_PATIENT = TOTAL_ITEMS  / TOTAL_IDENTIFIED_PATIENTS)
@@ -1195,18 +1195,21 @@ figure_6 <- basic_chart_hc(
 
 figure_7_data_boxplot <- costpericb_data |>
   group_by(`Financial Year`) |>
-  filter(`Identified Patient Flag` == "Y",`Integrated Care Board Name`!="UNKNOWN ICB") |>
-  mutate(COST_PER_PAT = `Total Net Ingredient Cost (GBP)`  / `Total Identified Patients` ) |>
-  data_to_boxplot(var = COST_PER_PAT,
-                  add_outliers = T,
-                  group_var = `Financial Year`,
-                  color = "#005EB8",
-                  fillColor = "rgba(0,94,184,0.5)")
+  filter(`Identified Patient Flag` == "Y",
+         `Integrated Care Board Name` != "UNKNOWN ICB") |>
+  mutate(COST_PER_PAT = `Total Net Ingredient Cost (GBP)`  / `Total Identified Patients`) |>
+  data_to_boxplot(
+    var = COST_PER_PAT,
+    add_outliers = T,
+    group_var = `Financial Year`,
+    color = "#005EB8",
+    fillColor = "rgba(0,94,184,0.5)"
+  )
 
 
 figure_7_data_raw <- data.frame()
 
-for(i in 1:length(figure_7_data$data[[1]])) {
+for (i in 1:length(figure_7_data$data[[1]])) {
   FINANCIAL_YEAR = figure_7_data_boxplot$data[[1]][[i]]$name
   MINIMUM = figure_7_data_boxplot$data[[1]][[i]]$low
   LOWER_QUARTILE = figure_7_data_boxplot$data[[1]][[i]]$q1
@@ -1227,7 +1230,8 @@ for(i in 1:length(figure_7_data$data[[1]])) {
     bind_rows(tmp_df)
 }
 
-tooltip <- JS("function () {
+tooltip <- JS(
+  "function () {
 
               var result = '<b>' + this.point.options.name + '</b>' +
               '<br>Maximum: <b>£' + this.point.options.high.toFixed(2) +
@@ -1238,7 +1242,8 @@ tooltip <- JS("function () {
 
               return result
 
-              }")
+              }"
+)
 
 figure_7 <- highchart() |>
   hc_chart(style = list(fontFamily = "Arial")) |>
@@ -1254,6 +1259,70 @@ figure_7 <- highchart() |>
   hc_tooltip(formatter = tooltip) |>
   hc_credits(enabled = TRUE)
 
+figure_8_data <- pfd_gender_data |>
+  filter(`Patient Sex` != "Unknown") |>
+  group_by(`Financial Year`, `Patient Sex`) |>
+  summarise(`Total Identified Patients` = sum(`Total Identified Patients`)) |>
+  pivot_longer(
+    cols = c(`Total Identified Patients`),
+    names_to = "measure",
+    values_to = "value"
+  ) |>
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything()) |>
+  mutate(ROUNDED_VALUE = signif(VALUE, 3))
+
+figure_8 <- group_chart_hc(
+  figure_8_data,
+  x = FINANCIAL_YEAR,
+  y = VALUE,
+  group = PATIENT_SEX,
+  type = "column",
+  xLab = "Financial year",
+  yLab = "Number of identified patients",
+  title = "",
+  dlOn = F
+) |>
+  hc_tooltip(enabled = T,
+             shared = T,
+             sort = T)
+
+figure_9_data <- pfd_age_gender_data |>
+  filter(`Financial Year` == max(`Financial Year`)) |>
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything())
+
+
+figure_9 <-  age_gender_chart(figure_9_data,
+                              labels = FALSE)
+
+
+figure_10_data <- pfd_imd_data |>
+  ungroup() |>
+  filter(`Financial Year` == max(`Financial Year`),
+         `IMD Quintile` != "Unknown") |>
+  arrange(`IMD Quintile`) |>
+  pivot_longer(
+    cols = c(`Total Identified Patients`),
+    names_to = "measure",
+    values_to = "value"
+  ) |>
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything()) |>
+  mutate(ROUNDED_VALUE = signif(VALUE, 3))
+
+figure_10 <-  basic_chart_hc(
+  figure_10_data,
+  x = IMD_QUINTILE,
+  y = ROUNDED_VALUE,
+  type = "column",
+  xLab = "IMD quintile",
+  yLab = "Number of identified patients",
+  title = ""
+)
 
 # 7. create markdowns -------
 

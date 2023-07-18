@@ -796,26 +796,26 @@ infoBox_no_border <- function(header = "Header here",
 age_gender_chart <- function(data,
                              labels = FALSE) {
   age_gender_chart_data <- data |>
-    dplyr::select(`Age Band`,
-                  `Patient Gender`,
-                  `Total Identified Patients`) |>
-    tidyr::complete(`Patient Gender`,
-                    `Age Band`,
-                    fill = list(`Total Identified Patients` = 0))
+    dplyr::select(AGE_BAND,
+                  PATIENT_SEX,
+                  TOTAL_IDENTIFIED_PATIENTS) |>
+    tidyr::complete(PATIENT_SEX,
+                    AGE_BAND,
+                    fill = list(TOTAL_IDENTIFIED_PATIENTS = 0))
   
-  categories = c(unique(age_gender_chart_data$`Age Band`))
+  categories = c(unique(age_gender_chart_data$AGE_BAND))
   
   max <-
-    max(age_gender_chart_data$`Total Identified Patients`)
+    max(age_gender_chart_data$TOTAL_IDENTIFIED_PATIENTS)
   min <-
-    max(age_gender_chart_data$`Total Identified Patients`) * -1
+    max(age_gender_chart_data$TOTAL_IDENTIFIED_PATIENTS) * -1
   
   male <- age_gender_chart_data |>
-    dplyr::filter(`Patient Gender` == "Male")
+    dplyr::filter(PATIENT_SEX == "Male")
   
   female <- age_gender_chart_data |>
-    dplyr::filter(`Patient Gender` == "Female") |>
-    dplyr::mutate(`Total Identified Patients` = 0 - `Total Identified Patients`)
+    dplyr::filter(PATIENT_SEX == "Female") |>
+    dplyr::mutate(TOTAL_IDENTIFIED_PATIENTS = 0 - TOTAL_IDENTIFIED_PATIENTS)
   
   hc <- highcharter::highchart() |>
     highcharter::hc_chart(type = 'bar') |>
@@ -881,16 +881,16 @@ age_gender_chart <- function(data,
           )
         ),
         color = "#8e5300",
-        fontFamily = "Ariel",
+        fontFamily = "Arial",
         name = 'Male',
-        data = c(male$`Total Identified Patients`)
+        data = c(male$TOTAL_IDENTIFIED_PATIENTS)
       ),
       list(
         dataLabels = list(
           enabled = labels,
           inside = FALSE,
           color = '#003087',
-          fontFamily = "Ariel",
+          fontFamily = "Arial",
           formatter = JS(
             'function () {
                                   result = this.y * -1;
@@ -904,8 +904,8 @@ age_gender_chart <- function(data,
         ),
         color = "#003087",
         name = 'Female',
-        fontFamily = "Ariel",
-        data = c(female$`Total Identified Patients`)
+        fontFamily = "Arial",
+        data = c(female$TOTAL_IDENTIFIED_PATIENTS)
       )
     ) |>
     highcharter::hc_legend(reversed = T)

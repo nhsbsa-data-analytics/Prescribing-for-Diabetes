@@ -270,43 +270,17 @@ Further detail can be found at the [NHS Digital Organisation Data Service](https
 
 The cost per patient varied across ICBs in 2021/22, from £334 to £442 with the median cost per patient per ICB being £387. There were no ICBs that were an outlier for cost per patient for 2021/22.
 
-
-
-
-
 ### 2.2. Patient demographics
 
 #### **`r paste0("Figure ",8,": Number of identified patients receiving diabetes prescribing by sex per financial year")`** 
 
 ```{r patients_by_sex, out.width = "100%"}
 
-# pfd_gender_data%>%
-#   filter(`Patient Sex` != "Unknown") %>%
-#   summarise(`Total Identified Patients` = signif(
-#     sum(
-#       `Total Identified Patients`
-#       )
-#     ,3)) %>%
-#   
-#   pivot_longer(cols = c(`Total Identified Patients`),
-#                names_to = "measure",
-#                values_to = "value") %>% 
-#   group_chart_hc(
-#     x = `Financial Year`,
-#     y = value,
-#     group = `Patient Sex`,
-#     type = "column",
-#     xLab = "Financial year",
-#     yLab = "Number of identified patients",
-#     title = "",
-#     dlOn = F
-#   )%>% 
-#   hc_tooltip(enabled = T,
-#              shared = T,
-#              sort = T)
-
+figure_8
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_8_data, filename = "figure_8")`
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
@@ -317,15 +291,11 @@ Identified patients where their sex was unknown or indeterminate have been group
 #### **`r paste0("Figure ",9,": Number of identified patients receiving diabetes prescribing by age and sex 2021/22")`** 
 ```{r patients_by_age, out.width = "100%"}
 
-
-# pfd_age_gender_data %>% 
-#    filter(`Financial Year` == max_fy) %>% 
-#   age_gender_chart(
-#     labels = FALSE
-#   )
-
+figure_9
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_9_data, filename = "figure_9")`
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 6)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
@@ -337,24 +307,24 @@ More information on how we calculate a patient's age can be found in section 4 o
 
 ```{r patients_by_adult_child, out.width = "100%"}
 
-# pfd_u18_data %>%
-#   filter(`Age Band` != "Unknown") %>%
-#   group_by(`Financial Year`,`Age Band`) %>%
-#   summarise(`Total Identified Patients` = formatC(signif(sum(`Total Identified Patients`)/1000000,
-#                                            digits = 3),
-#                                     digits = 3, format = "fg", flag = "#")) %>%
-#   ungroup() %>%
-#   tidyr::pivot_wider(names_from = `Financial Year`,
-#                        values_from = `Total Identified Patients`) %>%
-# 
-#   DT::datatable(
-#     rownames = FALSE,
-#     options = list(dom = "t",
-#                    columnDefs = list(list(orderable = FALSE,
-#                                           targets = "_all"),
-#                                      list(className = "dt-left", targets = 0),
-#                                      list(className = "dt-right", targets = 1:7)))
-#   )
+pfd_u18_data %>%
+  filter(`Age Band` != "Unknown") %>%
+  group_by(`Financial Year`,`Age Band`) %>%
+  summarise(`Total Identified Patients` = formatC(signif(sum(`Total Identified Patients`)/1000000,
+                                           digits = 3),
+                                    digits = 3, format = "fg", flag = "#")) %>%
+  ungroup() %>%
+  tidyr::pivot_wider(names_from = `Financial Year`,
+                       values_from = `Total Identified Patients`) %>%
+
+  DT::datatable(
+    rownames = FALSE,
+    options = list(dom = "t",
+                   columnDefs = list(list(orderable = FALSE,
+                                          targets = "_all"),
+                                     list(className = "dt-left", targets = 0),
+                                     list(className = "dt-right", targets = 1:7)))
+  )
 
 ```
 
@@ -366,27 +336,11 @@ There were 36,600 identified patients aged 17 and under that received prescribin
 
 ```{r patients_by_imd,out.width = "100%"}
 
-# pfd_imd_data %>%
-#   ungroup() %>% 
-#   filter(`Financial Year` == max(`Financial Year`),
-#          `IMD Decile` != "Unknown") %>%
-# 
-#   arrange(`IMD Decile`) %>%
-#  
-#   
-#   pivot_longer(cols = c(`Total Identified Patients`),
-#                names_to = "measure",
-#                values_to = "value") %>% 
-#     basic_chart_hc(
-#     x = `IMD Decile`,
-#     y = value,
-#     type = "column",
-#     xLab = "IMD decile",
-#     yLab = "Number of identified patients",
-#     title = ""
-#   )
+figure_10
 
 ```
+
+`r get_download_button(title = "Download chart data", data = figure_10_data, filename = "figure_10")`
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
