@@ -269,13 +269,13 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](ht
 `r infoBox_no_border(header = "", text = "<b7% increase in antidiabetic drug items from 2021/22 to 2022/23.</b>", width = "100%")` 
 :::
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>38% increase in costs of glucose interstitial fluid detection sensors prescribed from 2021/22 to 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>27% increase in glucose interstitial fluid detection sensor items from 2021/22 to 2022/23.</b>", width = "100%")` 
 :::
 ::::
 
 Antidiabetic drugs remain the most prescribed treatment for diabetes with 49 million items in 2022/23. This was a 38% increase from 35 million items in 2015/16, and an 8% increase from 45 million items in 2021/22. The increase in antidiabetic drug items between 2021/22 and 2022/23 was greater than seen in previous yearly increases, which between 2015/16 and 2021/22 was an average of 4%.
 
-Prescribing of diabetic diagnostic and monitoring agents decreased by 4% from 6.9 million items in 2021/22 to 6.6 million in 2022/23. Insulin items increased by 4% from 7.8 million to 8.1 million. Medicines used for the treatment of hypoglycaemia increased by 12% from 350,000 items in 2021/22 to 390,000 in 2022/23.  Lastly, the number of glucose interstitial fluid detection sensor items prescribed was 2 million in 2022/23, a 38% increase from 1.4 million in 2021/22.
+Prescribing of diabetic diagnostic and monitoring agents decreased by 4% from 6.9 million items in 2021/22 to 6.6 million in 2022/23. Insulin items increased by 4% from 7.8 million to 8.1 million. Medicines used for the treatment of hypoglycaemia increased by 12% from 350,000 items in 2021/22 to 390,000 in 2022/23.  Lastly, the number of glucose interstitial fluid detection sensor items prescribed was 2 million in 2022/23, a 27% increase from 1.4 million in 2021/22.
   
 #### **`r paste0("Figure ",5,": Cost of diabetes items prescribed by BNF paragraph per financial year")`**
 
@@ -288,6 +288,18 @@ figure_5
 `r get_download_button(title = "Download chart data", data = figure_5_data, filename = "figure_5")`
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>49 million antidiabetic drug items prescribed in 2022/23.</b>", width = "100%")` 
+::: 
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b7% increase in antidiabetic drug items from 2021/22 to 2022/23.</b>", width = "100%")` 
+:::
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>38% increase in costs of glucose interstitial fluid detection sensors prescribed from 2021/22 to 2022/23.</b>", width = "100%")` 
+:::
+::::
 
 In 2022/23, antidiabetic drugs had a cost of £880 million. This was an increase of 107% from £420 million in 2015/16, and an 18% increase from £750 million in 2021/22. These increases in cost are much greater than the respective increases in the number of prescribed items. The increase in cost for antidiabetic drugs between 2021/22 and 2022/23 was greater than the previous years increases, which between 2015/16 and 2021/22 was an average of 10%.
 
