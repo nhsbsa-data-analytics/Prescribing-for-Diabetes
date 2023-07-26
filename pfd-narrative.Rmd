@@ -317,7 +317,7 @@ figure_6
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
-The average number of items per patient increased each year between 2015/16 and 2019/20, from 17.5 diabetes items per patient to 19.0. However, between 2020/21 and 2021/22 the average number of diabetes items per patient decreased from 18.9 items to 18.7. This was the second consecutive annual decrease following a decrease from 2019/20 to 2020/21.
+The average number of items per patient increased each year between 2015/16 and 2022/23, from 18 diabetes items per patient to 19.
 
 This measure only includes prescribing of drugs used in diabetes and does not include any items prescribed from other BNF sections.
 
