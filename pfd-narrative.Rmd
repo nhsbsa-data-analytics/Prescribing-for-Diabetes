@@ -1,5 +1,5 @@
 ---
-title: "Prescribing for diabetes"
+title: "`r config$publication_name`"
 pagetitle: PfD England summary
 always_allow_html: true
 output:
@@ -49,9 +49,9 @@ colors <- c("#005EB8","#768692")
 
 <main>
 
-# England 2015/16 to 2022/23 {.toc-ignore}
+# `r config$publication_sub_name`` {.toc-ignore}
 
-  `r paste0("Published ", config$publication_date)`
+`r paste0("Published ", config$publication_date)`
 
 ## Key findings
 
