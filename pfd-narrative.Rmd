@@ -211,7 +211,16 @@ figure_2
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
-Costs for drugs used in diabetes also increased to £1.25 billion in 2021/22. This was a 30.5% increase from £958 million in 2015/16, and a 4.88% increase from £1.19 billion in 2020/21. The increase in costs between 2020/21 and 2021/22 was larger than the previous years increases, and was greater than the average yearly increase between 2015/16 and 2020/21 of 4.48%.
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>In 2022/23 the costs of prescribed drugs used in treating diabetes was £1.53 billion.</b>", width = "100%")` 
+::: 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>12% increase in costs from 2021/22 to 2022/23.</b>", width = "100%")` 
+:::
+::::
+
+Costs for drugs used in diabetes also increased to £1.53 billion in 2022/23. This was a 60% increase from £960 million in 2015/16, and a 12% increase from £1.36 billion in 2021/22. The increase in costs between 2021/22 and 2022/23 was larger than the previous years increases, and was greater than the average yearly increase between 2015/16 and 2021/22 of 6%.
 
 #### **`r paste0("Figure ",3,": Proportion of all prescription items and costs for drugs used in diabetes per financial year")`**
 
