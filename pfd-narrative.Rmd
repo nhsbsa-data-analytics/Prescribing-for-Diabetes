@@ -432,7 +432,28 @@ The length of the whiskers away from the median show how similar the data is com
 
 ---
 
-## 5. Statistical disclosure control
+## 5. Rounding
+
+The high-level figures in this statistical summary have been rounded as per the table below:
+
+```{r rounding_table, out.width = "100%"}
+rounding_table <- data.table(
+  "From" = c("0", "1,001", "10,001", "100,001", "1,000,001", "10,000,001", "100,000,001"),
+  "To" = c("1,000", "10,000", "100,000", "1,000,000", "10,000,000", "100,000,000", "100,000,000,000"),
+  "Round to nearest" = c("1", "100", "1,000", "10,000", "100,000", "1,000,000", "10,000,000")
+)
+
+knitr::kable(rounding_table, align = "rrr")%>%
+  kable_styling(bootstrap_options = c("striped"))
+```
+
+All changes and totals are calculated prior to rounding. Percentage changes are calculated prior to rounding and then are rounded to the nearest whole number. As all figures within this statistical summary have been rounded, they may not match totals elsewhere when aggregated.
+
+The summary tables released with this publication allow users to investigate this data at lower levels of granularity. Figures in the supplementary tables have not been rounded.
+
+---
+
+## 6. Statistical disclosure control
 
 Statistical disclosure control has been applied to these statistics. Patient count, items, and net ingredient cost (NIC) have been redacted in the supporting summary tables if they relate to fewer than 5 patients. Further information about our statistical disclosure control protocol [can be found on our website](https://www.nhsbsa.nhs.uk/policies-and-procedures).
 
@@ -440,7 +461,7 @@ The high-level figures in this statistical summary have been rounded where appro
 
 ---
 
-## 6. Accessibility
+## 7. Accessibility
 
 If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille, you can contact us by:
 
@@ -458,17 +479,17 @@ View our [Accessibility statement for Official Statistics Narratives](https://ww
 
 ---
 
-## 7. Feedback and contact us
+## 8. Feedback and contact us
 
 Feedback is important to us; we welcome any questions and comments relating to these statistics.
 
-You can complete a [short survey about this publication](https://wh1.snapsurveys.com/s.asp?k=160317152537) to help us improve the Official Statistics that we produce. All responses will remain anonymous, and individuals will not be identifiable in any report that we produce.
+You can complete a [short survey about this publication](https://online1.snapsurveys.com/Official_Statistics_Feedback) to help us improve the Official Statistics that we produce. All responses will remain anonymous, and individuals will not be identifiable in any report that we produce.
 
 You can view our [privacy policy](https://www.nhsbsa.nhs.uk/our-policies/privacy) on our website to see how your data is used and stored.
 
 You can contact us by:
 
-**Email:** nhsbsa.statistics@nhs.net
+**Email:** statistics@nhsbsa.nhs.uk
 
 **You can also write to us at:**
 
