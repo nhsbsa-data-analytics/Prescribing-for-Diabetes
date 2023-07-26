@@ -405,7 +405,7 @@ pfd_u18_data |>
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
-There were 36,600 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2021/22. As a proportion of all identified patients with a captured age this was 1.15%. This is a slight increase in the proportion after 4 consecutive years of decreases of the proportion of identified patients that were aged 17 and under, from 1.22% in 2015/16 to 1.14% in 2020/21.
+There were 38,00 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2022/23. As a proportion of all identified patients with a captured age this was 1%.
 
 #### **`r paste0("Figure ",10,": Number of identified patients receiving diabetes prescribing by IMD decile 2021/22")`** 
 
