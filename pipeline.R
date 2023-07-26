@@ -1210,7 +1210,7 @@ figure_7_data_boxplot <- costpericb_data |>
 
 figure_7_data_raw <- data.frame()
 
-for (i in 1:length(figure_7_data$data[[1]])) {
+for (i in 1:length(figure_7_data_boxplot$data[[1]])) {
   FINANCIAL_YEAR = figure_7_data_boxplot$data[[1]][[i]]$name
   MINIMUM = figure_7_data_boxplot$data[[1]][[i]]$low
   LOWER_QUARTILE = figure_7_data_boxplot$data[[1]][[i]]$q1

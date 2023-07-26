@@ -341,7 +341,7 @@ Figure 6 now displays data at ICB level to reflect the current intended structur
 
 Further detail can be found at the [NHS Digital Organisation Data Service](https://digital.nhs.uk/services/organisation-data-service/integrated-care-boards)
 
-The cost per patient varied across ICBs in 2021/22, from £334 to £442 with the median cost per patient per ICB being £387. There were no ICBs that were an outlier for cost per patient for 2021/22.
+The cost per patient varied across ICBs in 2022/23, from £379 to £507 with the median cost per patient per ICB being £448. There were no ICBs that were an outlier for cost per patient for 2022/23.
 
 ### 2.2. Patient demographics
 
