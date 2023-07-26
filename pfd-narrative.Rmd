@@ -357,7 +357,7 @@ figure_8
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
-While the overall number of identified patients receiving drugs used in diabetes prescribing has increased year-on-year, the overall split of male and female patients has remained consistent. In 2015/16, 45.3% of identified patients were female and 54.7% were male. This is the same proportion to 2021/22 where 45.3% of identified patients were female and 54.7% were male. However, there are an additional 224,000 female identified patients than there were in 2015/16, and an additional 270,000 males.
+While the overall number of identified patients receiving drugs used in diabetes prescribing has increased year-on-year, the overall split of male and female patients has remained consistent. In 2015/16, 45% of identified patients were female and 55% were male. This is the same proportion to 2022/23. However, there are an additional 310,000 female identified patients than there were in 2015/16, and an additional 390,000 males.
 
 Identified patients where their sex was unknown or indeterminate have been grouped together and can be found in the summary tables that accompany this release.
 
