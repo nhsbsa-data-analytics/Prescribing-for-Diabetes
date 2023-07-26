@@ -183,9 +183,21 @@ figure_1
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
-There were 60.3 million items for drugs used in diabetes prescribed in 2021/22. This was a 21.2% increase from 49.7 million in 2015/16, and a 4.11% increase from 57.9 million items in 2020/21. The increase in items between 2020/21 and 2021/22 was larger than seen in previous yearly increases, which between 2015/16 and 2020/21 was an average of 3.10%. 
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>66 million items for drugs used in diabetes prescribed in 2022/23.</b>", width = "100%")` 
+::: 
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>7% increase in items from 2021/22 to 2022/23.</b>", width = "100%")` 
+:::
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>3.4 million identified patients were prescribed a diabetes item in 2022/23.</b>", width = "100%")` 
+:::
+::::
 
-The number of identified patients that received prescribing for drugs used in diabetes was 3.20 million in 2021/22. This was an 18.2% increase from 2.70 million identified patients in 2015/16, and a 4.95% increase from 3.05 million in 2020/21. The increase in identified patients between 2020/21 and 2021/22 was the largest increase observed in the period, with yearly increases between 2015/16 and 2020/21 averaging 2.42%.
+There were 66 million items for drugs used in diabetes prescribed in 2022/23. This was a 32% increase from 50 million in 2015/16, and a 7% increase from 62 million items in 2021/22. The increase in items between 2021/22 and 2022/23 was larger than seen in previous yearly increases, which between 2015/16 and 2021/22 was an average of 4%. 
+
+The number of identified patients that received prescribing for drugs used in diabetes was 3.4 million in 2022/23. This was an 26% increase from 2.7 million identified patients in 2015/16, and a 6% increase from 3.2 million in 2021/22. The increase in identified patients between 2021/22 and 2022/23 was the largest increase observed in the period, with yearly increases between 2015/16 and 2021/22 averaging 3%.
 
 #### **`r paste0("Figure ",2,": Cost of diabetes prescribing per financial year")`**
 
