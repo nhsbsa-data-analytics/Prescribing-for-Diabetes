@@ -1038,7 +1038,7 @@ figure_1_data <- pfd_national_overall |>
     names_to = "Measure",
     values_to = "Value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1061,7 +1061,7 @@ figure_2_data <- pfd_national_overall |>
     `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
     .groups = "drop"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1091,13 +1091,13 @@ figure_3_data <- pfd_national_overall |>
   ) |>
   ungroup() |>
   filter(`Drug Type` == "Diabetes") |>
-  select(-`Total Items`, -`Total Net Ingredient Cost (GBP)`) |>
+  select(-`Total Items`,-`Total Net Ingredient Cost (GBP)`) |>
   pivot_longer(
     cols = c(`Proportion of items`, `Proportion of costs`),
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1121,7 +1121,7 @@ figure_4_data <- pfd_paragraph_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1154,7 +1154,7 @@ figure_5_data <- pfd_paragraph_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1177,7 +1177,7 @@ figure_5 <- group_chart_hc(
 
 figure_6_data <- pfd_national_overall |>
   filter(`Identified Patient Flag` == "Y", `Drug Type` == "Diabetes") |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ITEMS_PER_PATIENT = TOTAL_ITEMS  / TOTAL_IDENTIFIED_PATIENTS)
@@ -1269,7 +1269,7 @@ figure_8_data <- pfd_gender_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1291,7 +1291,7 @@ figure_8 <- group_chart_hc(
 
 figure_9_data <- pfd_age_gender_data |>
   filter(`Financial Year` == max(`Financial Year`)) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1310,7 +1310,7 @@ figure_10_data <- pfd_imd_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1324,6 +1324,11 @@ figure_10 <-  basic_chart_hc(
   yLab = "Number of identified patients",
   title = ""
 )
+
+table_1_data <- patient_identification |>
+  rename_with(~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything())
 
 # 7. create markdowns -------
 

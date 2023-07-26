@@ -160,6 +160,8 @@ patient_identification_dt %>%
 
 ```
 
+`r get_download_button(title = "Download table data", data = table_1_data, filename = "table_1")`
+
 Source: [Prescribing for diabetes summary tables - Costs and items (Patient identification rates)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
 ---
