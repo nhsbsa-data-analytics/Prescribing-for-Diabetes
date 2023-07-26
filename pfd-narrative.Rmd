@@ -234,9 +234,18 @@ figure_3
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
-The proportion of all prescription items that drugs used in diabetes have accounted for has increased each year, from 4.57% in 2015/16 to 5.29% in 2021/22.
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>In 2022/23 the costs of prescribed drugs used in treating diabetes accounted for 15% of the total costs of all drugs prescribed.</b>", width = "100%")` 
+::: 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>In 2022/23 prescribed drugs used in treating diabetes accounted for 6% of all items prescribed.</b>", width = "100%")` 
+:::
+::::
 
-In 2021/22, the cost of drugs used in diabetes accounted for 13.0% of the total spend on all items prescribed in England. This is an increase from 2015/16 when drugs used in diabetes accounted for 10.4% of the total spend.
+The proportion of all prescription items that drugs used in diabetes have accounted for has increased each year, from 5% in 2015/16 to 6% in 2022/23.
+
+In 2022/23, the cost of drugs used in diabetes accounted for 15% of the total spend on all items prescribed in England. This is an increase from 2015/16 when drugs used in diabetes accounted for 10% of the total spend.
 
 #### **`r paste0("Figure ",4,": Number of diabetes items prescribed by BNF paragraph per financial year")`**
 
