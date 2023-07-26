@@ -147,10 +147,10 @@ These statistics do not include any information that is personally identifiable.
 
 ```{r capture_rates, out.width = "100%"}
 
-patient_identification_dt %>%
-  mutate(across(where(is.numeric), round, 2))%>%
-   mutate(across(where(is.numeric), format, nsmall = 2)) %>%
-   mutate(across(contains("20"), ~ paste0(.x, "%"))) %>% 
+patient_identification_dt |>
+  mutate(across(where(is.numeric), round, 2))|>
+   mutate(across(where(is.numeric), format, nsmall = 2)) |>
+   mutate(across(contains("20"), ~ paste0(.x, "%"))) |> 
   DT::datatable(
     rownames = FALSE,
     options = list(dom = "t",
@@ -372,7 +372,7 @@ figure_9
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 6)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
-The most common group to receive prescribing for drugs used in diabetes in 2021/22 was male patients aged 60 to 64 with 232,000 identified patients, 7.26% of all patients. The next most common groups were male patients aged 70 to 74 with 231,000 and 7.23% of identified patients, and male patients 65 to 69 with 228,000 and 7.15% of identified patients.
+The most common group to receive prescribing for drugs used in diabetes in 2022/23 was male patients aged 60 to 64 with 250,000 identified patients, 7% of all identified patients. The next most common group was male patients aged 65 to 69 with 240,000 identified patients.
 
 More information on how we calculate a patient's age can be found in section 4 of this summary.
 
@@ -380,15 +380,15 @@ More information on how we calculate a patient's age can be found in section 4 o
 
 ```{r patients_by_adult_child, out.width = "100%"}
 
-pfd_u18_data %>%
-  filter(`Age Band` != "Unknown") %>%
-  group_by(`Financial Year`,`Age Band`) %>%
+pfd_u18_data |>
+  filter(`Age Band` != "Unknown") |>
+  group_by(`Financial Year`,`Age Band`) |>
   summarise(`Total Identified Patients` = formatC(signif(sum(`Total Identified Patients`)/1000000,
                                            digits = 3),
-                                    digits = 3, format = "fg", flag = "#")) %>%
-  ungroup() %>%
+                                    digits = 3, format = "fg", flag = "#")) |>
+  ungroup() |>
   tidyr::pivot_wider(names_from = `Financial Year`,
-                       values_from = `Total Identified Patients`) %>%
+                       values_from = `Total Identified Patients`) |>
 
   DT::datatable(
     rownames = FALSE,
@@ -400,6 +400,8 @@ pfd_u18_data %>%
   )
 
 ```
+
+`r get_download_button(title = "Download table data", data = table_2_data, filename = "table_2")`
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
@@ -516,7 +518,7 @@ rounding_table <- data.table(
   "Round to nearest" = c("1", "100", "1,000", "10,000", "100,000", "1,000,000", "10,000,000")
 )
 
-knitr::kable(rounding_table, align = "rrr")%>%
+knitr::kable(rounding_table, align = "rrr")|>
   kable_styling(bootstrap_options = c("striped"))
 ```
 

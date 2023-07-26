@@ -1330,6 +1330,17 @@ table_1_data <- patient_identification |>
     "[^[:alnum:] ]", "", .
   ))), everything())
 
+table_2_data <- pfd_u18_data |>
+  filter(`Age Band` != "Unknown") |>
+  group_by(`Financial Year`,`Age Band`) |>
+  ungroup() |>
+  rename_with(~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything()) |>
+  select(
+    -TOTAL_ITEMS, -TOTAL_NET_INGREDIENT_COST_GBP
+  )
+
 # 7. create markdowns -------
 
 rmarkdown::render("pfd-narrative.Rmd",
