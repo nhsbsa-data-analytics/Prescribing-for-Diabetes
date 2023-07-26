@@ -52,6 +52,7 @@ req_pkgs <-
     "htmltools",
     "geojsonsf",
     "readxl",
+    "kableExtra",
     "nhsbsa-data-analytics/nhsbsaR",
     "nhsbsa-data-analytics/nhsbsaExternalData",
     "nhsbsa-data-analytics/accessibleTables",

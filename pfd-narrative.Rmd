@@ -49,9 +49,15 @@ colors <- c("#005EB8","#768692")
 
 <main>
 
-# `r config$publication_sub_name`` {.toc-ignore}
+# `r config$publication_sub_name` {.toc-ignore}
 
 `r paste0("Published ", config$publication_date)`
+
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-12} 
+`r infoBox_border(header = "Feedback", text = paste0("We are interested in any feedback about the publication, which you can send by using our ", htmltools::HTML(paste("<a href='",config$stats_survey_link,"'>Official Statistics feedback survey</a>")),"."), width = "100%")` 
+::: 
+::::
 
 ## Key findings
 
@@ -91,18 +97,17 @@ These statistics detail:
 * demographic breakdowns by sex
 * demographic breakdowns by a measure of deprivation.
 
-These statistics use the BNF therapeutic classifications defined in the British National Formulary (BNF) using the classification system prior to BNF edition 70. Each January the NHSBSA updates the classification of drugs within the BNF hierarchy which may involve some drugs changing classification between years of this publication. Four paragraphs of the BNF are covered within these statistics:
+These statistics use the BNF therapeutic classifications defined in the British National Formulary (BNF) using the classification system prior to BNF edition 70. Each January the NHSBSA updates the classification of drugs within the BNF hierarchy which may involve some drugs changing classification between years of this publication. Five paragraphs of the BNF are covered within these statistics:
 
 * Insulin (060101)
 * Antidiabetic drugs (060102)
 * Treatment of hypoglycaemia (060104)
 * Diabetic diagnostic and monitoring agents (060106)
+* Detection sensor interstitial fluid/gluc (2148)
 
 These medicines are classified by their primary therapeutic indication. However, it is possible that they can be prescribed for other reasons outside of this primary therapeutic indication. For example, metformin which is used to reduce blood sugar for those with type 2 diabetes is also used to treat infertility caused by polycystic ovarian syndrome (PCOS). The clinical indication of a prescription is not captured by the NHSBSA during processing, and therefore we cannot determine the reason that a prescription was issued. Insulin can be prescribed to those with type 1 and type 2 diabetes; therefore, we are unable to distinguish between patients with either type of diabetes, and drug types should not be used as a proxy for diabetes types. Due to these reasons, these statistics may not give an accurate estimation of the population who are receiving drugs specifically for diabetes and the diabetes type of the population, any inferences made from this data should take this into consideration.
 
 The BNF sub-paragraph for hypodermic needles is not included as part of this publication as these are often used for other clinical conditions and would unnecessarily skew the data. This is consistent with previous publications released by NHS Digital.
-
-Additionally sensors for continuous glucose monitoring devices are not included though are being being considered for future publications following changes to NICE guidelines. On inclusion of this data continuous glucose monitoring devices will continue to be excluded as these typically aren't prescribed.
 
 ### 1.2. Definitions {.toc-ignore}
 
