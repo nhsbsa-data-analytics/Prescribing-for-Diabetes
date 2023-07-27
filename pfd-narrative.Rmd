@@ -61,15 +61,27 @@ colors <- c("#005EB8","#768692")
 
 ## Key findings
 
-* In 2021/22, there were 60.3 million drug items used in treating diabetes prescribed in England for a cost of £1.25 billion, 13.0% of the total spend on all prescription items prescribed in England. This was an increase from 2015/16 where 49.7 million diabetes items were prescribed in England for a cost of £958 million, representing 10.4% of the total spend on all prescription items.
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>66 million items for drugs used in diabetes prescribed in 2022/23.</b>", width = "100%")` 
+::: 
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>3.4 million identified patients were prescribed a diabetes item in 2022/23.</b>", width = "100%")` 
+:::
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>Areas of greater deprivation had the highest number of identified patients who were being prescribed drugs used in treating diabetes in 2022/23.</b>", width = "100%")` 
+:::
+::::
 
-* Antidiabetic drugs were the most prescribed drugs used in treating diabetes in England in 2021/22 with 45.3 million items at a cost of £746 million. The costs of antidiabetic drugs have increased by 76.1% since 2015/16 from £423 million.
+In 2022/23, there were 66 million drug items used in treating diabetes prescribed in England for a cost of £1.53 billion, 15% of the total spend on all prescription items prescribed in England. This was an increase from 2015/16 where 50 million diabetes items were prescribed in England for a cost of £960 million, representing 10% of the total spend on all prescription items.
 
-* There were 3.20 million identified patients that were prescribed drugs used in diabetes in England in 2021/22. This was a 4.95% increase from 3.05 million identified patients in 2020/21, and a 18.2% increase from 2.70 million in 2015/16.
+Antidiabetic drugs were the most prescribed drugs used in treating diabetes in England in 2022/23 with 49 million items at a cost of £880 million. The costs of antidiabetic drugs have increased by 107% since 2015/16 from £420 million.
 
-* The most common group to receive prescribing for drugs used in diabetes in 2021/22 was male patients aged 60 to 64 with 232,000 identified patients. The next most common groups were male patients aged 70 to 74 and male patients 65 to 69 .
+There were 3.4 million identified patients that were prescribed drugs used in diabetes in England in 2022/23. This was a 6% increase from 3.2 million identified patients in 2021/22, and a 26% increase from 2.7 million in 2015/16.
 
-* Areas of greater deprivation had the highest number of identified patients who were being prescribed drugs used in treating diabetes in 2021/22, with two and a half times as many patients receiving prescribing from practices in the most deprived areas of the country compared to the least deprived. 
+The most common group to receive prescribing for drugs used in diabetes in 2022/23 was male patients aged 60 to 64 with 250,000 identified patients. The next most common groups were male patients aged 65 to 69 and male patients aged 70 to 74.
+
+Areas of greater deprivation had the highest number of identified patients who were being prescribed drugs used in treating diabetes in 2021/22, 320,000 more patients receiving prescribing in the most deprived areas of the country compared to the least deprived. 
 
 ---
 
@@ -333,6 +345,18 @@ figure_7
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 4)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
 
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>Median costs per patient by ICB in 2022/23 was £448.</b>", width = "100%")` 
+::: 
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>Maximum costs per patient by ICB in 2022/23 was £507.</b>", width = "100%")` 
+:::
+:::{.col-md-4} 
+`r infoBox_no_border(header = "", text = "<b>Minimum costs per patient by ICB in 2022/23 was £379.</b>", width = "100%")` 
+:::
+::::
+
 See section 4.7. Interpretation of a box plot for guidance on interpreting this chart.
 
 Prescribing that is dispensed in the community can occur in multiple settings, including from practices and costs centres linked to Integrated care board (ICB) sub locations, hospital trusts, and Independent Sector Healthcare Providers (ISHPs) amongst others. ICBs succeeded sustainability and transformation plans (STPs) and replaced the functions of clinical commissioning groups (CCGs) in July 2022 with ICB sub locations replacing CCGs during the transition period of 2022/23. 
@@ -356,6 +380,16 @@ figure_8
 `r get_download_button(title = "Download chart data", data = figure_8_data, filename = "figure_8")`
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
+
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>In 2022/23 55% of identified patients were male.</b>", width = "100%")` 
+::: 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>>In 2022/23 55% of identified patients were female.</b>", width = "100%")` 
+:::
+::::
+
 
 While the overall number of identified patients receiving drugs used in diabetes prescribing has increased year-on-year, the overall split of male and female patients has remained consistent. In 2015/16, 45% of identified patients were female and 55% were male. This is the same proportion to 2022/23. However, there are an additional 310,000 female identified patients than there were in 2015/16, and an additional 390,000 males.
 
@@ -419,7 +453,16 @@ figure_10
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
-In 2022/23, there were 880,000 identified patients prescribed drugs used in diabetes from practices in the most deprived areas in England, 320,000 more than the 550,000 identified patients that received prescribing from practices in the least deprived areas. In general, more people were prescribed drugs used in diabetes from practices in more deprived areas in 2022/23. This pattern has remained consistent since 2015/16.
+::::{.row style="display: flex; padding-bottom: 10px;"} 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>In 2022/23 880,000 patients were from the most deprived areas in England.</b>", width = "100%")` 
+::: 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>>In 2022/23 550,000 patients were from the most deprived areas in England.</b>", width = "100%")` 
+:::
+::::
+
+In 2022/23, there were 880,000 identified patients prescribed drugs in the most deprived areas in England, 320,000 more than the 550,000 identified patients in the least deprived areas. In general, more people were prescribed drugs used in diabetes in more deprived areas in 2022/23. This pattern has remained consistent since 2015/16.
 
 The English Indices of Deprivation have been used to provide a measure of patient deprivation. The deprivation deciles reported are those of the prescribing practice that a patient has received a prescription item from. More information on this measure can be found in section 4 of this summary.
 
@@ -459,6 +502,20 @@ Hypoglycaemia can be treated with a sugary drink or snack, though this is not al
 
 The NHS website has additional information on [symptoms and treatment of hypoglycaemia](https://www.nhs.uk/conditions/low-blood-sugar-hypoglycaemia/).
 
+### 3.5 Glucose interstitial fluid detection sensors
+
+Glucose interstitial fluid detection sensors are a specific type of diabetic monitoring equipment that allow for real time testing of glucose levels without finger pricks or test strips.
+
+NICE guidance was updated in [March 2022](https://www.nice.org.uk/guidance/ng17) to recommended the use of real-time continuous glucose monitoring (CGM) for all adults and children living with type 1 diabetes.
+
+Instead of using blood the testing monitors the amount of glucose in the fluid surrounding a patients cells. This is called interstitial fluid. This measurement is done using a sensor on the body that can be read using a specific reader or with a smart phone. 
+
+The readings from interstitial fluid can lag behind blood sugar by up to 15 minutes so the use of does not entirely replace other diabetic monitoring such as testing strips though it would usually reduce the requirements for such. 
+
+Only data for prescribed sensors is included in this report as readers are usually provided separately. 
+
+The NHS website has additional information on [continuous glucose monitoring.](https://www.nhs.uk/conditions/type-1-diabetes/managing-blood-glucose-levels/continuous-glucose-monitoring-cgm-and-flash/)
+
 ---
 
 ## 4. About these statistics
@@ -475,21 +532,19 @@ The age and sex of patients used in these statistics is derived from data provid
 
 ### 4.3. Index of deprivation {.toc-ignore}
 
-The [English Indices of Deprivation 2019](https://www.gov.uk/government/statistics/english-indices-of-deprivation-2019) have been used to provide a measure of patient deprivation. The English Indices of Deprivation are an official national measure of deprivation that follows an established methodological framework to capture a wide range of individuals' living conditions.
+The English Indices of Deprivation 2019 have been used to provide a measure of patient deprivation. The English Indices of Deprivation are an official national measure of deprivation that follows an established methodological framework to capture a wide range of individuals living conditions.
 
-The reported IMD decile, where 1 is the most deprived and 10 the least deprived, is derived from the location of the practice where an item has been prescribed. There are a small number of items each year that we have reported as having an unknown IMD decile. These are items that have been attributed to an unidentified practice within a Primary Care Organisation (PCO), or where we have been unable to match the practice postcode to a postcode in the [National Statistics Postcode Lookup (NSPL) - May 2022](https://geoportal.statistics.gov.uk/datasets/national-statistics-postcode-lookup-may-2022/about).
+The reported IMD quintile, is derived from the postcode of the patient an item has been prescribed to. Quintile 1 represents the 20% most deprived areas and quintile 5 is the 20% least deprived areas. There are a small number of items each year that we have reported as having an unknown IMD quintile. These are items where we have been unable to match the patient postcode to a postcode in the National Statistics Postcode Lookup (NSPL) - May 2023.
 
-IMD deciles are calculated by ranking census lower-layer super output areas (LSOAs) from most deprived to least deprived and dividing them into 10 equal groups. These range from the most deprived 10% (decile 1) of small areas nationally to the least deprived 10% (decile 10) of small areas nationally.
+IMD deciles are calculated by ranking census lower-layer super output areas (LSOA) from most deprived to least deprived and dividing them into 10 equal groups. These range from the most deprived 10% (decile 1) of small areas nationally to the least deprived 10% (decile 10) of small areas nationally. We have aggregated these deciles into quintiles in this publication, for use alongside the [NHS Core20PLUS5 approach](https://www.england.nhs.uk/about/equality/equality-hub/national-healthcare-inequalities-improvement-programme/core20plus5/).
 
 ### 4.4. Geographies included in this publication {.toc-ignore}
 
-The patient deprivation measures given in these statistics are based upon the LSOA of the postcode of the prescribing organisation as matched to the May 2022 NSPL file. However, higher geographies included in the statistical summary tables of this publication, such as ICB use NHSBSA administrative records, not geographical boundaries, and more closely reflect the operational organisation of practices than other geographical data sources.
+The patient deprivation measures given in these statistics are based upon the LSOA of the postcode of the patient as matched to the May 2023 NSPL file. However, higher geographies included in the statistical summary tables of this publication, such as ICB, use NHSBSA administrative records, not geographical boundaries, and more closely reflect the operational organisation of practices than other geographical data sources.
 
 ### 4.5. Changes made to this publication {.toc-ignore}
 
 In previous releases of this publication the cost per patient was reported at clinical commissioning group (CCG) level. Changes to the NHS Organisational Structure mean that Integrated care boards (ICBs) will succeed sustainability and transformation plans (STPs) and replace the functions of clinical commissioning groups (CCGs) from July 2022. The cost per patient is now reported at ICB level. 
-
-We have updated figure 9 relating to the age band of the patient and replaced them with figures showing patients broken down by age band and gender. 
 
 For full details of the changes made please refer to the Background Information and Methodology note released alongside these statistics.
 
@@ -540,7 +595,7 @@ The high-level figures in this statistical summary have been rounded where appro
 
 If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille, you can contact us by:
 
-  **Email**: nhsbsa.accessibility@nhs.net
+**Email**: nhsbsa.accessibility@nhs.net
 
 **Phone**: 0191 203 5318
 
