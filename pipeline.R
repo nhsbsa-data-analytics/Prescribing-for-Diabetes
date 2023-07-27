@@ -1,4 +1,4 @@
-### Pipeline to run PCA annual publication
+### Pipeline to run PfD annual publication
 # clear environment
 rm(list = ls())
 
@@ -1313,7 +1313,8 @@ figure_10_data <- pfd_imd_data |>
   rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
-  mutate(ROUNDED_VALUE = signif(VALUE, 3))
+  mutate(ROUNDED_VALUE = signif(VALUE, 3)) |>
+  select(-TOTAL_ITEMS, -TOTAL_NET_INGREDIENT_COST_GBP)
 
 figure_10 <-  basic_chart_hc(
   figure_10_data,

@@ -405,7 +405,7 @@ pfd_u18_data |>
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
-There were 38,00 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2022/23. As a proportion of all identified patients with a captured age this was 1%.
+There were 38,000 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2022/23. As a proportion of all identified patients with a captured age this was 1%.
 
 #### **`r paste0("Figure ",10,": Number of identified patients receiving diabetes prescribing by IMD decile 2021/22")`** 
 
@@ -419,7 +419,7 @@ figure_10
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
 
-In 2021/22, there were 507,000 identified patients prescribed drugs used in diabetes from practices in the most deprived areas in England, 2.62 times as many more than the 194,000 identified patients that received prescribing from practices in the least deprived areas. In general, more people were prescribed drugs used in diabetes from practices in more deprived areas in 2021/22. This pattern has remained consistent since 2015/16.
+In 2022/23, there were 880,000 identified patients prescribed drugs used in diabetes from practices in the most deprived areas in England, 320,000 more than the 550,000 identified patients that received prescribing from practices in the least deprived areas. In general, more people were prescribed drugs used in diabetes from practices in more deprived areas in 2022/23. This pattern has remained consistent since 2015/16.
 
 The English Indices of Deprivation have been used to provide a measure of patient deprivation. The deprivation deciles reported are those of the prescribing practice that a patient has received a prescription item from. More information on this measure can be found in section 4 of this summary.
 
