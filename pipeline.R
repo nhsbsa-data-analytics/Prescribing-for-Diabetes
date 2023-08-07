@@ -1352,6 +1352,11 @@ rmarkdown::render("pfd-narrative.Rmd",
                   output_format = "word_document",
                   output_file = "outputs/pfd_summary_narrative_2022_23_v001.docx")
 
+rmarkdown::render("pfd-background-july-2023.Rmd",
+                  output_format = "html_document",
+                  output_file = "outputs/pfd_background_info_methodology_v001.html")
+
+
 # 8. disconnect from DWH  ---------
 DBI::dbDisconnect(con)
 log_print("Disconnected from DWH", hide_notes = TRUE)
