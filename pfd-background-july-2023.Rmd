@@ -67,7 +67,7 @@ The Prescribing for Diabetes annual publication shows the volumes of prescriptio
 
 These sections are held in the same structure of the BNF prior to the release of version 70.
 Data for 6.1.1.3 (hypodermic needles) has been excluded as these have multiple clinical indications and are held separately within the NHSBSA’s Data Warehouse.
-These statistics also include breakdowns of prescribing by age band, sex, and the Index of Multiple Deprivation (IMD).
+These statistics also include breakdowns of prescribing by age band, gender, and the Index of Multiple Deprivation (IMD).
 This publication can have a wide range of uses including informing government or local NHS policy and allowing public scrutiny of national and regional prescribing habits.
 
 Prescription data is a long-standing administrative source of data that has been used by commissioners, providers, government, academia, industry, and media to inform local and national policy, in academic research, to monitor medicine uptake, and allow public scrutiny of prescribing habits. It is collected by the NHS Business Services Authority (NHSBSA) for the operational purpose of reimbursing and remunerating dispensing contractors for the costs of supplying drugs and devices, along with essential and advanced services, to NHS patients. The data that forms the basis of these statistics is collected as a by-product of this process.
@@ -114,9 +114,9 @@ To report a patient’s age consistently across a financial year these statistic
 
 There are some inconsistencies within the PDS data that is held within the NHSBSA Data & Insight Data Warehouse. These occur when a patient has had their information updated and can hold more than one date of birth. In these instances, multiple counting can occur for patients, although this is estimated to only affect a very small number of patients. We will investigate methodologies to reduce the impact of these inconsistencies.
 
-##### **2.1.2. Patient gender/sex**
+##### **2.1.2. Patient gender**
 
-The NHSBSA does not capture information relating to a patient’s sex or gender from a prescription during processing activities. Gender is instead obtained from the PDS. Therefore, gender information is only available for patients that we have been able to obtain a matched NHS number for.
+The NHSBSA does not capture information relating to a patient’s gender from a prescription during processing activities. Gender is instead obtained from the PDS. Therefore, gender information is only available for patients that we have been able to obtain a matched NHS number for.
 
 A patient is classified in one of four ways for gender by PDS:
 
@@ -330,7 +330,7 @@ A dispensing contractor or dispenser can be a community pharmacy or appliance co
 
 Prescriptions can also be dispensed by the dispensary of a dispensing practice or personally administered at a practice. Dispensing practices usually exist in more rural areas where the need for a dispenser is deemed necessary but it is not deemed financially viable to establish a community pharmacy.
 
-**Gender / sex**
+**Gender**
 
 Information relating to a patient’s gender is not captured by the NHSBSA. This is instead derived by PDS data that is shared with the NHSBSA for NHS numbers that have been matched. This term is not consistent with national data standards. For more information on this please see section 2 – methodology.
 

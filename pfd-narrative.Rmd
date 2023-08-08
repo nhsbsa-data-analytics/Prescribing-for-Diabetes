@@ -87,9 +87,7 @@ Areas of greater deprivation had the highest number of identified patients who w
 
 ## 1.Things you should know
 
-### 1.1. Scope {.toc-ignore}
-
-#### 1.1.1. Background {.toc-ignore}
+### 1.1. Background {.toc-ignore}
 
 Diabetes is a lifelong condition that causes a person's blood sugar level to become too high. There are two main types of diabetes, type 1 diabetes where the body's immune system attacks and destroys the cells that produce insulin, and type 2 diabetes where the body does not produce enough insulin, or the body's cells do not react to insulin. Another form of diabetes is gestational diabetes, where diabetes develops during pregnancy and usually disappears after childbirth.
 
@@ -103,17 +101,17 @@ Chapter Three of the [NHS Long Term Plan](https://www.longtermplan.nhs.uk/) sets
 
 This publication aims to describe the prescribing of medicines and appliances used for the treatment of diabetes in England that are dispensed in the community. This does not include data on medicines prescribed and dispensed in secondary care, prisons, or issued by a private prescriber as this is not held by the NHSBSA.
 
-#### 1.1.2. What is in these statistics {.toc-ignore}
+### 1.2. What is in these statistics {.toc-ignore}
 
 These statistics detail:
 
 * the total number of prescription items issued for drugs used in diabetes
 * the number of identified patients that have received prescribing for these drugs
-* demographic breakdowns of prescribing by age group and sex
-* demographic breakdowns by sex
+* demographic breakdowns of prescribing by age group and gender
+* demographic breakdowns by gender
 * demographic breakdowns by a measure of deprivation.
 
-#### 1.1.3. Classifications {.toc-ignore}
+### 1.3. Classifications {.toc-ignore}
 
 These statistics use the BNF therapeutic classifications defined in the British National Formulary (BNF) using the classification system prior to BNF edition 70. Each January the NHSBSA updates the classification of drugs within the BNF hierarchy which may involve some drugs changing classification between years of this publication. Five paragraphs of the BNF are covered within these statistics:
 
@@ -129,7 +127,7 @@ The BNF sub-paragraph for hypodermic needles is not included as part of this pub
 
 Only data for prescribed sensors for continuous blood glucose monitoring devices is included in these statistics, as readers are usually provided to patients separately.
 
-### 1.2. Definitions {.toc-ignore}
+### 1.4. Definitions {.toc-ignore}
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-12} 
@@ -149,7 +147,7 @@ Only data for prescribed sensors for continuous blood glucose monitoring devices
 ::: 
 ::::
 
-### 1.3. Patient identification {.toc-ignore}
+### 1.5. Patient identification {.toc-ignore}
 
 When the NHSBSA processes prescriptions it is not always possible to capture the NHS number of the patient. Table 1 shows the proportion of items for which a patient could be identified. This means that the data relating to patient counts represents most, but not all, patients.
 
@@ -403,7 +401,7 @@ While the overall number of identified patients receiving drugs used in diabetes
 
 Identified patients where their gender was unknown or indeterminate have been grouped together and can be found in the summary tables that accompany this release.
 
-#### **`r paste0("Figure ",9,": Number of identified patients receiving diabetes prescribing by age and gender 2021/22")`** 
+#### **`r paste0("Figure ",9,": Number of identified patients receiving diabetes prescribing by age and gender ", config$full_year)`** 
 ```{r patients_by_age, out.width = "100%"}
 
 figure_9
@@ -449,7 +447,7 @@ Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8
 
 There were 38,000 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2022/23. This was 1% of all identified patients with a captured age.
 
-#### **`r paste0("Figure ",10,": Number of identified patients receiving diabetes prescribing by IMD decile 2021/22")`** 
+#### **`r paste0("Figure ",10,": Number of identified patients receiving diabetes prescribing by IMD quintile ", config$full_year)`** 
 
 ```{r patients_by_imd,out.width = "100%"}
 
@@ -466,13 +464,13 @@ Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9
 `r infoBox_no_border(header = "", text = "<b>In 2022/23 880,000 patients were from the most deprived areas in England.</b>", width = "100%")` 
 ::: 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 550,000 patients were from the most deprived areas in England.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2022/23 550,000 patients were from the least deprived areas in England.</b>", width = "100%")` 
 :::
 ::::
 
 In 2022/23, there were 880,000 identified patients prescribed drugs in the most deprived areas in England, 320,000 more than the 550,000 identified patients in the least deprived areas. In general, more people were prescribed drugs used in diabetes in more deprived areas in 2022/23. This pattern has remained consistent since 2015/16.
 
-The English Indices of Deprivation have been used in this publication to provide a measure of patient deprivation. The patient’s postcode has been used to assigned them to an IMD quintile. You can find more information about this in section 5 of this summary.
+The English Indices of Deprivation have been used in this publication to provide a measure of patient deprivation. The patient’s postcode has been used to assigned them to an IMD quintile. You can find more information about this in section 4 of this summary.
 
 ---
 
@@ -605,7 +603,7 @@ The high-level figures in this statistical summary have been rounded where appro
 
 If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille, you can contact us by:
 
-**Email**: nhsbsa.accessibility@nhs.net
+**Email**: accessibility@nhsbsa.nhs.uk
 
 **Phone**: 0191 203 5318
 

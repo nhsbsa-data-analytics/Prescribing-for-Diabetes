@@ -511,12 +511,12 @@ rm(wb)
 sheetNames <- c(
   "Patient_Identification",
   "National_Total",
-  "Sex",
-  "Dispensing_By_Sex",
+  "Gender",
+  "Dispensing_By_Gender",
   "Age_Band",
   "Dispensing_By_Age",
-  "Age_Band_and_Sex",
-  "Dispensing_By_Age_and_Sex",
+  "Age_Band_and_Gender",
+  "Dispensing_By_Age_and_Gender",
   "Adults_and_Children",
   "Indices_of_Deprivation",
   "IMD_By_Drug"
@@ -539,7 +539,7 @@ meta_fields <- c(
   "Total NIC per patient (GBP)",
   "Total Patients",
   "Drug Type",
-  "Patient Sex",
+  "Patient Gender",
   "Age Band",
   "IMD Decile"
   
@@ -559,7 +559,7 @@ meta_descs <-
     "Cost per patient has been calculated by dividing the total cost associated with identified patients by the number of patients that have been identified in that CCG per financial year.",
     "Where patients are identified via the flag, the number of patients that the data corresponds to. This will always be 0 where 'Identified Patient' = N.",
     "Based on the primary therapeutic use, this indicates whether an item is within the paragraphs associated with diabetes or whether the item is in another ('Non-diabetes') paragraph.",
-    "The sex of the patient as noted at the time the prescription was processed. This includes where the patient has been identified but the sex has not been recorded.",
+    "The gender of the patient as noted at the time the prescription was processed. This includes where the patient has been identified but the gender has not been recorded.",
     "The age band of the patient as of the 30th September of the corresponding financial year the drug was prescribed.",
     "The IMD decile of the patient, based on the location of their practice, where '1' is the 10% of areas with the highest deprivation score in the Index of Multiple Deprivation (IMD) from the English Indices of Deprivation 2019, and '10' is the 10% of areas with the lowest IMD deprivation score. Unknown values are where the items are attributed to an unidentified practice within a Primary Care Organisation (PCO), or where we have been unable to match the practice postcode to a postcode in the National Statistics Postcode Lookup (NSPL)."
     
@@ -641,37 +641,37 @@ format_data(wb,
 # write data to sheet
 write_sheet(
   wb,
-  "Sex",
+  "Gender",
   paste0(
     "Table 2: Prescribing for Diabetes - England 2015/16 to ",
     config$full_year,
-    " national prescribing by sex per financial year"
+    " national prescribing by gender per financial year"
   ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. It is possible for a patient to be marked as 'unknown' or 'indeterminate'. Due to the low number of patients that these two groups contain the NHSBSA has decided to group these classifications together.",
-    "3. The NHSBSA does not use the latest national data standard relating to patient gender/sex, and use historic nomenclature in some cases. Please see the detailed Background Information and Methodology notice released with this publication for further information."
+    "3. The NHSBSA does not use the latest national data standard relating to patient gender, and use historic nomenclature in some cases. Please see the detailed Background Information and Methodology notice released with this publication for further information."
   ),
   pfd_gender_data,
   14
 )
 #left align columns A to D
 format_data(wb,
-            "Sex",
+            "Gender",
             c("A", "B", "C"),
             "left",
             "")
 
 #right align columns D and E and round to whole numbers with thousand separator
 format_data(wb,
-            "Sex",
+            "Gender",
             c("D", "E"),
             "right",
             "#,##0")
 
 #right align column F and round to 2dp with thousand separator
 format_data(wb,
-            "Sex",
+            "Gender",
             c("F"),
             "right",
             "#,##0.00")
@@ -680,16 +680,16 @@ format_data(wb,
 # write data to sheet
 write_sheet(
   wb,
-  "Dispensing_By_Sex",
+  "Dispensing_By_Gender",
   paste0(
     "Table 3: Prescribing for Diabetes - England 2015/16 to ",
     config$full_year,
-    " yearly patients, items and costs by BNF paragraph split by patient sex"
+    " yearly patients, items and costs by BNF paragraph split by patient Gender"
   ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. It is possible for a patient to be marked as 'unknown' or 'indeterminate'. Due to the low number of patients that these two groups contain the NHSBSA has decided to group these classifications together.",
-    "3. The NHSBSA does not use the latest national data standard relating to patient gender/sex, and use historic nomenclature in some cases. Please see the detailed Background Information and Methodology notice released with this publication for further information.",
+    "3. The NHSBSA does not use the latest national data standard relating to patient gender, and use historic nomenclature in some cases. Please see the detailed Background Information and Methodology notice released with this publication for further information.",
     "4. Statistical disclosure control is applied where prescribing relates to fewer than 5 patients. These cells will appear blank."
     
   ),
@@ -698,21 +698,21 @@ write_sheet(
 )
 #left align columns A to E
 format_data(wb,
-            "Dispensing_By_Sex",
+            "Dispensing_By_Gender",
             c("A", "B", "C", "D", "E"),
             "left",
             "")
 
 #right align columns F and G and round to whole numbers with thousand separator
 format_data(wb,
-            "Dispensing_By_Sex",
+            "Dispensing_By_Gender",
             c("F", "G"),
             "right",
             "#,##0")
 
 #right align column H and round to 2dp with thousand separator
 format_data(wb,
-            "Dispensing_By_Sex",
+            "Dispensing_By_Gender",
             c("H"),
             "right",
             "#,##0.00")
@@ -764,7 +764,7 @@ write_sheet(
   paste0(
     "Table 5: Prescribing for Diabetes - England 2015/16 to ",
     config$full_year,
-    " yearly patients, items and costs by BNF paragraph split by patient sex"
+    " yearly patients, items and costs by BNF paragraph split by patient gender"
   ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
@@ -799,15 +799,15 @@ format_data(wb,
 # write data to sheet
 write_sheet(
   wb,
-  "Age_Band_and_Sex",
+  "Age_Band_and_Gender",
   paste0(
     "Table 6: Prescribing for Diabetes - England 2015/16 to ",
     config$full_year,
-    " national prescribing by age and sex per financial year"
+    " national prescribing by age and gender per financial year"
   ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
-    "2. These totals only include patients where sex is known."
+    "2. These totals only include patients where gender is known."
     
   ),
   pfd_age_gender_data,
@@ -815,21 +815,21 @@ write_sheet(
 )
 #left align columns A to D
 format_data(wb,
-            "Age_Band_and_Sex",
+            "Age_Band_and_Gender",
             c("A", "B", "C", "D"),
             "left",
             "")
 
 #right align columns E and F and round to whole numbers with thousand separator
 format_data(wb,
-            "Age_Band_and_Sex",
+            "Age_Band_and_Gender",
             c("E", "F"),
             "right",
             "#,##0")
 
 #right align column G and round to 2dp with thousand separator
 format_data(wb,
-            "Age_Band_and_Sex",
+            "Age_Band_and_Gender",
             c("G"),
             "right",
             "#,##0.00")
@@ -838,37 +838,38 @@ format_data(wb,
 # write data to sheet
 write_sheet(
   wb,
-  "Dispensing_By_Age_and_Sex",
+  "Dispensing_By_Age_and_Gender",
   paste0(
     "Table 7: Prescribing for Diabetes - England 2015/16 to ",
     config$full_year,
-    " yearly patients, items and costs by BNF paragraph split by patient age and sex"
+    " yearly patients, items and costs by BNF paragraph split by patient age and gender"
   ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. The patient counts shown in these statistics should only be analysed at the level at which they are presented. Adding together any patient counts is likely to result in an overestimate of the number of patients.",
-    "3. Statistical disclosure control is applied where prescribing relates to fewer than 5 patients. These cells will appear blank."
+    "3. These totals only include patients where gender is known.",
+    "4. Statistical disclosure control is applied where prescribing relates to fewer than 5 patients. These cells will appear blank."
   ),
   pfd_age_gender_paragraph_data,
   14
 )
 #left align columns A to F
 format_data(wb,
-            "Dispensing_By_Age_and_Sex",
+            "Dispensing_By_Age_and_Gender",
             c("A", "B", "C", "D", "E", "F"),
             "left",
             "")
 
 #right align columns G and H and round to whole numbers with thousand separator
 format_data(wb,
-            "Dispensing_By_Age_and_Sex",
+            "Dispensing_By_Age_and_Gender",
             c("G", "H"),
             "right",
             "#,##0")
 
 #right align column I and round to 2dp with thousand separator
 format_data(wb,
-            "Dispensing_By_Age_and_Sex",
+            "Dispensing_By_Age_and_Gender",
             c("I"),
             "right",
             "#,##0.00")
@@ -960,7 +961,7 @@ write_sheet(
   paste0(
     "Table 10: Prescribing for Diabetes - England 2015/16 to ",
     config$full_year,
-    " yearly patients, items and costs by BNF paragraph split by patient sex"
+    " yearly patients, items and costs by BNF paragraph split by patient gender"
   ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
@@ -1003,12 +1004,12 @@ accessibleTables::makeCoverSheet(
     "Metadata",
     "Patient Identification Rates",
     "Table 1: Total Items",
-    "Table 2: Sex",
-    "Table 3: Dispensing By Sex",
+    "Table 2: Gender",
+    "Table 3: Dispensing By Gender",
     "Table 4: Age Band",
     "Table 5: Dispensing By Age",
-    "Table 6: Age Band and Sex",
-    "Table 7: Dispensing By Age and Sex",
+    "Table 6: Age Band and Gender",
+    "Table 7: Dispensing By Age and Gender",
     "Table 8: Adults and Children",
     "Table 9: Indices of Deprivation",
     "Table 10: IMD By Drug"
@@ -1261,8 +1262,8 @@ figure_7 <- highchart() |>
   hc_credits(enabled = TRUE)
 
 figure_8_data <- pfd_gender_data |>
-  filter(`Patient Sex` != "Unknown") |>
-  group_by(`Financial Year`, `Patient Sex`) |>
+  filter(`Patient Gender` != "Unknown") |>
+  group_by(`Financial Year`, `Patient Gender`) |>
   summarise(`Total Identified Patients` = sum(`Total Identified Patients`)) |>
   pivot_longer(
     cols = c(`Total Identified Patients`),
@@ -1278,7 +1279,7 @@ figure_8 <- group_chart_hc(
   figure_8_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
-  group = PATIENT_SEX,
+  group = PATIENT_GENDER,
   type = "column",
   xLab = "Financial year",
   yLab = "Number of identified patients",

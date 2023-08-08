@@ -343,7 +343,7 @@ gender_extract <- function(con,
   fact_gender <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
-      `Patient Sex` = GENDER_DESCR,
+      `Patient Gender` = GENDER_DESCR,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
@@ -354,7 +354,7 @@ gender_extract <- function(con,
       .groups = "drop"
     ) |>
     dplyr::arrange(`Financial Year`,
-                   `Patient Sex`,
+                   `Patient Gender`,
                    desc(`Identified Patient Flag`)) |>
     collect()
   
@@ -389,7 +389,7 @@ gender_paragraph_extract <- function(con,
       `Financial Year` = FINANCIAL_YEAR,
       `Paragraph Name` = PARAGRAPH_DESCR,
       `Paragraph Code` = BNF_PARAGRAPH,
-      `Patient Sex` = GENDER_DESCR,
+      `Patient Gender` = GENDER_DESCR,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
@@ -401,7 +401,7 @@ gender_paragraph_extract <- function(con,
     ) |>
     dplyr::arrange(`Financial Year`,
                    `Paragraph Code`,
-                   `Patient Sex`,
+                   `Patient Gender`,
                    desc(`Identified Patient Flag`)) |>
     
     collect()
@@ -442,7 +442,7 @@ age_gender_extract <- function(con,
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
-      `Patient Sex` = GENDER_DESCR,
+      `Patient Gender` = GENDER_DESCR,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
@@ -494,7 +494,7 @@ age_gender_paragraph_extract <- function(con,
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
-      `Patient Sex` = GENDER_DESCR,
+      `Patient Gender` = GENDER_DESCR,
       `Paragraph Name` = PARAGRAPH_DESCR,
       `Paragraph Code` = BNF_PARAGRAPH,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
@@ -630,9 +630,9 @@ costpericb_extract <- function(con,
   fact_icb <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
-      `Identified Patient Flag` = PATIENT_IDENTIFIED,
       `Integrated Care Board Name` = ICB_NAME,
-      `Integrated Care Board Code` = ICB_CODE
+      `Integrated Care Board Code` = ICB_CODE,
+      `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
@@ -797,9 +797,9 @@ age_gender_chart <- function(data,
                              labels = FALSE) {
   age_gender_chart_data <- data |>
     dplyr::select(AGE_BAND,
-                  PATIENT_SEX,
+                  PATIENT_GENDER,
                   TOTAL_IDENTIFIED_PATIENTS) |>
-    tidyr::complete(PATIENT_SEX,
+    tidyr::complete(PATIENT_GENDER,
                     AGE_BAND,
                     fill = list(TOTAL_IDENTIFIED_PATIENTS = 0))
   
@@ -811,10 +811,10 @@ age_gender_chart <- function(data,
     max(age_gender_chart_data$TOTAL_IDENTIFIED_PATIENTS) * -1
   
   male <- age_gender_chart_data |>
-    dplyr::filter(PATIENT_SEX == "Male")
+    dplyr::filter(PATIENT_GENDER == "Male")
   
   female <- age_gender_chart_data |>
-    dplyr::filter(PATIENT_SEX == "Female") |>
+    dplyr::filter(PATIENT_GENDER == "Female") |>
     dplyr::mutate(TOTAL_IDENTIFIED_PATIENTS = 0 - TOTAL_IDENTIFIED_PATIENTS)
   
   hc <- highcharter::highchart() |>
