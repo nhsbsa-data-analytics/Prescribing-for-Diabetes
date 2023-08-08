@@ -182,7 +182,7 @@ patient_identification_dt |>
 
 `r get_download_button(title = "Download table data", data = table_1_data, filename = "table_1")`
 
-Source: [Prescribing for diabetes summary tables - Costs and items (Patient identification rates)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Costs and items (Patient identification rates)](`r config$costs_and_items_excel`)
 
 ---
 
@@ -201,7 +201,7 @@ figure_1
 
 `r get_download_button(title = "Download chart data", data = figure_1_data, filename = "figure_1")`
 
-Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-4} 
@@ -229,7 +229,7 @@ figure_2
 
 `r get_download_button(title = "Download chart data", data = figure_2_data, filename = "figure_2")`
 
-Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-6} 
@@ -252,7 +252,7 @@ figure_3
 
 `r get_download_button(title = "Download chart data", data = figure_3_data, filename = "figure_3")`
 
-Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-6} 
@@ -277,7 +277,7 @@ figure_4
 
 `r get_download_button(title = "Download chart data", data = figure_4_data, filename = "figure_4")`
 
-Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](`r config$costs_and_items_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-4} 
@@ -307,7 +307,7 @@ figure_5
 
 `r get_download_button(title = "Download chart data", data = figure_5_data, filename = "figure_5")`
 
-Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](`r config$costs_and_items_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-4} 
@@ -335,7 +335,7 @@ figure_6
 
 `r get_download_button(title = "Download chart data", data = figure_6_data, filename = "figure_6")`
 
-Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
 The average number of items per patient increased each year between 2015/16 and 2022/23, from 18 diabetes items per patient to 19.
 
@@ -351,7 +351,7 @@ figure_7
 
 `r get_download_button(title = "Download chart data", data = figure_7_data_raw, filename = "figure_7")`
 
-Source: [Prescribing for diabetes summary tables - Costs and items (Table 4)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_costs_and_items_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Costs and items (Table 4)](`r config$costs_and_items_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-4} 
@@ -387,7 +387,7 @@ figure_8
 
 `r get_download_button(title = "Download chart data", data = figure_8_data, filename = "figure_8")`
 
-Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2)](`r config$demographics_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-6} 
@@ -412,7 +412,7 @@ figure_9
 
 `r get_download_button(title = "Download chart data", data = figure_9_data, filename = "figure_9")`
 
-Source: [Prescribing for diabetes summary tables - Patient demographics (Table 6)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Patient demographics (Table 6)](`r config$demographics_excel`)
 
 The most common group to receive prescribing for drugs used in diabetes in 2022/23 was male patients aged 60 to 64 with 250,000 identified patients, 7% of all identified patients. The next most common group was male patients aged 65 to 69 with 240,000 identified patients.
 
@@ -445,7 +445,7 @@ pfd_u18_data |>
 
 `r get_download_button(title = "Download table data", data = table_2_data, filename = "table_2")`
 
-Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8)](`r config$demographics_excel`)
 
 There were 38,000 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2022/23. This was 1% of all identified patients with a captured age.
 
@@ -459,7 +459,7 @@ figure_10
 
 `r get_download_button(title = "Download chart data", data = figure_10_data, filename = "figure_10")`
 
-Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9)](https://nhsbsa-opendata.s3.eu-west-2.amazonaws.com/pfd/PfD_2021_2022_patient_demographics_v001.xlsx)
+Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9)](`r config$demographics_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-6} 
@@ -528,7 +528,7 @@ The NHS website has additional information on [continuous glucose monitoring.](h
 
 ## 4. About these statistics
 
-Further information on the methodology used in this publication and further background information is available in our [Background Information and Methodology](https://www.nhsbsa.nhs.uk/statistical-collections/prescribing-diabetes-england/prescribing-diabetes-england-201516-202021) supporting document.
+Further information on the methodology used in this publication and further background information is available in our [Background Information and Methodology](`r config$background_link`) supporting document.
 
 ### 4.1. Patient counts {.toc-ignore}
 
@@ -623,7 +623,7 @@ View our [Accessibility statement for Official Statistics Narratives](https://ww
 
 Feedback is important to us; we welcome any questions and comments relating to these statistics.
 
-You can complete a [short survey about this publication](https://online1.snapsurveys.com/Official_Statistics_Feedback) to help us improve the Official Statistics that we produce. All responses will remain anonymous, and individuals will not be identifiable in any report that we produce.
+You can complete a [short survey about this publication](`r config$stats_survey_link`) to help us improve the Official Statistics that we produce. All responses will remain anonymous, and individuals will not be identifiable in any report that we produce.
 
 You can view our [privacy policy](https://www.nhsbsa.nhs.uk/our-policies/privacy) on our website to see how your data is used and stored.
 
@@ -641,6 +641,6 @@ Newburn Riverside<br>
 Newcastle upon Tyne<br>
 NE15 8NY
 
-**Responsible statistician:** Graham Platten
+**Responsible statistician:** `r config$responsible_statistician`
 
 </main>
