@@ -1043,7 +1043,7 @@ figure_1_data <- pfd_national_overall |>
     "[^[:alnum:] ]", "", .
   ))), everything())
 
-figure_1 <- nhsbsaVis::group_chart_hc(
+figure_1 <- group_chart_hc_new(
   data = figure_1_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
@@ -1102,7 +1102,7 @@ figure_3_data <- pfd_national_overall |>
     "[^[:alnum:] ]", "", .
   ))), everything())
 
-figure_3 <- group_chart_hc(
+figure_3 <- group_chart_hc_new(
   figure_3_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
@@ -1128,7 +1128,7 @@ figure_4_data <- pfd_paragraph_data |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
 
-figure_4 <- group_chart_hc(
+figure_4 <- group_chart_hc_new(
   figure_4_data,
   x = FINANCIAL_YEAR,
   y = ROUNDED_VALUE,
@@ -1160,7 +1160,7 @@ figure_5_data <- pfd_paragraph_data |>
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-figure_5 <- group_chart_hc(
+figure_5 <- group_chart_hc_new(
   figure_5_data,
   x = FINANCIAL_YEAR,
   y = ROUNDED_VALUE,
@@ -1275,7 +1275,7 @@ figure_8_data <- pfd_gender_data |>
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-figure_8 <- group_chart_hc(
+figure_8 <- group_chart_hc_new(
   figure_8_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
@@ -1364,3 +1364,4 @@ log_print("Disconnected from DWH", hide_notes = TRUE)
 
 #close log
 logr::log_close()
+

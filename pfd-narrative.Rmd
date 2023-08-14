@@ -392,7 +392,7 @@ Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2
 `r infoBox_no_border(header = "", text = "<b>In 2022/23 55% of identified patients were male.</b>", width = "100%")` 
 ::: 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>>In 2022/23 55% of identified patients were female.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2022/23 45% of identified patients were female.</b>", width = "100%")` 
 :::
 ::::
 
@@ -516,7 +516,7 @@ NICE guidance was updated in [March 2022](https://www.nice.org.uk/guidance/ng17)
 
 Instead of using blood the testing monitors the amount of glucose in the fluid surrounding a patients cells. This is called interstitial fluid. This measurement is done using a sensor on the body that can be read using a specific reader or with a smart phone. 
 
-The readings from interstitial fluid can lag behind blood sugar by up to 15 minutes so the use of does not entirely replace other diabetic monitoring such as testing strips though it would usually reduce the requirements for such. 
+The readings from interstitial fluid can lag behind blood sugar by up to 15 minutes so the use of sensors does not entirely replace other diabetic monitoring such as testing strips though it would usually reduce the requirements for such. 
 
 Only data for prescribed sensors is included in this report as readers are usually provided separately. 
 
