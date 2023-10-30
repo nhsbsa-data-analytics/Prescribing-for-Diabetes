@@ -4,7 +4,14 @@ rm(list = ls())
 
 # source functions
 # this is only a temporary step until all functions are built into packages
-source("./functions/functions.R")
+
+# select all .R files in functions sub-folder
+function_files <- list.files(path = "functions", pattern = "\\.R$")
+
+# loop over function_files to source all files in functions sub-folder
+for (file in function_files) {
+  source(file.path("functions", file))
+}
 
 # 1. Setup --------------------------------------------
 # load GITHUB_KEY if available in environment or enter if not
