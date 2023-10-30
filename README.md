@@ -22,13 +22,15 @@ You can view the [source code for the PfD RAP](https://github.com/nhsbsa-data-an
 
 ## Running this RAP
 
-Users outside of the Official Statistics team may not have the required access permissions to run all parts of this RAP. 
+Users outside of the Official Statistics team may not have the required access permissions to run all parts of this RAP. The following information is included to document how this pipeline is by members of the Official Statistics team during production.
+
+
 
 
 
 ## Functions guide
 
-Functions used specificially for this RAP can be found in the [`functions` folder](https://github.com/nhsbsa-data-analytics/Prescribing-for-Diabetes/tree/main/functions). The RAP also makes use of functions from a range of packages. A list of packages used is included at the beginning of the `pipeline.R` file, and these packages are installed and loaded as part of running the pipeline code.
+Functions used specificially for this RAP can be found in the [`functions` folder](https://github.com/nhsbsa-data-analytics/Prescribing-for-Diabetes/tree/main/functions). The RAP also makes use of functions from a range of packages. A list of packages used is included at the beginning of the `pipeline.R` file, and these packages are installed and loaded within the pipeline code.
 
 Functions written directly for PfD have been split into several R script files.
 
