@@ -30,7 +30,7 @@ Users outside of the Official Statistics team may not have the required access p
 
 Once the repository has been cloned, open the `pipeline.R` file and run the script from start to finish. You will be prompted to enter your username and password to connect to the data warehouse. All other code in this script should require no other manual intervention.
 
-The code should handle installing and loading any required packages and external data. It should then get data extracts from the fact table, perform data manipulations, then save this data into spreadsheet outputs. The pipeline will then render the statistical summary narrative
+The code should handle installing and loading any required packages and external data. It should then get data extracts from the fact table, perform data manipulations, then save this data into spreadsheet outputs. The pipeline will then render the statistical summary narrative and background document as HTML files for use in web publishing.
 
 ## Functions guide
 
