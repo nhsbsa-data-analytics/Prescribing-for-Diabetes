@@ -32,6 +32,8 @@ Once the repository has been cloned, open the `pipeline.R` file and run the scri
 
 The code should handle installing and loading any required packages and external data. It should then get data extracts from the fact table, perform data manipulations, then save this data into spreadsheet outputs. The pipeline will then render the statistical summary narrative and background document as HTML files for use in web publishing.
 
+Publication details such as financial year and publication date can be manually changed in the `config.yml` file if this pipeline is rerun in future. Running the pipeline for a different time period may require users to change some function arguments, such as the fact table to extract data from.
+
 ## Functions guide
 
 Functions used specifically for this RAP can be found in the [functions folder](https://github.com/nhsbsa-data-analytics/Prescribing-for-Diabetes/tree/main/functions). The RAP also makes use of functions from a range of packages. A list of packages used is included at the beginning of the `pipeline.R` file, and installed and loaded within the pipeline code. Some functions contained in the functions folder may be placed into the internal NHSBSA packages in future.
@@ -44,9 +46,9 @@ Functions include `national_extract()`, `paragraph_extract()`, `child_adult_extr
 
 2. `vis_functions.R` contains functions for use in data visualisation for PfD outputs, such as creating charts and formatting in markdown outputs. 
 
-Functions include `infoBox_border()`, `infoBox_no_border()`, `age_gender_chart()`, `get_download_button()`, `get_download_button()`, and `group_chart_hc_new()`.
+Functions include `infoBox_border()`, `infoBox_no_border()`, `age_gender_chart()`, `get_download_button()`, and `group_chart_hc_new()`.
 
-3. `sdc_function.R` contains the `apply_sdc()` function to apply statistical disclosure control (SDC) to data in PfD spreadsheet outputs.
+3. `sdc_function.R` contains the `apply_sdc()` function to apply statistical disclosure control (SDC) to data in PfD spreadsheet outputs. This is done in line with our [statistical disclosure control protocol](https://www.nhsbsa.nhs.uk/policies-and-procedures). 
 
 
 # Contributing

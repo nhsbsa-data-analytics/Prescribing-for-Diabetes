@@ -1,6 +1,6 @@
-#function to apply statistical disclosure control (SDC) to selected values
-
 ### Statistical Disclosure Control
+#function to apply statistical disclosure control (SDC) to selected values
+#user can adjust level argument to apply SDC to numbers of this level or lower
 
 apply_sdc <-
   function(data,

@@ -1,6 +1,7 @@
-#functions for use in data visualisation in PfD outputs
+### data visualisation functions for use in PfD outputs
+#functions used in narrative markdown file, which is rendered in pipeline
 
-### INFO BOXES
+## infoboxes using NHS colour scheme
 
 infoBox_border <- function(header = "Header here",
                            text = "More text here",
@@ -105,8 +106,9 @@ infoBox_no_border <- function(header = "Header here",
   )
 }
 
-### Chart functions
+## Chart functions
 
+#age gender pyramid chart
 age_gender_chart <- function(data,
                              labels = FALSE) {
   age_gender_chart_data <- data |>
@@ -228,40 +230,7 @@ age_gender_chart <- function(data,
   
 }
 
-### CSV Download button
-get_download_button <-
-  function(data = data,
-           title = "Download chart data",
-           filename = "data") {
-    dt <- datatable(
-      data,
-      rownames = FALSE,
-      extensions = 'Buttons',
-      options = list(
-        searching = FALSE,
-        paging = TRUE,
-        bInfo = FALSE,
-        pageLength = 1,
-        dom = '<"datatable-wrapper"B>',
-        buttons = list(
-          list(
-            extend = 'csv',
-            text = title,
-            filename = filename,
-            className = "nhs-button-style"
-          )
-        ),
-        initComplete = JS(
-          "function(settings, json) {",
-          "$(this.api().table().node()).css('visibility', 'collapse');",
-          "}"
-        )
-      )
-    )
-    
-    return(dt)
-  }
-
+# group chart with adjusted colours
 group_chart_hc_new <- function(data,
                                x,
                                y,
@@ -333,7 +302,6 @@ group_chart_hc_new <- function(data,
     )
   )
   
-  
   # ifelse(is.na(str_extract(!!y, "(?<=\\().*(?=,)")),!!y,str_extract(!!y, "(?<=\\().*(?=,)")),
   
   # check chart type to set grid lines
@@ -389,3 +357,38 @@ group_chart_hc_new <- function(data,
   # explicit return
   return(chart)
 }
+
+## CSV Download button
+
+get_download_button <-
+  function(data = data,
+           title = "Download chart data",
+           filename = "data") {
+    dt <- datatable(
+      data,
+      rownames = FALSE,
+      extensions = 'Buttons',
+      options = list(
+        searching = FALSE,
+        paging = TRUE,
+        bInfo = FALSE,
+        pageLength = 1,
+        dom = '<"datatable-wrapper"B>',
+        buttons = list(
+          list(
+            extend = 'csv',
+            text = title,
+            filename = filename,
+            className = "nhs-button-style"
+          )
+        ),
+        initComplete = JS(
+          "function(settings, json) {",
+          "$(this.api().table().node()).css('visibility', 'collapse');",
+          "}"
+        )
+      )
+    )
+    
+    return(dt)
+  }

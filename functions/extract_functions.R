@@ -1,4 +1,4 @@
-# extract functions for use in main pipeline
+### extract functions for use in main pipeline
 # these functions extract data at a selected level of granularity from the 
 # PfD fact table in the data warehouse, in preparation for further analysis in R
 

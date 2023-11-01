@@ -13,7 +13,8 @@ for (file in function_files) {
   source(file.path("functions", file))
 }
 
-# 1. Setup --------------------------------------------
+# 1. Setup ---------------------------------------------------------------------
+
 # load GITHUB_KEY if available in environment or enter if not
 
 if (Sys.getenv("GITHUB_PAT") == "") {
@@ -32,13 +33,13 @@ if (Sys.getenv("DB_DWCP_USERNAME") == "") {
   )
 }
 
-#install nhsbsaUtils package first as need check_and_install_packages()
+# install nhsbsaUtils package first as need check_and_install_packages()
 devtools::install_github("nhsbsa-data-analytics/nhsbsaUtils",
                          auth_token = Sys.getenv("GITHUB_PAT"))
 
 library(nhsbsaUtils)
 
-#install and library packages
+# install and library packages
 req_pkgs <-
   c(
     "dplyr",
@@ -67,7 +68,7 @@ req_pkgs <-
     "nhsbsa-data-analytics/nhsbsaVis"
   )
 
-#library/install packages as required
+# library/install packages as required
 nhsbsaUtils::check_and_install_packages(req_pkgs)
 
 # set up logging
@@ -87,14 +88,16 @@ log_print(config, hide_notes = TRUE)
 nhsbsaUtils::publication_options()
 log_print("Options loaded", hide_notes = TRUE)
 
-# 2. connect to DWH and pull max CY/FY  ---------
-#build connection to warehouse
+# 2. connect to DWH and pull max CY/FY  ----------------------------------------
+
+# build connection to warehouse
 con <- nhsbsaR::con_nhsbsa(dsn = "FBS_8192k",
                            driver = "Oracle in OraClient19Home1",
                            "DWCP")
 
 
-# 3. collect data from DWH ---------------------------------------------------
+# 3. collect data from data warehouse ------------------------------------------
+
 costpericb_data <-
   costpericb_extract(con = con,
                      schema = "KIGRA",
@@ -218,8 +221,7 @@ cost_per_patienticb <- costpericb_data |>
   ) |>
   apply_sdc(rounding = F)
 
-
-# 4. Build costs/items excel tables ---------------------------------------------------
+# 4. Build costs/items excel tables --------------------------------------------
 
 sheetNames <- c(
   "Patient_Identification",
@@ -232,7 +234,7 @@ sheetNames <- c(
 
 wb <- accessibleTables::create_wb(sheetNames)
 
-#create metadata tab (will need to open file and auto row heights once ran)
+# create metadata tab (will need to open file and auto row heights once ran)
 meta_fields <- c(
   "BNF Paragraph Code",
   "BNF Paragraph Name",
@@ -284,13 +286,14 @@ write_sheet(
   patient_identification,
   42
 )
-#left align columns A to C
+# left align columns A to C
 format_data(wb,
             "Patient_Identification",
             c("A", "B", "C"),
             "left",
             "")
-#right align columns and round to 2 DP - D (if using long data not pivoting wider) (!!NEED TO UPDATE AS DATA EXPANDS!!)
+
+# right align columns and round to 2 DP - D (if using long data not pivoting wider) (!!NEED TO UPDATE AS DATA EXPANDS!!)
 format_data(wb,
             "Patient_Identification",
             c("D"),
@@ -299,7 +302,7 @@ format_data(wb,
 
 #### Total items data
 # write data to sheet
-#suggest note 3. could be condensed to something like "Total costs and items may not match those in our Prescription Cost Analysis (PCA) publication, as they are based on a prescribing view while PCA uses a dispensing view instead."
+# suggest note 3. could be condensed to something like "Total costs and items may not match those in our Prescription Cost Analysis (PCA) publication, as they are based on a prescribing view while PCA uses a dispensing view instead."
 write_sheet(
   wb,
   "National_Total",
@@ -317,21 +320,21 @@ write_sheet(
   14
 )
 
-#left align columns A to C
+# left align columns A to C
 format_data(wb,
             "National_Total",
             c("A", "B", "C"),
             "left",
             "")
 
-#right align columns D and E and round to whole numbers with thousand separator
+# right align columns D and E and round to whole numbers with thousand separator
 format_data(wb,
             "National_Total",
             c("D", "E"),
             "right",
             "#,##0")
 
-#right align column F and round to 2dp with thousand separator
+# right align column F and round to 2dp with thousand separator
 format_data(wb,
             "National_Total",
             c("F"),
@@ -356,21 +359,21 @@ write_sheet(
   pfd_paragraph_data,
   14
 )
-#left align columns A to D
+# left align columns A to D
 format_data(wb,
             "National_Paragraph",
             c("A", "B", "C", "D"),
             "left",
             "")
 
-#right align columns E and F and round to whole numbers with thousand separator
+# right align columns E and F and round to whole numbers with thousand separator
 format_data(wb,
             "National_Paragraph",
             c("E", "F"),
             "right",
             "#,##0")
 
-#right align column G and round to 2dp with thousand separator
+# right align column G and round to 2dp with thousand separator
 format_data(wb,
             "National_Paragraph",
             c("G"),
@@ -396,21 +399,21 @@ write_sheet(
   14
 )
 
-#left align columns A to D
+# left align columns A to D
 format_data(wb,
             "Cost_per_ICB",
             c("A", "B", "C", "D"),
             "left",
             "")
 
-#right align columns E and F and round to whole numbers with thousand separator
+# right align columns E and F and round to whole numbers with thousand separator
 format_data(wb,
             "Cost_per_ICB",
             c("E", "F"),
             "right",
             "#,##0")
 
-#right align column G and round to 2dp with thousand separator
+# right align column G and round to 2dp with thousand separator
 format_data(wb,
             "Cost_per_ICB",
             c("G"),
@@ -437,14 +440,14 @@ write_sheet(
   14
 )
 
-#left align columns A to D
+# left align columns A to D
 format_data(wb,
             "Cost_per_Patient",
             c("A", "B", "C"),
             "left",
             "")
 
-#right align column E and round to 2dp with thousand separator
+# right align column E and round to 2dp with thousand separator
 format_data(wb,
             "Cost_per_Patient",
             c("D"),
@@ -466,7 +469,7 @@ write_sheet(
   14
 )
 
-#left align columns A to D
+# left align columns A to D
 format_data(wb,
             "National_Presentation",
             c("A", "B", "C", "D", "E", "F", "G", "H", "I"),
@@ -479,7 +482,7 @@ format_data(wb,
             "right",
             "#,##0")
 
-#right align column E and round to 2dp with thousand separator
+# right align column E and round to 2dp with thousand separator
 format_data(wb,
             "National_Presentation",
             c("K"),
@@ -506,7 +509,7 @@ accessibleTables::makeCoverSheet(
   c("Metadata", sheetNames)
 )
 
-#save file into outputs folder
+# save file into outputs folder
 openxlsx::saveWorkbook(wb,
                        "outputs/PfD_2022_2023_costs_and_items_v001.xlsx",
                        overwrite = TRUE)
@@ -514,7 +517,8 @@ openxlsx::saveWorkbook(wb,
 
 rm(wb)
 
-# 5. Build patient demographics excel tables ---------------------------------------------------
+# 5. Build patient demographics excel tables -----------------------------------
+
 sheetNames <- c(
   "Patient_Identification",
   "National_Total",
@@ -529,10 +533,9 @@ sheetNames <- c(
   "IMD_By_Drug"
 )
 
-
 wb <- create_wb(sheetNames)
 
-#create metadata tab (will need to open file and auto row heights once ran)
+# create metadata tab (will need to open file and auto row heights once ran)
 meta_fields <- c(
   "BNF Paragraph Code",
   "BNF Paragraph Name",
@@ -592,13 +595,13 @@ write_sheet(
   patient_identification,
   42
 )
-#left align columns A to C
+# left align columns A to C
 format_data(wb,
             "Patient_Identification",
             c("A", "B", "C"),
             "left",
             "")
-#right align columns and round to 2 DP - D (if using long data not pivoting wider) (!!NEED TO UPDATE AS DATA EXPANDS!!)
+# right align columns and round to 2 DP - D (if using long data not pivoting wider) (!!NEED TO UPDATE AS DATA EXPANDS!!)
 format_data(wb,
             "Patient_Identification",
             c("D"),
@@ -623,21 +626,21 @@ write_sheet(
   14
 )
 
-#left align columns A to C
+# left align columns A to C
 format_data(wb,
             "National_Total",
             c("A", "B", "C"),
             "left",
             "")
 
-#right align columns D and E and round to whole numbers with thousand separator
+# right align columns D and E and round to whole numbers with thousand separator
 format_data(wb,
             "National_Total",
             c("D", "E"),
             "right",
             "#,##0")
 
-#right align column F and round to 2dp with thousand separator
+# right align column F and round to 2dp with thousand separator
 format_data(wb,
             "National_Total",
             c("F"),
@@ -661,22 +664,23 @@ write_sheet(
   ),
   pfd_gender_data,
   14
-)
-#left align columns A to D
+) 
+
+# left align columns A to D
 format_data(wb,
             "Gender",
             c("A", "B", "C"),
             "left",
             "")
 
-#right align columns D and E and round to whole numbers with thousand separator
+# right align columns D and E and round to whole numbers with thousand separator
 format_data(wb,
             "Gender",
             c("D", "E"),
             "right",
             "#,##0")
 
-#right align column F and round to 2dp with thousand separator
+# right align column F and round to 2dp with thousand separator
 format_data(wb,
             "Gender",
             c("F"),
@@ -703,21 +707,22 @@ write_sheet(
   pfd_gender_paragraph_data,
   14
 )
-#left align columns A to E
+
+# left align columns A to E
 format_data(wb,
             "Dispensing_By_Gender",
             c("A", "B", "C", "D", "E"),
             "left",
             "")
 
-#right align columns F and G and round to whole numbers with thousand separator
+# right align columns F and G and round to whole numbers with thousand separator
 format_data(wb,
             "Dispensing_By_Gender",
             c("F", "G"),
             "right",
             "#,##0")
 
-#right align column H and round to 2dp with thousand separator
+# right align column H and round to 2dp with thousand separator
 format_data(wb,
             "Dispensing_By_Gender",
             c("H"),
@@ -742,21 +747,22 @@ write_sheet(
   pfd_ageband_data,
   14
 )
-#left align columns A to D
+
+# left align columns A to D
 format_data(wb,
             "Age_Band",
             c("A", "B", "C"),
             "left",
             "")
 
-#right align columns D and E and round to whole numbers with thousand separator
+# right align columns D and E and round to whole numbers with thousand separator
 format_data(wb,
             "Age_Band",
             c("D", "E"),
             "right",
             "#,##0")
 
-#right align column F and round to 2dp with thousand separator
+# right align column F and round to 2dp with thousand separator
 format_data(wb,
             "Age_Band",
             c("F"),
@@ -781,21 +787,22 @@ write_sheet(
   pfd_ageband_paragraph_data,
   14
 )
-#left align columns A to E
+
+# left align columns A to E
 format_data(wb,
             "Dispensing_By_Age",
             c("A", "B", "C", "D", "E"),
             "left",
             "")
 
-#right align columns F and G and round to whole numbers with thousand separator
+# right align columns F and G and round to whole numbers with thousand separator
 format_data(wb,
             "Dispensing_By_Age",
             c("F", "G"),
             "right",
             "#,##0")
 
-#right align column H and round to 2dp with thousand separator
+# right align column H and round to 2dp with thousand separator
 format_data(wb,
             "Dispensing_By_Age",
             c("H"),
@@ -820,21 +827,22 @@ write_sheet(
   pfd_age_gender_data,
   14
 )
-#left align columns A to D
+
+# left align columns A to D
 format_data(wb,
             "Age_Band_and_Gender",
             c("A", "B", "C", "D"),
             "left",
             "")
 
-#right align columns E and F and round to whole numbers with thousand separator
+# right align columns E and F and round to whole numbers with thousand separator
 format_data(wb,
             "Age_Band_and_Gender",
             c("E", "F"),
             "right",
             "#,##0")
 
-#right align column G and round to 2dp with thousand separator
+# right align column G and round to 2dp with thousand separator
 format_data(wb,
             "Age_Band_and_Gender",
             c("G"),
@@ -860,21 +868,22 @@ write_sheet(
   pfd_age_gender_paragraph_data,
   14
 )
-#left align columns A to F
+
+# left align columns A to F
 format_data(wb,
             "Dispensing_By_Age_and_Gender",
             c("A", "B", "C", "D", "E", "F"),
             "left",
             "")
 
-#right align columns G and H and round to whole numbers with thousand separator
+# right align columns G and H and round to whole numbers with thousand separator
 format_data(wb,
             "Dispensing_By_Age_and_Gender",
             c("G", "H"),
             "right",
             "#,##0")
 
-#right align column I and round to 2dp with thousand separator
+# right align column I and round to 2dp with thousand separator
 format_data(wb,
             "Dispensing_By_Age_and_Gender",
             c("I"),
@@ -899,14 +908,15 @@ write_sheet(
   pfd_u18_data,
   14
 )
-#left align columns A to D
+
+# left align columns A to D
 format_data(wb,
             "Adults_and_Children",
             c("A", "B", "C"),
             "left",
             "")
 
-#right align columns D and E and round to whole numbers with thousand separator
+# right align columns D and E and round to whole numbers with thousand separator
 format_data(wb,
             "Adults_and_Children",
             c("D", "E"),
@@ -939,21 +949,22 @@ write_sheet(
   pfd_imd_data,
   14
 )
-#left align columns A to B
+
+# left align columns A to B
 format_data(wb,
             "Indices_of_Deprivation",
             c("A", "B"),
             "left",
             "")
 
-#right align columns C and D and round to whole numbers with thousand separator
+# right align columns C and D and round to whole numbers with thousand separator
 format_data(wb,
             "Indices_of_Deprivation",
             c("C", "D"),
             "right",
             "#,##0")
 
-#right align column E and round to 2dp with thousand separator
+# right align column E and round to 2dp with thousand separator
 format_data(wb,
             "Indices_of_Deprivation",
             c("E"),
@@ -980,21 +991,22 @@ write_sheet(
   pfd_imd_paragraph_data,
   14
 )
-#left align columns A to D
+
+# left align columns A to D
 format_data(wb,
             "IMD_By_Drug",
             c("A", "B", "C", "D"),
             "left",
             "")
 
-#right align columns E and F and round to whole numbers with thousand separator
+# right align columns E and F and round to whole numbers with thousand separator
 format_data(wb,
             "IMD_By_Drug",
             c("E", "F"),
             "right",
             "#,##0")
 
-#right align column G and round to 2dp with thousand separator
+# right align column G and round to 2dp with thousand separator
 format_data(wb,
             "IMD_By_Drug",
             c("G"),
@@ -1024,14 +1036,13 @@ accessibleTables::makeCoverSheet(
   c("Metadata", sheetNames)
 )
 
-
-#save file into outputs folder
+# save file into outputs folder
 openxlsx::saveWorkbook(wb,
                        "outputs/PfD_2022_2023__patient_demographics_v001.xlsx",
                        overwrite = TRUE)
 
 
-# 6. build charts and data ------------------------------------------------
+# 6. build charts and data -----------------------------------------------------
 
 figure_1_data <- pfd_national_overall |>
   filter(`Drug Type` == "Diabetes") |>
@@ -1046,7 +1057,7 @@ figure_1_data <- pfd_national_overall |>
     names_to = "Measure",
     values_to = "Value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1059,7 +1070,6 @@ figure_1 <- group_chart_hc_new(
   xLab = "Financial year",
   yLab = "Number of prescription items/identified patients",
   title = ""
-  
 )
 
 figure_2_data <- pfd_national_overall |>
@@ -1069,7 +1079,7 @@ figure_2_data <- pfd_national_overall |>
     `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
     .groups = "drop"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1099,13 +1109,13 @@ figure_3_data <- pfd_national_overall |>
   ) |>
   ungroup() |>
   filter(`Drug Type` == "Diabetes") |>
-  select(-`Total Items`,-`Total Net Ingredient Cost (GBP)`) |>
+  select(-`Total Items`, -`Total Net Ingredient Cost (GBP)`) |>
   pivot_longer(
     cols = c(`Proportion of items`, `Proportion of costs`),
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1129,7 +1139,7 @@ figure_4_data <- pfd_paragraph_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1162,7 +1172,7 @@ figure_5_data <- pfd_paragraph_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1185,7 +1195,7 @@ figure_5 <- group_chart_hc_new(
 
 figure_6_data <- pfd_national_overall |>
   filter(`Identified Patient Flag` == "Y", `Drug Type` == "Diabetes") |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ITEMS_PER_PATIENT = TOTAL_ITEMS  / TOTAL_IDENTIFIED_PATIENTS)
@@ -1201,7 +1211,6 @@ figure_6 <- basic_chart_hc(
   title = ""
 )
 
-
 figure_7_data_boxplot <- costpericb_data |>
   group_by(`Financial Year`) |>
   filter(`Identified Patient Flag` == "Y",
@@ -1214,7 +1223,6 @@ figure_7_data_boxplot <- costpericb_data |>
     color = "#005EB8",
     fillColor = "rgba(0,94,184,0.5)"
   )
-
 
 figure_7_data_raw <- data.frame()
 
@@ -1277,7 +1285,7 @@ figure_8_data <- pfd_gender_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1299,14 +1307,12 @@ figure_8 <- group_chart_hc_new(
 
 figure_9_data <- pfd_age_gender_data |>
   filter(`Financial Year` == max(`Financial Year`)) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
-
 figure_9 <-  age_gender_chart(figure_9_data,
                               labels = FALSE)
-
 
 figure_10_data <- pfd_imd_data |>
   ungroup() |>
@@ -1318,11 +1324,11 @@ figure_10_data <- pfd_imd_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3)) |>
-  select(-TOTAL_ITEMS, -TOTAL_NET_INGREDIENT_COST_GBP)
+  select(-TOTAL_ITEMS,-TOTAL_NET_INGREDIENT_COST_GBP)
 
 figure_10 <-  basic_chart_hc(
   figure_10_data,
@@ -1335,40 +1341,43 @@ figure_10 <-  basic_chart_hc(
 )
 
 table_1_data <- patient_identification |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
 table_2_data <- pfd_u18_data |>
   filter(`Age Band` != "Unknown") |>
-  group_by(`Financial Year`,`Age Band`) |>
+  group_by(`Financial Year`, `Age Band`) |>
   ungroup() |>
-  rename_with(~ gsub(" ", "_", toupper(gsub(
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
-  select(
-    -TOTAL_ITEMS, -TOTAL_NET_INGREDIENT_COST_GBP
-  )
+  select(-TOTAL_ITEMS,-TOTAL_NET_INGREDIENT_COST_GBP)
 
 # 7. create markdowns -------
 
+# save narrative summary as html file into outputs folder
+# change file path to save somewhere else if needed
 rmarkdown::render("pfd-narrative.Rmd",
                   output_format = "html_document",
                   output_file = "outputs/pfd_summary_narrative_2022_23_v001.html")
 
+# save copy as word document for use in quality review
 rmarkdown::render("pfd-narrative.Rmd",
                   output_format = "word_document",
                   output_file = "outputs/pfd_summary_narrative_2022_23_v001.docx")
 
+# save background document as html file into outputs folder
+# change file path to save somewhere else if needed
 rmarkdown::render("pfd-background-july-2023.Rmd",
                   output_format = "html_document",
                   output_file = "outputs/pfd_background_info_methodology_v001.html")
 
 
-# 8. disconnect from DWH  ---------
+# 8. disconnect from DWH  ------------------------------------------------------
+
 DBI::dbDisconnect(con)
 log_print("Disconnected from DWH", hide_notes = TRUE)
 
-#close log
+# close log
 logr::log_close()
-
