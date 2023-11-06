@@ -10,7 +10,7 @@ The RAP includes a `functions` folder containing several files with functions sp
 
 This RAP cannot be run in it's entirety by external users. However it should provide information on how the Official Statistics team extract the data from the NHSBSA data warehouse, analyse the data, and produce the outputs released on the NHSBSA website as part of this publication.
 
-This RAP is a work in progress and may be replaced as part of updates and improvements for each new release of the PfD publication. The functions in the `functions` folder do not contain unit testing, although we will investigate adding this in future.
+This RAP is a work in progress and may be replaced as part of updates and improvements for each new release of the PfD publication. The functions in the `functions` folder do not contain unit testing, although we will investigate adding this in future. These functions have undergone an internal peer review process.
 
 ## Getting started
 
