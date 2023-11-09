@@ -95,17 +95,16 @@ con <- nhsbsaR::con_nhsbsa(dsn = "FBS_8192k",
                            driver = "Oracle in OraClient19Home1",
                            "DWCP")
 
-
 # 3. collect data from data warehouse ------------------------------------------
 
-costpericb_data <-
-  costpericb_extract(con = con,
+cost_per_icb_data <-
+  cost_per_icb_extract(con = con,
                      schema = "KIGRA",
                      table = "PFD_FACT_202307") |>
   apply_sdc(rounding = F)
 
-costper_patdata <-
-  costper_patient_extract(con = con,
+cost_per_pat_data <-
+  cost_per_patient_extract(con = con,
                           schema = "KIGRA",
                           table = "PFD_FACT_202307")  |>
   apply_sdc(rounding = F)
@@ -208,7 +207,7 @@ pfd_national_overall <-
     TRUE ~ `Total Identified Patients`
   ))
 
-cost_per_patienticb <- costpericb_data |>
+cost_per_patient_icb <- cost_per_icb_data |>
   dplyr::ungroup() |>
   dplyr::filter(`Identified Patient Flag` == "Y") |>
   dplyr::mutate(`Total NIC per patient (GBP)` = `Total Net Ingredient Cost (GBP)` /
@@ -440,14 +439,14 @@ write_sheet(
   14
 )
 
-# left align columns A to D
+# left align columns A to C
 format_data(wb,
             "Cost_per_Patient",
             c("A", "B", "C"),
             "left",
             "")
 
-# right align column E and round to 2dp with thousand separator
+# right align column D and round to 2dp with thousand separator
 format_data(wb,
             "Cost_per_Patient",
             c("D"),
@@ -469,7 +468,7 @@ write_sheet(
   14
 )
 
-# left align columns A to D
+# left align columns A to I
 format_data(wb,
             "National_Presentation",
             c("A", "B", "C", "D", "E", "F", "G", "H", "I"),
@@ -482,7 +481,7 @@ format_data(wb,
             "right",
             "#,##0")
 
-# right align column E and round to 2dp with thousand separator
+# right align column K and round to 2dp with thousand separator
 format_data(wb,
             "National_Presentation",
             c("K"),
@@ -1041,7 +1040,6 @@ openxlsx::saveWorkbook(wb,
                        "outputs/PfD_2022_2023__patient_demographics_v001.xlsx",
                        overwrite = TRUE)
 
-
 # 6. build charts and data -----------------------------------------------------
 
 figure_1_data <- pfd_national_overall |>
@@ -1144,7 +1142,6 @@ figure_4_data <- pfd_paragraph_data |>
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-
 figure_4 <- group_chart_hc_new(
   figure_4_data,
   x = FINANCIAL_YEAR,
@@ -1199,7 +1196,6 @@ figure_6_data <- pfd_national_overall |>
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ITEMS_PER_PATIENT = TOTAL_ITEMS  / TOTAL_IDENTIFIED_PATIENTS)
-
 
 figure_6 <- basic_chart_hc(
   figure_6_data,
@@ -1354,24 +1350,30 @@ table_2_data <- pfd_u18_data |>
   ))), everything()) |>
   select(-TOTAL_ITEMS,-TOTAL_NET_INGREDIENT_COST_GBP)
 
-# 7. create markdowns -------
+# 7. create markdowns ----------------------------------------------------------
 
 # save narrative summary as html file into outputs folder
 # change file path to save somewhere else if needed
-rmarkdown::render("pfd-narrative.Rmd",
+rmarkdown::render("pfd_narrative.Rmd",
                   output_format = "html_document",
                   output_file = "outputs/pfd_summary_narrative_2022_23_v001.html")
 
 # save copy as word document for use in quality review
-rmarkdown::render("pfd-narrative.Rmd",
+rmarkdown::render("pfd_narrative.Rmd",
                   output_format = "word_document",
                   output_file = "outputs/pfd_summary_narrative_2022_23_v001.docx")
 
 # save background document as html file into outputs folder
 # change file path to save somewhere else if needed
-rmarkdown::render("pfd-background-july-2023.Rmd",
+rmarkdown::render("pfd_background_aug_2023.Rmd",
                   output_format = "html_document",
                   output_file = "outputs/pfd_background_info_methodology_v001.html")
+
+# save user engagement document as html file into outputs folder
+# change file path to save somewhere else if needed
+rmarkdown::render("pfd_user_engagement_2223.Rmd",
+                  output_format = "html_document",
+                  output_file = "outputs/pfd_user_engagement_2223.html")
 
 
 # 8. disconnect from DWH  ------------------------------------------------------

@@ -28,7 +28,7 @@ You can view the [source code for the PfD RAP](https://github.com/nhsbsa-data-an
 
 Users outside of the Official Statistics team may not have the required access permissions to run all parts of this RAP. The following information is included to document how this pipeline is run by members of the Official Statistics team during production.
 
-Once the repository has been cloned, open the `pipeline.R` file and run the script from start to finish. You will be prompted to enter your username and password to connect to the data warehouse. All other code in this script should require no other manual intervention.
+Once the repository has been cloned, open the `pipeline.R` file and run the script from start to finish. You will be prompted to enter your username and password into your .Renviron file, if not already there, to connect to the data warehouse. All other code in this script should require no other manual intervention.
 
 The code should handle installing and loading any required packages and external data. It should then get data extracts from the fact table, perform data manipulations, then save this data into spreadsheet outputs. The pipeline will then render the statistical summary narrative and background document as HTML files for use in web publishing.
 

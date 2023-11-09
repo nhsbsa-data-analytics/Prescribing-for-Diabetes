@@ -610,7 +610,7 @@ capture_rate_extract_dt <- function(con,
   return(fact)
 }
 
-costpericb_extract <- function(con,
+cost_per_icb_extract <- function(con,
                                schema,
                                table) {
   fact <- dplyr::tbl(con,
@@ -655,7 +655,7 @@ costpericb_extract <- function(con,
   
 }
 
-costper_patient_extract <- function(con,
+cost_per_patient_extract <- function(con,
                                     schema,
                                     table) {
   fact <- dplyr::tbl(con,
