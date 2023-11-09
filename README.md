@@ -42,7 +42,7 @@ Functions written directly for PfD have been split into several R script files. 
 
 1. `extract_functions.R` contains functions for getting the required data out of the fact table. They generally use the dbplyr package to interact with the NHSBSA data warehouse. 
 
-Functions include `national_extract()`, `paragraph_extract()`, `child_adult_extract()`, `imd_extract()`, `imd_paragraph_extract()`, `ageband_extract()`, `ageband_paragraph_extract()`, `gender_extract()`, `gender_paragraph_extract()`, `age_gender_extract()`, `age_gender_paragraph_extract()`, `national_presentation()`, `capture_rate_extract()`, `capture_rate_extract_dt()`, `costpericb_extract()`, and `costper_patient_extract()`.
+Functions include `national_extract()`, `paragraph_extract()`, `child_adult_extract()`, `imd_extract()`, `imd_paragraph_extract()`, `ageband_extract()`, `ageband_paragraph_extract()`, `gender_extract()`, `gender_paragraph_extract()`, `age_gender_extract()`, `age_gender_paragraph_extract()`, `national_presentation()`, `capture_rate_extract()`, `capture_rate_extract_dt()`, `cost_per_icb_extract()`, and `cost_per_patient_extract()`.
 
 2. `vis_functions.R` contains functions for use in data visualisation for PfD outputs, such as creating charts and formatting in markdown outputs. 
 
