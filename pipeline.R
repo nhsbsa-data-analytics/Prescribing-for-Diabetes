@@ -493,7 +493,7 @@ format_data(wb,
 accessibleTables::makeCoverSheet(
   paste0("Prescribing for Diabetes - England 2015/16 - ", config$full_year),
   "Costs and Items",
-  "Publication date: 10 August 2023",
+  paste0("Publication date: ", config$publication_date),
   wb,
   sheetNames,
   c(
@@ -512,7 +512,6 @@ accessibleTables::makeCoverSheet(
 openxlsx::saveWorkbook(wb,
                        "outputs/PfD_2022_2023_costs_and_items_v001.xlsx",
                        overwrite = TRUE)
-
 
 rm(wb)
 
@@ -908,7 +907,7 @@ write_sheet(
   14
 )
 
-# left align columns A to D
+# left align columns A to C
 format_data(wb,
             "Adults_and_Children",
             c("A", "B", "C"),
@@ -1015,7 +1014,7 @@ format_data(wb,
 accessibleTables::makeCoverSheet(
   paste0("Prescribing for Diabetes - England 2015/16 - ", config$full_year),
   "Patient Demographics",
-  "Publication date: 10 August 2023",
+  paste0("Publication date: ", config$publication_date),
   wb,
   sheetNames,
   c(
@@ -1374,7 +1373,6 @@ rmarkdown::render("pfd_background_aug_2023.Rmd",
 rmarkdown::render("pfd_user_engagement_2223.Rmd",
                   output_format = "html_document",
                   output_file = "outputs/pfd_user_engagement_2223.html")
-
 
 # 8. disconnect from DWH  ------------------------------------------------------
 
