@@ -8,7 +8,7 @@ This RAP aims to bring together all code needed to run a pipeline in R to produc
 
 The RAP includes a `functions` folder containing several files with functions specific to this publication, as well as a `sql` folder containing SQL code for extracting the raw data used by the pipeline. The RAP will produce an HTML report and accompanying HTML background and methodology document. This RAP makes use of many R packages, including several produced internally at the NHSBSA. Therefore, some of these packages cannot be accessed by external users. 
 
-This RAP cannot be run in it's entirety by external users. However it should provide information on how the Official Statistics team extract the data from the NHSBSA data warehouse, analyse the data, and produce the outputs released on the NHSBSA website as part of this publication.
+This RAP cannot be run in its entirety by external users. However it should provide information on how the Official Statistics team extract the data from the NHSBSA data warehouse, analyse the data, and produce the outputs released on the NHSBSA website as part of this publication.
 
 This RAP is a work in progress and may be replaced as part of updates and improvements for each new release of the PfD publication. The functions in the `functions` folder do not contain unit testing, although we will investigate adding this in future. These functions have undergone an internal peer review process.
 
