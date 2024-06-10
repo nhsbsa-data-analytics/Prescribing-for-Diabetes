@@ -8,25 +8,15 @@ output:
     toc_depth: '3'
   html_document:
     anchor_sections: no
-    css: www/style.css
+    css: 
+      - www/style.css
+      - www/nhs-min.css
     toc: yes
     toc_depth: 3
     toc_float:
       collapsed: no
 ---
-<script>
-  $(document).ready(function() {
-    $('#header').prepend('<img src=`r knitr::image_uri("www/bsa_logo.svg")` alt=\"NHSBSA logo\" style=\"position:absolute; top: 0; right: 0; padding: 10px; width: 25%;\">');
-  });
-</script>
 
-<style type="text/css">
-
-body, td {
-   font-size: 16px;
-   font-family: sans-serif;
-}
-</style>
 <html lang="en">
 
 ```{r setup, include=FALSE}
@@ -35,17 +25,19 @@ body, td {
 knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       message = FALSE)
-hcoptslang <- getOption("highcharter.lang")
-  hcoptslang$thousandsSep <- ","
-  hcoptslang$numericSymbols <- c("k","M","B","T","P","E")
-  options(highcharter.lang = hcoptslang)
-
-
-font <- "Arial"
-
-colors <- c("#005EB8","#768692")
 
 ```
+
+<div class = "quartoheader", id = "fixed-header">
+  <header class="nhsuk-header" role="banner">
+    <div class="nhsuk-width-container nhsuk-header__container">
+      <div class="nhsuk-header__logo nhsuk-header__logo--only">
+        <a class="nhsuk-header__link" href="https://www.nhsbsa.nhs.uk/" aria-label="NHSBSA home" target="_blank">
+          <img class="nhsuk-logo" src="www/logo-nhsbsa.svg"" name="NHSBSA logo" alt="NHS Business Services Authority">
+        </a>
+      </div>
+    </div>
+</div>
 
 <main>
 
