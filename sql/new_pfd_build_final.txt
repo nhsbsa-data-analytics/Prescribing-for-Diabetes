@@ -1,5 +1,5 @@
---DROP TABLE    pfd_tdim_202307  PURGE;
-CREATE TABLE  pfd_tdim_202307  COMPRESS FOR QUERY HIGH AS
+--DROP TABLE    pfd_tdim_202406  PURGE;
+CREATE TABLE  pfd_tdim_202406  COMPRESS FOR QUERY HIGH AS
 
 WITH  tdim  as  (
 
@@ -20,8 +20,8 @@ where 1  =  1
 select * from tdim where ym_count = 12
 ;
 
---DROP TABLE    pfd_drug_dim_202307  PURGE;
-CREATE TABLE  pfd_drug_dim_202307  COMPRESS FOR QUERY HIGH AS
+--DROP TABLE    pfd_drug_dim_202406  PURGE;
+CREATE TABLE  pfd_drug_dim_202406  COMPRESS FOR QUERY HIGH AS
 
 SELECT
   cdr.year_month
@@ -43,15 +43,15 @@ SELECT
 FROM
   dim.cdr_ep_drug_bnf_dim cdr
 INNER JOIN
-  pfd_tdim_202307  tdim
+  pfd_tdim_202406  tdim
   ON  cdr.year_month  = tdim.year_month
 WHERE 1 = 1
   AND bnf_section in  ('2148')
   or bnf_paragraph in ('060101','060102','060104','060106') 
 ;
 
-DROP TABLE    pfd_org_dim_202307 PURGE;
-CREATE TABLE  pfd_org_dim_202307 COMPRESS FOR QUERY HIGH AS
+DROP TABLE    pfd_org_dim_202406 PURGE;
+CREATE TABLE  pfd_org_dim_202406 COMPRESS FOR QUERY HIGH AS
 
 WITH
 
@@ -129,15 +129,15 @@ max_org AS  (
     ON  l5.lvl_5_oupdt  = cur_pcd.lvl_5_oupdt
     AND l5.lvl_5_ou     = cur_pcd.lvl_5_ou
   LEFT OUTER JOIN
-    grali.ons_nspl_may_23 ons
+    ost.ons_nspl_may_24_11cen ons
     ON  cur_pcd.lvl_5_cur_postcode  = UPPER(REPLACE(ons.pcd, ' ', ''))
 )
 
 SELECT  * FROM  org
 ;
 
-DROP TABLE    pfd_fact_202307  PURGE;
-CREATE TABLE  pfd_fact_202307  COMPRESS FOR  QUERY HIGH  AS
+DROP TABLE    pfd_fact_202406  PURGE;
+CREATE TABLE  pfd_fact_202406  COMPRESS FOR  QUERY HIGH  AS
 
 WITH  fact  AS  (
   
@@ -181,14 +181,14 @@ WITH  fact  AS  (
   FROM
     aml.px_form_item_elem_comb_fact_av  fact
   INNER JOIN
-    pfd_tdim_202307  tdim
+    pfd_tdim_202406  tdim
     ON  fact.year_month = tdim.year_month
   INNER JOIN
-    pfd_org_dim_202307 org
+    pfd_org_dim_202406 org
     ON  fact.presc_type_prnt =  org.lvl_5_oupdt
     AND fact.presc_id_prnt   =  org.lvl_5_ou
   INNER JOIN
-    pfd_drug_dim_202307  drug
+    pfd_drug_dim_202406  drug
     ON  fact.calc_prec_drug_record_id = drug.record_id
     AND fact.year_month               = drug.year_month
   WHERE 1 = 1
@@ -248,7 +248,7 @@ WITH  fact  AS  (
   FROM
     lsoa
   LEFT OUTER JOIN
-    mawil.imd_2019  imd
+    ost.imd_2019  imd
     ON  lsoa.lsoa_code  = imd.lsoa11
 )
 

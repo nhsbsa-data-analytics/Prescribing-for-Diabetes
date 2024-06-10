@@ -1,5 +1,5 @@
---DROP TABLE    pfd_fact_overall_202307  PURGE;
-CREATE TABLE  pfd_fact_overall_202307  COMPRESS FOR QUERY HIGH AS
+-- DROP TABLE    pfd_fact_overall_202406 PURGE;
+CREATE TABLE  pfd_fact_overall_202406  COMPRESS FOR QUERY HIGH AS
 with
 
 tdim	as	(
@@ -51,6 +51,14 @@ where 1  =  1
    		,sum(fact.item_count)			as	items
 		,sum(fact.item_pay_dr_nic)/100	as	nic
 		,1								as	patient_count
+        ,case 	when	l5.cur_area_ltst_clsd = 'Y' 	or 	l5.cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN ICB'
+				else 	l5.cur_frmttd_area_team_ltst_nm	end		as	icb_name
+		,case 	when	l5.cur_area_ltst_clsd = 'Y' 	or 	l5.cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'-'
+				else 	l5.cur_area_team_ltst_alt_cde	end		as	icb_code
+		,case 	when	l5.cur_region_ltst_clsd = 'Y' 	or 	l5.cur_region_ltst_nm		in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN REGION'
+				else 	l5.cur_frmttd_region_ltst_nm	end		as	region_name
+		,case 	when	l5.cur_region_ltst_clsd = 'Y' 	or 	l5.cur_region_ltst_nm		in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'-'
+				else 	l5.cur_region_ltst_alt_cde		end		as	region_code
 	from
 		aml.px_form_item_elem_comb_fact_av  fact
 	inner join
@@ -80,11 +88,23 @@ where 1  =  1
 		,'England'							
 		,drug.drug_type
 		,fact.identified_patient_id
-   		,fact.patient_identified)
+   		,fact.patient_identified
+        ,case 	when	l5.cur_area_ltst_clsd = 'Y' 	or 	l5.cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN ICB'
+				else 	l5.cur_frmttd_area_team_ltst_nm	end
+		,case 	when	l5.cur_area_ltst_clsd = 'Y' 	or 	l5.cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'-'
+				else 	l5.cur_area_team_ltst_alt_cde	end	
+		,case 	when	l5.cur_region_ltst_clsd = 'Y' 	or 	l5.cur_region_ltst_nm		in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN REGION'
+				else 	l5.cur_frmttd_region_ltst_nm	end	
+		,case 	when	l5.cur_region_ltst_clsd = 'Y' 	or 	l5.cur_region_ltst_nm		in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'-'
+				else 	l5.cur_region_ltst_alt_cde		end)
 
 select
 	financial_year
 	,country
+    ,icb_name
+    ,icb_code
+    ,region_name
+    ,region_code
 	,drug_type
 	,patient_identified
 	,sum(patient_count)	as	patients
@@ -93,10 +113,13 @@ select
 from
 	fact
 where	1	=	1
-
 group by
 	financial_year
 	,country
+    ,icb_name
+    ,icb_code
+    ,region_name
+    ,region_code
 	,drug_type
 	,patient_identified
 order by

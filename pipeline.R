@@ -105,93 +105,93 @@ cost_per_icb_data <-
 
 cost_per_pat_data <-
   cost_per_patient_extract(con = con,
-                          schema = "KIGRA",
-                          table = "PFD_FACT_202324")  |>
+                          schema = "OST",
+                          table = "PFD_FACT_202406")  |>
   apply_sdc(rounding = F)
 
 pfd_national_data <-
   national_extract(con = con,
-                   schema = "KIGRA",
-                   table = "PFD_FACT_202324") |>
+                   schema = "OST",
+                   table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_paragraph_data <-
   paragraph_extract(con = con,
-                    schema = "KIGRA",
-                    table = "PFD_FACT_202324") |>
+                    schema = "OST",
+                    table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_u18_data <-
   child_adult_extract(con = con,
-                      schema = "KIGRA",
-                      table = "PFD_FACT_202324") |>
+                      schema = "OST",
+                      table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_imd_data <-
   imd_extract(con = con,
-              schema = "KIGRA",
-              table = "PFD_FACT_202324") |>
+              schema = "OST",
+              table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_imd_paragraph_data <-
   imd_paragraph_extract(con = con,
-                        schema = "KIGRA",
-                        table = "PFD_FACT_202324") |>
+                        schema = "OST",
+                        table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_ageband_data <-
   ageband_extract(con = con,
-                  schema = "KIGRA",
-                  table = "PFD_FACT_202324") |>
+                  schema = "OST",
+                  table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_ageband_paragraph_data <-
   ageband_paragraph_extract(con = con,
-                            schema = "KIGRA",
-                            table = "PFD_FACT_202324") |>
+                            schema = "OST",
+                            table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_gender_data <-
   gender_extract(con = con,
-                 schema = "KIGRA",
-                 table = "PFD_FACT_202324") |>
+                 schema = "OST",
+                 table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_gender_paragraph_data <-
   gender_paragraph_extract(con = con,
-                           schema = "KIGRA",
-                           table = "PFD_FACT_202324") |>
+                           schema = "OST",
+                           table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_age_gender_data <-
   age_gender_extract(con = con,
-                     schema = "KIGRA",
-                     table = "PFD_FACT_202324") |>
+                     schema = "OST",
+                     table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_age_gender_paragraph_data <-
   age_gender_paragraph_extract(con = con,
-                               schema = "KIGRA",
-                               table = "PFD_FACT_202324") |>
+                               schema = "OST",
+                               table = "PFD_FACT_202406") |>
   apply_sdc(rounding = F)
 
 pfd_national_presentation <- national_presentation(con = con,
-                                                   schema = "KIGRA",
-                                                   table = "PFD_FACT_202324")
+                                                   schema = "OST",
+                                                   table = "PFD_FACT_202406")
 
 patient_identification_dt <-
   capture_rate_extract_dt(con = con,
-                          schema = "KIGRA",
-                          table = "PFD_FACT_202324") |>
+                          schema = "OST",
+                          table = "PFD_FACT_202406") |>
   select(1, 2, last_col(4):last_col())
 
 patient_identification <-
   capture_rate_extract(con = con,
-                       schema = "KIGRA",
-                       table = "PFD_FACT_202324")
+                       schema = "OST",
+                       table = "PFD_FACT_202406")
 
 pfd_national_overall <-
-  tbl(con, dbplyr::in_schema("KIGRA", "PFD_FACT_OVERALL_202307")) |>
+  tbl(con, dbplyr::in_schema("OST", "PFD_FACT_OVERALL_202307")) |>
   collect() |>
   apply_sdc(rounding = F) |>
   select(
