@@ -33,6 +33,9 @@ if (Sys.getenv("DB_DWCP_USERNAME") == "") {
   )
 }
 
+install.packages("devtools")
+library(devtools)
+
 # install nhsbsaUtils package first as need check_and_install_packages()
 devtools::install_github("nhsbsa-data-analytics/nhsbsaUtils",
                          auth_token = Sys.getenv("GITHUB_PAT"))
@@ -191,7 +194,7 @@ patient_identification <-
                        table = "PFD_FACT_202406")
 
 pfd_national_overall <-
-  tbl(con, dbplyr::in_schema("OST", "PFD_FACT_OVERALL_202307")) |>
+  tbl(con, dbplyr::in_schema("OST", "PFD_FACT_OVERALL_202406")) |>
   collect() |>
   apply_sdc(rounding = F) |>
   select(
@@ -394,7 +397,7 @@ write_sheet(
     "2. The patient counts shown in these statistics should only be analysed at the level at which they are presented. Adding together any patient counts is likely to result in an overestimate of the number of patients."
     
   ),
-  costpericb_data |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
+  cost_per_icb_data |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
   14
 )
 
@@ -435,7 +438,7 @@ write_sheet(
     "3. Integrated Care Boards (ICBs) succeeded sustainability and transformation plans (STPs) and replaced the functions of clinical commissioning groups (CCGs) in July 2022 with ICB sub locations replacing CCGs during the transition period of 2022/23. This table now displays data at ICB level to reflect the current intended structure.",
     "4. Only costs where the patient was known have been included in the Total NIC per patient (GBP) calculation. "
   ),
-  cost_per_patienticb |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
+  cost_per_patient_icb |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
   14
 )
 
@@ -1206,7 +1209,7 @@ figure_6 <- basic_chart_hc(
   title = ""
 )
 
-figure_7_data_boxplot <- costpericb_data |>
+figure_7_data_boxplot <- cost_per_icb_data |>
   group_by(`Financial Year`) |>
   filter(`Identified Patient Flag` == "Y",
          `Integrated Care Board Name` != "UNKNOWN ICB") |>
