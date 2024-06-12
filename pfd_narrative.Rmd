@@ -168,9 +168,9 @@ patient_identification_dt |>
                                      list(className = "dt-right", targets = 2:6)))
   )
 
-```
+get_download_button(title = "Download table data", data = table_1_data, filename = "table_1")
 
-`r get_download_button(title = "Download table data", data = table_1_data, filename = "table_1")`
+```
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Patient identification rates)](`r config$costs_and_items_excel`)
 
@@ -187,9 +187,9 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Patient iden
 
 figure_1
 
-```
+get_download_button(title = "Download chart data", data = figure_1_data, filename = "figure_1")
 
-`r get_download_button(title = "Download chart data", data = figure_1_data, filename = "figure_1")`
+```
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
@@ -215,9 +215,9 @@ The number of identified patients that received prescribing for drugs used in di
 
 figure_2
 
-```
+get_download_button(title = "Download chart data", data = figure_2_data, filename = "figure_2")
 
-`r get_download_button(title = "Download chart data", data = figure_2_data, filename = "figure_2")`
+```
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
@@ -238,9 +238,9 @@ Costs for drugs used in diabetes increased to £1.53 billion in 2022/23. This wa
 
 figure_3
 
-```
+get_download_button(title = "Download chart data", data = figure_3_data, filename = "figure_3")
 
-`r get_download_button(title = "Download chart data", data = figure_3_data, filename = "figure_3")`
+```
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
@@ -263,9 +263,10 @@ In 2022/23, the cost of drugs used in diabetes accounted for 15% of the total sp
 
 figure_4
 
+get_download_button(title = "Download chart data", data = figure_4_data, filename = "figure_4")
+
 ```
 
-`r get_download_button(title = "Download chart data", data = figure_4_data, filename = "figure_4")`
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](`r config$costs_and_items_excel`)
 
@@ -293,9 +294,9 @@ For additional details regarding the groups, drugs, and devices mentioned, pleas
 
 figure_5
 
-```
+get_download_button(title = "Download chart data", data = figure_5_data, filename = "figure_5")
 
-`r get_download_button(title = "Download chart data", data = figure_5_data, filename = "figure_5")`
+```
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](`r config$costs_and_items_excel`)
 
@@ -321,9 +322,9 @@ Costs of prescribing of diabetic diagnostic and monitoring agents decreased by  
 
 figure_6
 
-```
+get_download_button(title = "Download chart data", data = figure_6_data, filename = "figure_6")
 
-`r get_download_button(title = "Download chart data", data = figure_6_data, filename = "figure_6")`
+```
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
@@ -337,9 +338,9 @@ This measure only includes prescribing of drugs used in diabetes and does not in
 
 figure_7
 
-```
+get_download_button(title = "Download chart data", data = figure_7_data_raw, filename = "figure_7")
 
-`r get_download_button(title = "Download chart data", data = figure_7_data_raw, filename = "figure_7")`
+```
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 4)](`r config$costs_and_items_excel`)
 
@@ -373,9 +374,9 @@ The cost per patient varied across ICBs in 2022/23, from £379 to £507 with the
 
 figure_8
 
-```
+get_download_button(title = "Download chart data", data = figure_8_data, filename = "figure_8")
 
-`r get_download_button(title = "Download chart data", data = figure_8_data, filename = "figure_8")`
+```
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2)](`r config$demographics_excel`)
 
@@ -388,7 +389,6 @@ Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2
 :::
 ::::
 
-
 While the overall number of identified patients receiving drugs used in diabetes prescribing has increased year-on-year, the overall split of male and female patients has remained consistent. In 2015/16, 45% of identified patients were female and 55% were male. This is the same proportion to 2022/23. However, there are an additional 310,000 female identified patients than there were in 2015/16, and an additional 390,000 males.
 
 Identified patients where their gender was unknown or indeterminate have been grouped together and can be found in the summary tables that accompany this release.
@@ -398,9 +398,9 @@ Identified patients where their gender was unknown or indeterminate have been gr
 
 figure_9
 
-```
+get_download_button(title = "Download chart data", data = figure_9_data, filename = "figure_9")
 
-`r get_download_button(title = "Download chart data", data = figure_9_data, filename = "figure_9")`
+```
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 6)](`r config$demographics_excel`)
 
@@ -431,9 +431,9 @@ pfd_u18_data |>
                                      list(className = "dt-right", targets = 1:7)))
   )
 
-```
+get_download_button(title = "Download table data", data = table_2_data, filename = "table_2")
 
-`r get_download_button(title = "Download table data", data = table_2_data, filename = "table_2")`
+```
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8)](`r config$demographics_excel`)
 
@@ -441,13 +441,13 @@ There were 38,000 identified patients aged 17 and under that received prescribin
 
 #### **`r paste0("Figure ",10,": Number of identified patients receiving diabetes prescribing by IMD quintile ", config$full_year)`** 
 
-```{r patients_by_imd,out.width = "100%"}
+```{r patients_by_imd}
 
 figure_10
 
-```
+get_download_button(title = "Download chart data", data = figure_10_data, filename = "figure_10")
 
-`r get_download_button(title = "Download chart data", data = figure_10_data, filename = "figure_10")`
+```
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9)](`r config$demographics_excel`)
 
