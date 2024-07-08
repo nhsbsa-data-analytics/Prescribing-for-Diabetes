@@ -75,21 +75,22 @@ req_pkgs <-
 nhsbsaUtils::check_and_install_packages(req_pkgs)
 
 # set up logging
-lf <-
-  logr::log_open(paste0(
-    "Y:/Official Stats/PfD/log/pfd_log",
-    format(Sys.time(), "%d%m%y%H%M%S"),
-    ".log"
-  ))
+# lf <-
+#   logr::log_open(paste0(
+#     "Y:/Official Stats/PfD/log/pfd_log",
+#     format(Sys.time(), "%d%m%y%H%M%S"),
+#     ".log"
+#   ))
 
 # load config
 config <- yaml::yaml.load_file("config.yml")
-log_print("Config loaded", hide_notes = TRUE)
-log_print(config, hide_notes = TRUE)
+
+# log_print("Config loaded", hide_notes = TRUE)
+# log_print(config, hide_notes = TRUE)
 
 # load options
 nhsbsaUtils::publication_options()
-log_print("Options loaded", hide_notes = TRUE)
+# log_print("Options loaded", hide_notes = TRUE)
 
 # 2. connect to DWH and pull max CY/FY  ----------------------------------------
 
@@ -103,95 +104,95 @@ con <- nhsbsaR::con_nhsbsa(dsn = "FBS_8192k",
 cost_per_icb_data <-
   cost_per_icb_extract(con = con,
                      schema = "OST",
-                     table = "PFD_FACT_202406") |>
+                     table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 cost_per_pat_data <-
   cost_per_patient_extract(con = con,
                           schema = "OST",
-                          table = "PFD_FACT_202406")  |>
+                          table = "PFD_FACT_202407")  |>
   apply_sdc(rounding = F)
 
 pfd_national_data <-
   national_extract(con = con,
                    schema = "OST",
-                   table = "PFD_FACT_202406") |>
+                   table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_paragraph_data <-
   paragraph_extract(con = con,
                     schema = "OST",
-                    table = "PFD_FACT_202406") |>
+                    table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_u18_data <-
   child_adult_extract(con = con,
                       schema = "OST",
-                      table = "PFD_FACT_202406") |>
+                      table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_imd_data <-
   imd_extract(con = con,
               schema = "OST",
-              table = "PFD_FACT_202406") |>
+              table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_imd_paragraph_data <-
   imd_paragraph_extract(con = con,
                         schema = "OST",
-                        table = "PFD_FACT_202406") |>
+                        table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_ageband_data <-
   ageband_extract(con = con,
                   schema = "OST",
-                  table = "PFD_FACT_202406") |>
+                  table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_ageband_paragraph_data <-
   ageband_paragraph_extract(con = con,
                             schema = "OST",
-                            table = "PFD_FACT_202406") |>
+                            table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_gender_data <-
   gender_extract(con = con,
                  schema = "OST",
-                 table = "PFD_FACT_202406") |>
+                 table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_gender_paragraph_data <-
   gender_paragraph_extract(con = con,
                            schema = "OST",
-                           table = "PFD_FACT_202406") |>
+                           table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_age_gender_data <-
   age_gender_extract(con = con,
                      schema = "OST",
-                     table = "PFD_FACT_202406") |>
+                     table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_age_gender_paragraph_data <-
   age_gender_paragraph_extract(con = con,
                                schema = "OST",
-                               table = "PFD_FACT_202406") |>
+                               table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
 pfd_national_presentation <- national_presentation(con = con,
                                                    schema = "OST",
-                                                   table = "PFD_FACT_202406")
+                                                   table = "PFD_FACT_202407")
 
 patient_identification_dt <-
   capture_rate_extract_dt(con = con,
                           schema = "OST",
-                          table = "PFD_FACT_202406") |>
+                          table = "PFD_FACT_202407") |>
   select(1, 2, last_col(4):last_col())
 
 patient_identification <-
   capture_rate_extract(con = con,
                        schema = "OST",
-                       table = "PFD_FACT_202406")
+                       table = "PFD_FACT_202407")
 
 pfd_national_overall <-
   tbl(con, dbplyr::in_schema("OST", "PFD_FACT_OVERALL_202406")) |>
@@ -1044,6 +1045,37 @@ openxlsx::saveWorkbook(wb,
 
 # 6. build charts and data -----------------------------------------------------
 
+table_1 <- patient_identification_dt |>
+  mutate(across(where(is.numeric), round, 2))|>
+  mutate(across(where(is.numeric), format, nsmall = 2)) |>
+  mutate(across(contains("20"), ~ paste0(.x, "%")))
+
+table_1_data <- patient_identification |>
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] ]", "", .
+  ))), everything())
+
+fy_df <- table_1_data |>
+  select(FINANCIAL_YEAR) |>
+  distinct() |>
+  arrange(desc(FINANCIAL_YEAR)) |>
+  slice(1:5)
+
+figure_1 <- group_chart_hc(
+  data = table_1_data |> filter(FINANCIAL_YEAR %in% fy_df$FINANCIAL_YEAR) |> mutate(IDENTIFIED_PATIENT_RATE = round(IDENTIFIED_PATIENT_RATE, 1)),
+  x = FINANCIAL_YEAR,
+  y = IDENTIFIED_PATIENT_RATE,
+  group = BNF_PARAGRAPH_NAME,
+  type = "line",
+  xLab = "Financial year",
+  yLab = "Identified Patient Rate (%)",
+  title = "",
+  dlOn = FALSE
+) |>
+  hc_yAxis(min = 96) |>
+  hc_tooltip(enabled = TRUE, shared = TRUE)
+
+
 figure_1_data <- pfd_national_overall |>
   filter(`Drug Type` == "Diabetes") |>
   group_by(`Financial Year`) |>
@@ -1061,7 +1093,7 @@ figure_1_data <- pfd_national_overall |>
     "[^[:alnum:] ]", "", .
   ))), everything())
 
-figure_1 <- group_chart_hc_new(
+figure_1 <- group_chart_hc(
   data = figure_1_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
@@ -1119,7 +1151,7 @@ figure_3_data <- pfd_national_overall |>
     "[^[:alnum:] ]", "", .
   ))), everything())
 
-figure_3 <- group_chart_hc_new(
+figure_3 <- group_chart_hc(
   figure_3_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
@@ -1144,7 +1176,7 @@ figure_4_data <- pfd_paragraph_data |>
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-figure_4 <- group_chart_hc_new(
+figure_4 <- group_chart_hc(
   figure_4_data,
   x = FINANCIAL_YEAR,
   y = ROUNDED_VALUE,
@@ -1176,7 +1208,7 @@ figure_5_data <- pfd_paragraph_data |>
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-figure_5 <- group_chart_hc_new(
+figure_5 <- group_chart_hc(
   figure_5_data,
   x = FINANCIAL_YEAR,
   y = ROUNDED_VALUE,
@@ -1288,7 +1320,7 @@ figure_8_data <- pfd_gender_data |>
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-figure_8 <- group_chart_hc_new(
+figure_8 <- group_chart_hc(
   figure_8_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
@@ -1338,11 +1370,6 @@ figure_10 <-  basic_chart_hc(
   title = ""
 )
 
-table_1_data <- patient_identification |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
-  ))), everything())
-
 table_2_data <- pfd_u18_data |>
   filter(`Age Band` != "Unknown") |>
   group_by(`Financial Year`, `Age Band`) |>
@@ -1371,16 +1398,20 @@ rmarkdown::render("pfd_background_aug_2023.Rmd",
                   output_format = "html_document",
                   output_file = "outputs/pfd_background_info_methodology_v001.html")
 
+rmarkdown::render("pfd_background_aug_2023.Rmd",
+                  output_format = "word_document",
+                  output_file = "outputs/pfd_background_info_methodology_v001.docx")
+
 # save user engagement document as html file into outputs folder
 # change file path to save somewhere else if needed
-rmarkdown::render("pfd_user_engagement_2223.Rmd",
-                  output_format = "html_document",
-                  output_file = "outputs/pfd_user_engagement_2223.html")
+# rmarkdown::render("pfd_user_engagement_2223.Rmd",
+#                   output_format = "html_document",
+#                   output_file = "outputs/pfd_user_engagement_2223.html")
 
 # 8. disconnect from DWH  ------------------------------------------------------
 
 DBI::dbDisconnect(con)
-log_print("Disconnected from DWH", hide_notes = TRUE)
+# log_print("Disconnected from DWH", hide_notes = TRUE)
 
 # close log
-logr::log_close()
+# logr::log_close()

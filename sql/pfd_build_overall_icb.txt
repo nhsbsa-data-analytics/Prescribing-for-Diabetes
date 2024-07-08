@@ -17,7 +17,7 @@ select * from tdim_1 where ym_count = 12
 )
 
 ,drug	as	(
-	select
+	select /*+ materialize */
 		cdr.year_month
   		,record_id
         ,case when bnf_paragraph	in	('060101','060102','060104','060106','2148')		then  'Diabetes' else 'Non-Diabetes' end as drug_type
@@ -30,7 +30,7 @@ select * from tdim_1 where ym_count = 12
 ),
 
 org as (
-select 
+select /*+ materialize */
 lvl_5_oupdt
 ,lvl_5_ou
 ,case 	when	cur_area_ltst_clsd = 'Y' 	or 	cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN ICB'
@@ -46,7 +46,7 @@ dim.cur_ep_level_5_flat_dim
 where cur_ctry_ou = 1
 )
 ,fact	as	(
-	select
+	select /*+ materialize */
 		tdim.financial_year
 		,drug.drug_type
         ,org.icb_name
@@ -89,7 +89,8 @@ where cur_ctry_ou = 1
         ,org.region_name
         ,org.region_code
 		,fact.identified_patient_id
-   		,fact.patient_identified)
+   		,fact.patient_identified
+)
 
 select
 	financial_year

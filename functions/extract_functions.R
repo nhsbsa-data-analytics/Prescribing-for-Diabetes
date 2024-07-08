@@ -336,8 +336,15 @@ gender_extract <- function(con,
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
       PATIENT_IDENTIFIED,
-      GENDER_DESCR,
+      PAT_GENDER,
       PATIENT_COUNT
+    ) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -348,7 +355,7 @@ gender_extract <- function(con,
   fact_gender <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
-      `Patient Gender` = GENDER_DESCR,
+      `Patient Gender` = PAT_GENDER,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
@@ -380,8 +387,15 @@ gender_paragraph_extract <- function(con,
       PATIENT_IDENTIFIED,
       PARAGRAPH_DESCR,
       BNF_PARAGRAPH,
-      GENDER_DESCR,
+      PAT_GENDER,
       PATIENT_COUNT
+    ) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -394,7 +408,7 @@ gender_paragraph_extract <- function(con,
       `Financial Year` = FINANCIAL_YEAR,
       `Paragraph Name` = PARAGRAPH_DESCR,
       `Paragraph Code` = BNF_PARAGRAPH,
-      `Patient Gender` = GENDER_DESCR,
+      `Patient Gender` = PAT_GENDER,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
@@ -428,8 +442,15 @@ age_gender_extract <- function(con,
       IDENTIFIED_PATIENT_ID,
       PATIENT_IDENTIFIED,
       CALC_AGE,
-      GENDER_DESCR,
+      PAT_GENDER,
       PATIENT_COUNT
+    ) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -438,7 +459,7 @@ age_gender_extract <- function(con,
     )
   
   fact_age_gender <- fact |>
-    filter(GENDER_DESCR != "Unknown") |>
+    filter(PAT_GENDER != "Unknown") |>
     dplyr::inner_join(dplyr::tbl(con,
                                  from = dbplyr::in_schema("DIM", "AGE_DIM")),
                       by = c("CALC_AGE" = "AGE")) |>
@@ -447,7 +468,7 @@ age_gender_extract <- function(con,
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
-      `Patient Gender` = GENDER_DESCR,
+      `Patient Gender` = PAT_GENDER,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
@@ -480,8 +501,15 @@ age_gender_paragraph_extract <- function(con,
       PARAGRAPH_DESCR,
       BNF_PARAGRAPH,
       CALC_AGE,
-      GENDER_DESCR,
+      PAT_GENDER,
       PATIENT_COUNT
+    ) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -490,7 +518,7 @@ age_gender_paragraph_extract <- function(con,
     )
   
   fact_age_gender <- fact |>
-    filter(GENDER_DESCR != "Unknown") |>
+    filter(PAT_GENDER != "Unknown") |>
     dplyr::inner_join(dplyr::tbl(con,
                                  from = dbplyr::in_schema("DIM", "AGE_DIM")),
                       by = c("CALC_AGE" = "AGE")) |>
@@ -499,7 +527,7 @@ age_gender_paragraph_extract <- function(con,
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
-      `Patient Gender` = GENDER_DESCR,
+      `Patient Gender` = PAT_GENDER,
       `Paragraph Name` = PARAGRAPH_DESCR,
       `Paragraph Code` = BNF_PARAGRAPH,
       `Identified Patient Flag` = PATIENT_IDENTIFIED

@@ -155,18 +155,9 @@ These statistics do not include any information that is personally identifiable.
 
 ```{r capture_rates}
 
-patient_identification_dt |>
-  mutate(across(where(is.numeric), round, 2))|>
-   mutate(across(where(is.numeric), format, nsmall = 2)) |>
-   mutate(across(contains("20"), ~ paste0(.x, "%"))) |> 
-  DT::datatable(
-    rownames = FALSE,
-    options = list(dom = "t",
-                   columnDefs = list(list(orderable = FALSE,
-                                          targets = "_all"),
-                                     list(className = "dt-left", targets = 0:1),
-                                     list(className = "dt-right", targets = 2:6)))
-  )
+
+
+knitr::kable(table_1, align = "llrrrrr")
 
 get_download_button(title = "Download table data", data = table_1_data, filename = "table_1")
 

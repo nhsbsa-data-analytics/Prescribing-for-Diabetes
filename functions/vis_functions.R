@@ -177,7 +177,11 @@ age_gender_chart <- function(data,
         )
       )
     ) |>
-    highcharter::hc_plotOptions(series = list(stacking = 'normal')) |>
+    highcharter::hc_plotOptions(series = list(stacking = 'normal'),
+                                bar = list(
+                                  pointPadding = 0,
+                                  groupPadding = 0
+                                )) |>
     highcharter::hc_series(
       list(
         dataLabels = list(

@@ -1,14 +1,11 @@
---DROP TABLE    pfd_tdim_202406  PURGE;
-CREATE TABLE  pfd_tdim_202406  COMPRESS FOR QUERY HIGH AS
+DROP TABLE    pfd_tdim_202407  PURGE;
+CREATE TABLE  pfd_tdim_202407  COMPRESS FOR QUERY HIGH AS
 
 WITH  tdim  as  (
 
 select
   year_month
   ,financial_year
-  ,calendar_year
-  ,financial_quarter_ext
-  ,financial_year||' Q'||financial_quarter				      as	financial_quarter
   ,count(year_month)	over(partition by	financial_year)	as	ym_count
   ,count(year_month)  over(partition by financial_quarter_ext) as  qtr_count
 from
@@ -20,8 +17,8 @@ where 1  =  1
 select * from tdim where ym_count = 12
 ;
 
---DROP TABLE    pfd_drug_dim_202406  PURGE;
-CREATE TABLE  pfd_drug_dim_202406  COMPRESS FOR QUERY HIGH AS
+DROP TABLE    pfd_drug_dim_202407  PURGE;
+CREATE TABLE  pfd_drug_dim_202407  COMPRESS FOR QUERY HIGH AS
 
 SELECT
   cdr.year_month
@@ -43,15 +40,15 @@ SELECT
 FROM
   dim.cdr_ep_drug_bnf_dim cdr
 INNER JOIN
-  pfd_tdim_202406  tdim
+  pfd_tdim_202407  tdim
   ON  cdr.year_month  = tdim.year_month
 WHERE 1 = 1
   AND bnf_section in  ('2148')
   or bnf_paragraph in ('060101','060102','060104','060106') 
 ;
 
-DROP TABLE    pfd_org_dim_202406 PURGE;
-CREATE TABLE  pfd_org_dim_202406 COMPRESS FOR QUERY HIGH AS
+DROP TABLE    pfd_org_dim_202407 PURGE;
+CREATE TABLE  pfd_org_dim_202407 COMPRESS FOR QUERY HIGH AS
 
 WITH
 
@@ -110,8 +107,6 @@ max_org AS  (
     ,cur_pcd.lvl_5_cur_postcode
     ,UPPER(REPLACE(ons.pcd, ' ', ''))         AS  pcd
     ,ons.lsoa11 AS  practice_lsoa_code
---    ,NVL(TO_CHAR(TO_NUMBER(ons.imd_decile)), 'Unknown')	AS	imd_decile
---		,NVL(TO_CHAR(TO_NUMBER(ons.imd_rank)), 'Unknown')	  AS	imd_rank
     ,TO_NUMBER(ons.imd_decile)	AS	imd_decile_prac
     ,TO_NUMBER(ons.imd_rank)	  AS	imd_rank_prac
     ,case 	when	l5.cur_area_ltst_clsd = 'Y' 	or 	l5.cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN ICB'
@@ -136,16 +131,13 @@ max_org AS  (
 SELECT  * FROM  org
 ;
 
-DROP TABLE    pfd_fact_202406  PURGE;
-CREATE TABLE  pfd_fact_202406  COMPRESS FOR  QUERY HIGH  AS
+DROP TABLE    pfd_fact_202407  PURGE;
+CREATE TABLE  pfd_fact_202407  COMPRESS FOR  QUERY HIGH  AS
 
-WITH  fact  AS  (
-  
+WITH  fact  AS  ( 
   SELECT
     fact.identified_patient_id
     ,tdim.financial_year
-  --  ,tdim.calendar_year
-  --  ,tdim.financial_quarter
     ,fact.year_month
     ,org.region_name
     ,org.region_code
@@ -165,14 +157,13 @@ WITH  fact  AS  (
     ,drug.chemical_substance_bnf_descr
     ,drug.presentation_bnf
     ,drug.presentation_bnf_descr
-    --  <methodology change 2023> no longer impute patient flag from PDS data
     ,fact.patient_identified
     ,fact.eps_part_date
     --	calculate age of patient using PDS_DOB at 30th Sept of given year
     ,nvl(trunc((to_number(substr(tdim.financial_year,1,4)||'0930') - to_number(to_char(fact.pds_dob,'YYYYMMDD')))/10000),-1)	AS	calc_age
     ,fact.pds_gender
     ,CASE WHEN  fact.pds_gender = 1 THEN  'Male'
-          WHEN  fact.pds_gender = 2 THEN  'Female'
+         WHEN  fact.pds_gender = 2 THEN  'Female'
           ELSE  'Unknown' END AS  gender_descr
     ,fact.patient_lsoa_code
     ,sum(item_count)        AS  item_count
@@ -181,14 +172,14 @@ WITH  fact  AS  (
   FROM
     aml.px_form_item_elem_comb_fact_av  fact
   INNER JOIN
-    pfd_tdim_202406  tdim
+    pfd_tdim_202407  tdim
     ON  fact.year_month = tdim.year_month
   INNER JOIN
-    pfd_org_dim_202406 org
+    pfd_org_dim_202407 org
     ON  fact.presc_type_prnt =  org.lvl_5_oupdt
     AND fact.presc_id_prnt   =  org.lvl_5_ou
   INNER JOIN
-    pfd_drug_dim_202406  drug
+    pfd_drug_dim_202407  drug
     ON  fact.calc_prec_drug_record_id = drug.record_id
     AND fact.year_month               = drug.year_month
   WHERE 1 = 1
@@ -255,9 +246,6 @@ WITH  fact  AS  (
 SELECT
     identified_patient_id
     ,financial_year
-  --  ,calendar_year
-  --  ,financial_quarter
-  --  ,year_month
     ,region_name
     ,region_code
     ,icb_name
@@ -275,7 +263,8 @@ SELECT
     ,presentation_bnf_descr
     ,patient_identified
     ,calc_age
-    ,pds_gender
+    --,pds_gender
+    ,pat_gender
     ,gender_descr
     ,practice_lsoa_code
     ,patient_lsoa_code
@@ -288,13 +277,13 @@ SELECT
     ,sum(item_calc_pay_qty) AS  item_calc_pay_qty
 FROM
   imd
+LEFT JOIN 
+    DIM.PATIENT_REGISTRATION_AV dems
+    on imd.identified_patient_id = dems.patient_id
 WHERE 1 = 1
 GROUP BY
     identified_patient_id
     ,financial_year
-  --  ,calendar_year
-  --  ,financial_quarter
-  --  ,year_month
     ,region_name
     ,region_code
     ,icb_name
@@ -312,7 +301,8 @@ GROUP BY
     ,presentation_bnf_descr
     ,patient_identified
     ,calc_age
-    ,pds_gender
+    --,pds_gender
+    ,pat_gender
     ,gender_descr
     ,practice_lsoa_code
     ,patient_lsoa_code
