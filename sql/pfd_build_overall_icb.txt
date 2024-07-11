@@ -1,7 +1,7 @@
--- DROP TABLE    pfd_fact_overall_icb_202406 PURGE;
-CREATE TABLE  pfd_fact_overall_icb_202406  COMPRESS FOR QUERY HIGH AS
+DROP TABLE    pfd_overall_icb_tdim_202407  PURGE;
+CREATE TABLE  pfd_overall_icb_tdim_202407  COMPRESS FOR QUERY HIGH AS
 with
-tdim_1	as	(
+tdim	as	(
 select
   year_month
   ,financial_year
@@ -11,26 +11,32 @@ from
 where 1  =  1
  and year_month  between 201504  and mgmt.pkg_public_dwh_functions.f_get_latest_period('EPACT2')
 ) 
+select * from tdim where ym_count = 12
+;
 
-,tdim as (
-select * from tdim_1 where ym_count = 12
-)
-
-,drug	as	(
-	select /*+ materialize */
+DROP TABLE    pfd_overall_icb_drug_202407  PURGE;
+CREATE TABLE  pfd_overall_icb_drug_202407  COMPRESS FOR QUERY HIGH AS
+WITH
+drug	as	(
+	select 
 		cdr.year_month
   		,record_id
         ,case when bnf_paragraph	in	('060101','060102','060104','060106','2148')		then  'Diabetes' else 'Non-Diabetes' end as drug_type
 	from
 		 dim.cdr_ep_drug_bnf_dim cdr
 	inner join	
-		tdim
+		pfd_overall_icb_tdim_202407 tdim
 		on	cdr.year_month	=	tdim.year_month
 	where	1	=	1		
-),
+)
 
+select * from drug;
+
+DROP TABLE    pfd_overall_icb_org_202407  PURGE;
+CREATE TABLE  pfd_overall_icb_org_202407  COMPRESS FOR QUERY HIGH AS
+WITH
 org as (
-select /*+ materialize */
+select 
 lvl_5_oupdt
 ,lvl_5_ou
 ,case 	when	cur_area_ltst_clsd = 'Y' 	or 	cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN ICB'
@@ -45,14 +51,20 @@ from
 dim.cur_ep_level_5_flat_dim
 where cur_ctry_ou = 1
 )
-,fact	as	(
-	select /*+ materialize */
+
+select * from org;
+
+DROP TABLE    pfd_overall_icb_fact_202407  PURGE;
+CREATE TABLE  pfd_overall_icb_fact_202407  COMPRESS FOR QUERY HIGH AS
+WITH
+fact	as	(
+	select
 		tdim.financial_year
 		,drug.drug_type
-        ,org.icb_name
+        --,org.icb_name
         ,org.icb_code
-        ,org.region_name
-        ,org.region_code
+        --,org.region_name
+        --,org.region_code
 		,fact.identified_patient_id
    		,fact.patient_identified
    		,sum(fact.item_count)			as	items
@@ -61,14 +73,14 @@ where cur_ctry_ou = 1
 		from
 		aml.px_form_item_elem_comb_fact_av  fact
 	inner join
-		tdim
+		pfd_overall_icb_tdim_202407 tdim
 		on	fact.year_month	=	tdim.year_month
 	inner join
-		drug
+		pfd_overall_icb_drug_202407 drug
 		on	fact.calc_prec_drug_record_id	=	drug.record_id
 		and	fact.year_month					=	drug.year_month
     inner join
-        org
+        pfd_overall_icb_org_202407 org
         on fact.presc_type_prnt = org.lvl_5_oupdt
         and fact.presc_id_prnt = org.lvl_5_ou
 	where	1	=	1
@@ -84,10 +96,10 @@ where cur_ctry_ou = 1
 	group by
 		tdim.financial_year
 		,drug.drug_type
-        ,org.icb_name
+        --,org.icb_name
         ,org.icb_code
-        ,org.region_name
-        ,org.region_code
+        --,org.region_name
+        --,org.region_code
 		,fact.identified_patient_id
    		,fact.patient_identified
 )
@@ -95,10 +107,10 @@ where cur_ctry_ou = 1
 select
 	financial_year
 	,drug_type
-    ,icb_name
+    --,icb_name
     ,icb_code
-    ,region_name
-    ,region_code
+    --,region_name
+    --,region_code
 	,patient_identified
 	,sum(patient_count)	as	patients
 	,sum(items)	as	items
@@ -109,12 +121,12 @@ where	1	=	1
 group by
 	financial_year
 	,drug_type
-    ,icb_name
+    --,icb_name
     ,icb_code
-    ,region_name
-    ,region_code
+    --,region_name
+    --,region_code
 	,patient_identified
 order by
 	financial_year
 	,drug_type
-	,patient_identified	desc
+	,patient_identified	desc;

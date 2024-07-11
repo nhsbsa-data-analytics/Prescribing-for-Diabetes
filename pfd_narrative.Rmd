@@ -154,13 +154,9 @@ These statistics do not include any information that is personally identifiable.
 **Table 1: The proportion of items for which an NHS number was recorded for listed BNF sections 2015/16 to 2022/23**
 
 ```{r capture_rates}
-
-
-
 knitr::kable(table_1, align = "llrrrrr")
 
 get_download_button(title = "Download table data", data = table_1_data, filename = "table_1")
-
 ```
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Patient identification rates)](`r config$costs_and_items_excel`)
@@ -170,18 +166,33 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Patient iden
 ## 2. Results and commentary
 
 ### 2.1. Volume and cost
-  
-#### **`r paste0("Figure ",1,": Number of diabetes items and patients prescribed per financial year")`**
 
+#### Number of diabetes items and patients prescribed by financial year {.tabset}
 
-```{r total_items}
+<div class = "tabset">
 
+##### Chart
+
+###### Figure 1:
+
+```{r}
 figure_1
 
-get_download_button(title = "Download chart data", data = figure_1_data, filename = "figure_1")
-
+get_download_button(title = "Download table data", data = figure_1_data, filename = "figure_1")
 ```
 
+##### Table
+
+###### Table 2:
+
+```{r}
+knitr::kable(table_2, align = "lr")
+
+get_download_button(title = "Download table data", data = figure_1_data, filename = "table_2")
+```
+
+</div>
+  
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
@@ -200,15 +211,29 @@ There were 66 million items for drugs used in diabetes prescribed in 2022/23. Th
 
 The number of identified patients that received prescribing for drugs used in diabetes was 3.4 million in 2022/23. This was an 26% increase from 2.7 million identified patients in 2015/16, and a 6% increase from 3.2 million in 2021/22. The increase in identified patients between 2021/22 and 2022/23 was the largest increase observed in the period, with yearly increases between 2015/16 and 2021/22 averaging 3%.
 
-#### **`r paste0("Figure ",2,": Cost of diabetes prescribing per financial year")`**
+#### Cost of diabetes prescribing by financial year {.tabset}
 
-```{r total_costs}
+<div class = "tabset">
 
+##### Chart
+
+###### FIGURE TITLE
+
+```{r}
 figure_2
 
 get_download_button(title = "Download chart data", data = figure_2_data, filename = "figure_2")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
+
+</div>
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
@@ -223,15 +248,29 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r
 
 Costs for drugs used in diabetes increased to £1.53 billion in 2022/23. This was a 60% increase from £960 million in 2015/16, and a 12% increase from £1.36 billion in 2021/22. The increase in costs between 2021/22 and 2022/23 was larger than the previous years increases, and was greater than the average yearly increase between 2015/16 and 2021/22 of 6%.
 
-#### **`r paste0("Figure ",3,": Proportion of all prescription items and costs for drugs used in diabetes per financial year")`**
+#### Proportion of all prescription items and costs for drugs used in diabetes by financial year {.tabset}
 
-```{r items_and_costs_proportions}
+<div class = "tabset">
 
+##### Chart
+  
+###### FIGURE TITLE
+  
+```{r}
 figure_3
 
 get_download_button(title = "Download chart data", data = figure_3_data, filename = "figure_3")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
+
+</div>
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
@@ -248,16 +287,29 @@ The proportion of all prescription items that drugs used in diabetes have accoun
 
 In 2022/23, the cost of drugs used in diabetes accounted for 15% of the total spend on all items prescribed in England. This is an increase from 2015/16 when drugs used in diabetes accounted for 10% of the total spend.
 
-#### **`r paste0("Figure ",4,": Number of diabetes items prescribed by BNF paragraph per financial year")`**
+#### Number of diabetes items prescribed by BNF paragraph by financial year {.tabset}
 
-```{r items_per_drug}
-
+<div class = "tabset">
+  
+##### Chart
+  
+###### FIGURE TITLE
+  
+```{r}
 figure_4
 
 get_download_button(title = "Download chart data", data = figure_4_data, filename = "figure_4")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
 
+</div>
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](`r config$costs_and_items_excel`)
 
@@ -278,16 +330,30 @@ Antidiabetic drugs, such as Metformin and Gliclazide, remain the most prescribed
 Prescribing of diabetic diagnostic and monitoring agents decreased by 4% from 6.9 million items in 2021/22 to 6.6 million in 2022/23. Insulin items increased by 4% from 7.8 million to 8.1 million. Medicines used for the treatment of hypoglycaemia increased by 12% from 350,000 items in 2021/22 to 390,000 in 2022/23.  Lastly, the number of glucose interstitial fluid detection sensor items prescribed was 2 million in 2022/23, a 38% increase from 1.4 million in 2021/22.
 
 For additional details regarding the groups, drugs, and devices mentioned, please refer to Section 3 of this publication.
+
+#### Cost of diabetes items prescribed by BNF paragraph and financial year {.tabset}
+
+<div class = "tabset">
   
-#### **`r paste0("Figure ",5,": Cost of diabetes items prescribed by BNF paragraph per financial year")`**
-
-```{r cost_per_drug}
-
+##### Chart
+  
+###### FIGURE TITLE
+  
+```{r}
 figure_5
 
 get_download_button(title = "Download chart data", data = figure_5_data, filename = "figure_5")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
+
+</div>
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](`r config$costs_and_items_excel`)
 
@@ -307,15 +373,29 @@ In 2022/23, antidiabetic drugs had a cost of £880 million. This was an increase
 
 Costs of prescribing of diabetic diagnostic and monitoring agents decreased by  from £140 million items in 2021/22 to £120 million in 2022/23. Costs of insulin items increased by 3% from £360 million to £370 million. Medicines used for the treatment of hypoglycaemia increased by 17% from £4.3 million in 2021/22 to £5 million in 2022/23. Lastly, the cost of glucose interstitial fluid detection sensors was £160 million in 2022/23, a 38% increase from £110 million in 2021/22.
 
-#### **`r paste0("Figure ",6,": Average number of diabetes items per patient per financial year")`**
+#### Average number of diabetes items per patient by financial year {.tabset}
 
-```{r items_per_pat}
-
+<div class = "tabset">
+  
+##### Chart
+  
+###### FIGURE TITLE
+  
+```{r}
 figure_6
 
 get_download_button(title = "Download chart data", data = figure_6_data, filename = "figure_6")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
+
+</div>
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
@@ -323,15 +403,29 @@ The average number of items per patient increased each year between 2015/16 and 
 
 This measure only includes prescribing of drugs used in diabetes and does not include any items prescribed from other BNF sections.
 
-#### **`r paste0("Figure ",7,": Cost of diabetes prescribing per patient per Integrated Care Board")`** 
+#### Cost of diabetes prescribing per patient by Integrated Care Board {.tabset}
 
-```{r cost_per_patient}
-
+<div class = "tabset">
+  
+##### Chart
+  
+###### FIGURE TITLE
+  
+```{r}
 figure_7
 
 get_download_button(title = "Download chart data", data = figure_7_data_raw, filename = "figure_7")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
+
+</div>
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 4)](`r config$costs_and_items_excel`)
 
@@ -359,15 +453,29 @@ The cost per patient varied across ICBs in 2022/23, from £379 to £507 with the
 
 ### 2.2. Patient demographics
 
-#### **`r paste0("Figure ",8,": Number of identified patients receiving diabetes prescribing by gender per financial year")`** 
+#### Number of identified patients receiving diabetes prescribing by gender and financial year {.tabset}
 
-```{r patients_by_sex}
-
+<div class = "tabset">
+  
+##### Chart
+  
+###### FIGURE TITLE
+  
+```{r}
 figure_8
 
 get_download_button(title = "Download chart data", data = figure_8_data, filename = "figure_8")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
+
+</div>
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2)](`r config$demographics_excel`)
 
@@ -384,14 +492,29 @@ While the overall number of identified patients receiving drugs used in diabetes
 
 Identified patients where their gender was unknown or indeterminate have been grouped together and can be found in the summary tables that accompany this release.
 
-#### **`r paste0("Figure ",9,": Number of identified patients receiving diabetes prescribing by age and gender ", config$full_year)`** 
-```{r patients_by_age}
+#### Number of identified patients receiving diabetes prescribing by age and gender {.tabset}
 
+<div class = "tabset">
+  
+##### Chart
+  
+###### FIGURE TITLE
+  
+```{r}
 figure_9
 
 get_download_button(title = "Download chart data", data = figure_9_data, filename = "figure_9")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
+
+</div>
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 6)](`r config$demographics_excel`)
 
@@ -430,15 +553,29 @@ Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8
 
 There were 38,000 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2022/23. This was 1% of all identified patients with a captured age.
 
-#### **`r paste0("Figure ",10,": Number of identified patients receiving diabetes prescribing by IMD quintile ", config$full_year)`** 
+#### Number of identified patients receiving diabetes prescribing by IMD quintile {.tabset}
 
-```{r patients_by_imd}
-
+<div class = "tabset">
+  
+##### Chart
+  
+###### FIGURE TITLE
+  
+```{r}
 figure_10
 
 get_download_button(title = "Download chart data", data = figure_10_data, filename = "figure_10")
+```
+
+##### Table
+
+###### TABLE TITLE
+
+```{r}
 
 ```
+
+</div>
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9)](`r config$demographics_excel`)
 

@@ -107,6 +107,35 @@ cost_per_icb_data <-
                      table = "PFD_FACT_202407") |>
   apply_sdc(rounding = F)
 
+icb_name_lookup <- cost_per_icb_data |>
+  select(`Integrated Care Board Code`, `Integrated Care Board Name`) |>
+  distinct()
+
+cost_per_icb_overall_data <- tbl(con, dbplyr::in_schema("OST", "PFD_OVERALL_ICB_FACT_202407")) |>
+  collect() |>
+  apply_sdc(rounding = F) |>
+  arrange(
+    FINANCIAL_YEAR,
+    ICB_CODE,
+    DRUG_TYPE,
+    desc(PATIENT_IDENTIFIED)
+  ) |>
+  select(
+    `Financial Year` = FINANCIAL_YEAR,
+    `Drug Type` = DRUG_TYPE,
+    `Integrated Care Board Code` = ICB_CODE,
+    `Identified Patient Flag` = PATIENT_IDENTIFIED,
+    `Total Identified Patients` = PATIENTS,
+    `Total Items` = ITEMS,
+    `Total Net Ingredient Cost (GBP)` = NIC
+  ) |>
+  mutate(`Total Identified Patients` = case_when(
+    is.na(`Total Identified Patients`) ~ 0,
+    TRUE ~ `Total Identified Patients`
+  )) |>
+  left_join(icb_name_lookup) |>
+  relocate(`Integrated Care Board Name`, .after = `Integrated Care Board Code`)
+
 cost_per_pat_data <-
   cost_per_patient_extract(con = con,
                           schema = "OST",
@@ -391,35 +420,35 @@ write_sheet(
   paste0(
     "Table 3: Prescribing for Diabetes - England 2015/16 to ",
     config$full_year,
-    "costs and items per ICB per financial year"
+    " costs and items per ICB per financial year"
   ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. The patient counts shown in these statistics should only be analysed at the level at which they are presented. Adding together any patient counts is likely to result in an overestimate of the number of patients."
     
   ),
-  cost_per_icb_data |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
+  cost_per_icb_overall_data,
   14
 )
 
 # left align columns A to D
 format_data(wb,
             "Cost_per_ICB",
-            c("A", "B", "C", "D"),
+            c("A", "B", "C", "D", "E"),
             "left",
             "")
 
 # right align columns E and F and round to whole numbers with thousand separator
 format_data(wb,
             "Cost_per_ICB",
-            c("E", "F"),
+            c("F", "G"),
             "right",
             "#,##0")
 
 # right align column G and round to 2dp with thousand separator
 format_data(wb,
             "Cost_per_ICB",
-            c("G"),
+            c("H"),
             "right",
             "#,##0.00")
 
@@ -1055,27 +1084,6 @@ table_1_data <- patient_identification |>
     "[^[:alnum:] ]", "", .
   ))), everything())
 
-fy_df <- table_1_data |>
-  select(FINANCIAL_YEAR) |>
-  distinct() |>
-  arrange(desc(FINANCIAL_YEAR)) |>
-  slice(1:5)
-
-figure_1 <- group_chart_hc(
-  data = table_1_data |> filter(FINANCIAL_YEAR %in% fy_df$FINANCIAL_YEAR) |> mutate(IDENTIFIED_PATIENT_RATE = round(IDENTIFIED_PATIENT_RATE, 1)),
-  x = FINANCIAL_YEAR,
-  y = IDENTIFIED_PATIENT_RATE,
-  group = BNF_PARAGRAPH_NAME,
-  type = "line",
-  xLab = "Financial year",
-  yLab = "Identified Patient Rate (%)",
-  title = "",
-  dlOn = FALSE
-) |>
-  hc_yAxis(min = 96) |>
-  hc_tooltip(enabled = TRUE, shared = TRUE)
-
-
 figure_1_data <- pfd_national_overall |>
   filter(`Drug Type` == "Diabetes") |>
   group_by(`Financial Year`) |>
@@ -1103,6 +1111,13 @@ figure_1 <- group_chart_hc(
   yLab = "Number of prescription items/identified patients",
   title = ""
 )
+
+table_2 <- figure_1_data |>
+  mutate(VALUE = format(VALUE, big.mark = ",")) |>
+  rename("Financial year" = 1,
+         "Measure" = 2,
+         "Value" = 3)
+
 
 figure_2_data <- pfd_national_overall |>
   filter(`Drug Type` == "Diabetes") |>
@@ -1325,7 +1340,7 @@ figure_8 <- group_chart_hc(
   x = FINANCIAL_YEAR,
   y = VALUE,
   group = PATIENT_GENDER,
-  type = "column",
+  type = "line",
   xLab = "Financial year",
   yLab = "Number of identified patients",
   title = "",
