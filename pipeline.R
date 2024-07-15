@@ -1110,7 +1110,9 @@ figure_1 <- group_chart_hc(
   xLab = "Financial year",
   yLab = "Number of prescription items/identified patients",
   title = ""
-)
+) |>
+  hc_subtitle(text = "M = Millions",
+              align = "left")
 
 table_2 <- figure_1_data |>
   mutate(VALUE = format(VALUE, big.mark = ",")) |>
@@ -1139,7 +1141,13 @@ figure_2 <- basic_chart_hc(
   yLab = "Cost (GBP)",
   title = "",
   currency = TRUE
-)
+) |>
+  hc_subtitle(text = "M = Millions",
+              align = "left") |>
+  hc_yAxis(min = 700000000)
+
+figure_2$x$hc_opts$xAxis$lineWidth <- 1
+figure_2$x$hc_opts$xAxis$lineColor <- "#E8EDEE"
 
 figure_3_data <- pfd_national_overall |>
   group_by(`Financial Year`, `Drug Type`) |>
@@ -1205,7 +1213,9 @@ figure_4 <- group_chart_hc(
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
              sort = TRUE) |>
-  hc_legend(enabled = TRUE)
+  hc_legend(enabled = TRUE) |>
+  hc_subtitle(text = "M = Millions",
+              align = "left")
 
 figure_5_data <- pfd_paragraph_data |>
   group_by(`Financial Year`, `BNF Paragraph Name`) |>
@@ -1237,7 +1247,9 @@ figure_5 <- group_chart_hc(
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
              sort = TRUE) |>
-  hc_legend(enabled = TRUE)
+  hc_legend(enabled = TRUE) |>
+  hc_subtitle(text = "M = Millions",
+              align = "left")
 
 figure_6_data <- pfd_national_overall |>
   filter(`Identified Patient Flag` == "Y", `Drug Type` == "Diabetes") |>
@@ -1254,7 +1266,22 @@ figure_6 <- basic_chart_hc(
   xLab = "Financial year",
   yLab = "Prescription items per patient",
   title = ""
+) |>
+  hc_yAxis(min = 15)
+
+figure_6$x$hc_opts$yAxis$tickPositioner <- JS(
+  "function() {
+                         var positions = [],
+                         tick = Math.floor(this.dataMin - 1) * 1;
+                         for (; tick - 1 <= this.dataMax; tick += 1) {
+                         positions.push(tick);
+                         }
+                         return positions;
+                         }"
 )
+
+figure_6$x$hc_opts$xAxis$lineWidth <- 1
+figure_6$x$hc_opts$xAxis$lineColor <- "#E8EDEE"
 
 figure_7_data_boxplot <- cost_per_icb_data |>
   group_by(`Financial Year`) |>
@@ -1320,6 +1347,12 @@ figure_7 <- highchart() |>
                         fontWeight = "bold")) |>
   hc_tooltip(formatter = tooltip) |>
   hc_credits(enabled = TRUE)
+
+figure_7$x$hc_opts$xAxis$lineWidth <- 1.5
+figure_7$x$hc_opts$xAxis$lineColor <- "#768692"
+figure_7$x$hc_opts$xAxis$tickWidth <- 1
+figure_7$x$hc_opts$xAxis$tickColor <- "#768692"
+figure_7$x$hc_opts$xAxis$tickmarkPlacement <- "on"
 
 figure_8_data <- pfd_gender_data |>
   filter(`Patient Gender` != "Unknown") |>
