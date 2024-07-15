@@ -103,23 +103,22 @@ con <- nhsbsaR::con_nhsbsa(dsn = "FBS_8192k",
 
 cost_per_icb_data <-
   cost_per_icb_extract(con = con,
-                     schema = "OST",
-                     table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+                       schema = "OST",
+                       table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 icb_name_lookup <- cost_per_icb_data |>
   select(`Integrated Care Board Code`, `Integrated Care Board Name`) |>
   distinct()
 
-cost_per_icb_overall_data <- tbl(con, dbplyr::in_schema("OST", "PFD_OVERALL_ICB_FACT_202407")) |>
+cost_per_icb_overall_data <-
+  tbl(con, dbplyr::in_schema("OST", "PFD_OVERALL_ICB_FACT_202407")) |>
   collect() |>
-  apply_sdc(rounding = F) |>
-  arrange(
-    FINANCIAL_YEAR,
-    ICB_CODE,
-    DRUG_TYPE,
-    desc(PATIENT_IDENTIFIED)
-  ) |>
+  arrange(FINANCIAL_YEAR,
+          ICB_CODE,
+          DRUG_TYPE,
+          desc(PATIENT_IDENTIFIED)) |>
   select(
     `Financial Year` = FINANCIAL_YEAR,
     `Drug Type` = DRUG_TYPE,
@@ -129,88 +128,105 @@ cost_per_icb_overall_data <- tbl(con, dbplyr::in_schema("OST", "PFD_OVERALL_ICB_
     `Total Items` = ITEMS,
     `Total Net Ingredient Cost (GBP)` = NIC
   ) |>
-  mutate(`Total Identified Patients` = case_when(
-    is.na(`Total Identified Patients`) ~ 0,
-    TRUE ~ `Total Identified Patients`
-  )) |>
+  mutate(
+    `Total Identified Patients` = case_when(
+      `Identified Patient Flag` == "N" ~ 0,
+      TRUE ~ `Total Identified Patients`
+    )
+  ) |>
   left_join(icb_name_lookup) |>
-  relocate(`Integrated Care Board Name`, .after = `Integrated Care Board Code`)
+  relocate(`Integrated Care Board Name`, .after = `Integrated Care Board Code`) |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 cost_per_pat_data <-
   cost_per_patient_extract(con = con,
-                          schema = "OST",
-                          table = "PFD_FACT_202407")  |>
-  apply_sdc(rounding = F)
+                           schema = "OST",
+                           table = "PFD_FACT_202407")  |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_national_data <-
   national_extract(con = con,
                    schema = "OST",
                    table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_paragraph_data <-
   paragraph_extract(con = con,
                     schema = "OST",
                     table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_u18_data <-
   child_adult_extract(con = con,
                       schema = "OST",
                       table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_imd_data <-
   imd_extract(con = con,
               schema = "OST",
               table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
+
 
 pfd_imd_paragraph_data <-
   imd_paragraph_extract(con = con,
                         schema = "OST",
                         table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_ageband_data <-
   ageband_extract(con = con,
                   schema = "OST",
                   table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_ageband_paragraph_data <-
   ageband_paragraph_extract(con = con,
                             schema = "OST",
                             table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_gender_data <-
   gender_extract(con = con,
                  schema = "OST",
                  table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_gender_paragraph_data <-
   gender_paragraph_extract(con = con,
                            schema = "OST",
                            table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_age_gender_data <-
   age_gender_extract(con = con,
                      schema = "OST",
                      table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_age_gender_paragraph_data <-
   age_gender_paragraph_extract(con = con,
                                schema = "OST",
                                table = "PFD_FACT_202407") |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_national_presentation <- national_presentation(con = con,
                                                    schema = "OST",
-                                                   table = "PFD_FACT_202407")
+                                                   table = "PFD_FACT_202407") 
 
 patient_identification_dt <-
   capture_rate_extract_dt(con = con,
@@ -226,7 +242,6 @@ patient_identification <-
 pfd_national_overall <-
   tbl(con, dbplyr::in_schema("OST", "PFD_FACT_OVERALL_202406")) |>
   collect() |>
-  apply_sdc(rounding = F) |>
   select(
     `Financial Year` = FINANCIAL_YEAR,
     `Drug Type` = DRUG_TYPE,
@@ -236,9 +251,11 @@ pfd_national_overall <-
     `Total Net Ingredient Cost (GBP)` = NIC
   ) |>
   mutate(`Total Identified Patients` = case_when(
-    is.na(`Total Identified Patients`) ~ 0,
+    `Identified Patient Flag` == "N" ~ 0,
     TRUE ~ `Total Identified Patients`
-  ))
+  )) |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 cost_per_patient_icb <- cost_per_icb_data |>
   dplyr::ungroup() |>
@@ -251,7 +268,8 @@ cost_per_patient_icb <- cost_per_icb_data |>
     `Integrated Care Board Code`,
     `Total NIC per patient (GBP)`
   ) |>
-  apply_sdc(rounding = F)
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 # 4. Build costs/items excel tables --------------------------------------------
 
@@ -543,7 +561,7 @@ accessibleTables::makeCoverSheet(
 
 # save file into outputs folder
 openxlsx::saveWorkbook(wb,
-                       "outputs/PfD_2022_2023_costs_and_items_v001.xlsx",
+                       "outputs/PfD_2023_2024_costs_and_items_v001.xlsx",
                        overwrite = TRUE)
 
 rm(wb)
@@ -695,7 +713,7 @@ write_sheet(
   ),
   pfd_gender_data,
   14
-) 
+)
 
 # left align columns A to D
 format_data(wb,
@@ -1069,18 +1087,18 @@ accessibleTables::makeCoverSheet(
 
 # save file into outputs folder
 openxlsx::saveWorkbook(wb,
-                       "outputs/PfD_2022_2023__patient_demographics_v001.xlsx",
+                       "outputs/PfD_2023_2024_patient_demographics_v001.xlsx",
                        overwrite = TRUE)
 
 # 6. build charts and data -----------------------------------------------------
 
 table_1 <- patient_identification_dt |>
-  mutate(across(where(is.numeric), round, 2))|>
+  mutate(across(where(is.numeric), round, 2)) |>
   mutate(across(where(is.numeric), format, nsmall = 2)) |>
   mutate(across(contains("20"), ~ paste0(.x, "%")))
 
 table_1_data <- patient_identification |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1097,7 +1115,7 @@ figure_1_data <- pfd_national_overall |>
     names_to = "Measure",
     values_to = "Value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1128,7 +1146,7 @@ figure_2_data <- pfd_national_overall |>
     `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
     .groups = "drop"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1164,13 +1182,13 @@ figure_3_data <- pfd_national_overall |>
   ) |>
   ungroup() |>
   filter(`Drug Type` == "Diabetes") |>
-  select(-`Total Items`, -`Total Net Ingredient Cost (GBP)`) |>
+  select(-`Total Items`,-`Total Net Ingredient Cost (GBP)`) |>
   pivot_longer(
     cols = c(`Proportion of items`, `Proportion of costs`),
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1194,7 +1212,7 @@ figure_4_data <- pfd_paragraph_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1228,7 +1246,7 @@ figure_5_data <- pfd_paragraph_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1253,7 +1271,7 @@ figure_5 <- group_chart_hc(
 
 figure_6_data <- pfd_national_overall |>
   filter(`Identified Patient Flag` == "Y", `Drug Type` == "Diabetes") |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ITEMS_PER_PATIENT = TOTAL_ITEMS  / TOTAL_IDENTIFIED_PATIENTS)
@@ -1363,7 +1381,7 @@ figure_8_data <- pfd_gender_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
@@ -1385,7 +1403,7 @@ figure_8 <- group_chart_hc(
 
 figure_9_data <- pfd_age_gender_data |>
   filter(`Financial Year` == max(`Financial Year`)) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything())
 
@@ -1402,11 +1420,11 @@ figure_10_data <- pfd_imd_data |>
     names_to = "measure",
     values_to = "value"
   ) |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3)) |>
-  select(-TOTAL_ITEMS,-TOTAL_NET_INGREDIENT_COST_GBP)
+  select(-TOTAL_ITEMS, -TOTAL_NET_INGREDIENT_COST_GBP)
 
 figure_10 <-  basic_chart_hc(
   figure_10_data,
@@ -1422,10 +1440,10 @@ table_2_data <- pfd_u18_data |>
   filter(`Age Band` != "Unknown") |>
   group_by(`Financial Year`, `Age Band`) |>
   ungroup() |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
+  rename_with(~ gsub(" ", "_", toupper(gsub(
     "[^[:alnum:] ]", "", .
   ))), everything()) |>
-  select(-TOTAL_ITEMS,-TOTAL_NET_INGREDIENT_COST_GBP)
+  select(-TOTAL_ITEMS, -TOTAL_NET_INGREDIENT_COST_GBP)
 
 # 7. create markdowns ----------------------------------------------------------
 
@@ -1433,12 +1451,12 @@ table_2_data <- pfd_u18_data |>
 # change file path to save somewhere else if needed
 rmarkdown::render("pfd_narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/pfd_summary_narrative_2022_23_v001.html")
+                  output_file = "outputs/pfd_summary_narrative_2023_24_v001.html")
 
 # save copy as word document for use in quality review
 rmarkdown::render("pfd_narrative.Rmd",
                   output_format = "word_document",
-                  output_file = "outputs/pfd_summary_narrative_2022_23_v001.docx")
+                  output_file = "outputs/pfd_summary_narrative_2023_24_v001.docx")
 
 # save background document as html file into outputs folder
 # change file path to save somewhere else if needed
