@@ -1,0 +1,132 @@
+DROP TABLE    pfd_overall_icb_tdim_202407  PURGE;
+CREATE TABLE  pfd_overall_icb_tdim_202407  COMPRESS FOR QUERY HIGH AS
+with
+tdim	as	(
+select
+  year_month
+  ,financial_year
+  ,count(year_month)	over(partition by	financial_year)	as	ym_count 
+from
+  dim.year_month_dim
+where 1  =  1
+ and year_month  between 201504  and mgmt.pkg_public_dwh_functions.f_get_latest_period('EPACT2')
+) 
+select * from tdim where ym_count = 12
+;
+
+DROP TABLE    pfd_overall_icb_drug_202407  PURGE;
+CREATE TABLE  pfd_overall_icb_drug_202407  COMPRESS FOR QUERY HIGH AS
+WITH
+drug	as	(
+	select 
+		cdr.year_month
+  		,record_id
+        ,case when bnf_paragraph	in	('060101','060102','060104','060106','2148')		then  'Diabetes' else 'Non-Diabetes' end as drug_type
+	from
+		 dim.cdr_ep_drug_bnf_dim cdr
+	inner join	
+		pfd_overall_icb_tdim_202407 tdim
+		on	cdr.year_month	=	tdim.year_month
+	where	1	=	1		
+)
+
+select * from drug;
+
+DROP TABLE    pfd_overall_icb_org_202407  PURGE;
+CREATE TABLE  pfd_overall_icb_org_202407  COMPRESS FOR QUERY HIGH AS
+WITH
+org as (
+select 
+lvl_5_oupdt
+,lvl_5_ou
+,case 	when	cur_area_ltst_clsd = 'Y' 	or 	cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN ICB'
+    else 	cur_frmttd_area_team_ltst_nm	end		as	icb_name
+,case 	when	cur_area_ltst_clsd = 'Y' 	or 	cur_area_team_ltst_nm	in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'-'
+    else 	cur_area_team_ltst_alt_cde	end		as	icb_code
+,case 	when	cur_region_ltst_clsd = 'Y' 	or 	cur_region_ltst_nm		in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'UNKNOWN REGION'
+    else 	cur_frmttd_region_ltst_nm	end		as	region_name
+,case 	when	cur_region_ltst_clsd = 'Y' 	or 	cur_region_ltst_nm		in	('ENGLISH/WELSH DUMMY DENTAL','UNIDENTIFIED DEPUTISING SERVICES','UNIDENTIFIED DOCTORS')	then	'-'
+    else 	cur_region_ltst_alt_cde		end		as	region_code
+from 
+dim.cur_ep_level_5_flat_dim
+where cur_ctry_ou = 1
+)
+
+select * from org;
+
+DROP TABLE    pfd_overall_icb_fact_202407  PURGE;
+CREATE TABLE  pfd_overall_icb_fact_202407  COMPRESS FOR QUERY HIGH AS
+WITH
+fact	as	(
+	select
+		tdim.financial_year
+		,drug.drug_type
+        --,org.icb_name
+        ,org.icb_code
+        --,org.region_name
+        --,org.region_code
+		,fact.identified_patient_id
+   		,fact.patient_identified
+   		,sum(fact.item_count)			as	items
+		,sum(fact.item_pay_dr_nic)/100	as	nic
+		,1								as	patient_count
+		from
+		aml.px_form_item_elem_comb_fact_av  fact
+	inner join
+		pfd_overall_icb_tdim_202407 tdim
+		on	fact.year_month	=	tdim.year_month
+	inner join
+		pfd_overall_icb_drug_202407 drug
+		on	fact.calc_prec_drug_record_id	=	drug.record_id
+		and	fact.year_month					=	drug.year_month
+    inner join
+        pfd_overall_icb_org_202407 org
+        on fact.presc_type_prnt = org.lvl_5_oupdt
+        and fact.presc_id_prnt = org.lvl_5_ou
+	where	1	=	1
+		--	regular exlusions
+		and	fact.PAY_DA_END			=	'N' -- excludes disallowed items
+		and fact.PAY_ND_END			=	'N' -- excludes not dispensed items
+		and fact.PAY_RB_END			=	'N' -- excludes referred back items
+		and fact.CD_REQ				=	'N' -- excludes controlled drug requisitions
+		and fact.OOHC_IND			=	0   -- excludes out of hours dispensing
+		and fact.PRIVATE_IND		=	0   -- excludes private dispensers
+		and fact.IGNORE_FLAG		=	'N' -- excludes LDP dummy forms	
+		and	fact.PRESC_TYPE_PRNT	not in	(8,54)	-- excludes private and pharmacy prescribers
+	group by
+		tdim.financial_year
+		,drug.drug_type
+        --,org.icb_name
+        ,org.icb_code
+        --,org.region_name
+        --,org.region_code
+		,fact.identified_patient_id
+   		,fact.patient_identified
+)
+
+select
+	financial_year
+	,drug_type
+    --,icb_name
+    ,icb_code
+    --,region_name
+    --,region_code
+	,patient_identified
+	,sum(patient_count)	as	patients
+	,sum(items)	as	items
+	,sum(nic)	as	nic
+from
+	fact
+where	1	=	1
+group by
+	financial_year
+	,drug_type
+    --,icb_name
+    ,icb_code
+    --,region_name
+    --,region_code
+	,patient_identified
+order by
+	financial_year
+	,drug_type
+	,patient_identified	desc;

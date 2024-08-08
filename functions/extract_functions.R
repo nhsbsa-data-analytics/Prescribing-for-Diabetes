@@ -27,7 +27,7 @@ national_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -69,7 +69,7 @@ paragraph_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -116,7 +116,7 @@ child_adult_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -163,7 +163,7 @@ imd_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -214,7 +214,7 @@ imd_paragraph_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -261,7 +261,7 @@ ageband_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -311,7 +311,7 @@ ageband_paragraph_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -336,8 +336,15 @@ gender_extract <- function(con,
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
       PATIENT_IDENTIFIED,
-      GENDER_DESCR,
+      PAT_GENDER,
       PATIENT_COUNT
+    ) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -348,13 +355,13 @@ gender_extract <- function(con,
   fact_gender <- fact |>
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
-      `Patient Gender` = GENDER_DESCR,
+      `Patient Gender` = PAT_GENDER,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -380,8 +387,15 @@ gender_paragraph_extract <- function(con,
       PATIENT_IDENTIFIED,
       PARAGRAPH_DESCR,
       BNF_PARAGRAPH,
-      GENDER_DESCR,
+      PAT_GENDER,
       PATIENT_COUNT
+    ) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -394,13 +408,13 @@ gender_paragraph_extract <- function(con,
       `Financial Year` = FINANCIAL_YEAR,
       `Paragraph Name` = PARAGRAPH_DESCR,
       `Paragraph Code` = BNF_PARAGRAPH,
-      `Patient Gender` = GENDER_DESCR,
+      `Patient Gender` = PAT_GENDER,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -428,8 +442,15 @@ age_gender_extract <- function(con,
       IDENTIFIED_PATIENT_ID,
       PATIENT_IDENTIFIED,
       CALC_AGE,
-      GENDER_DESCR,
+      PAT_GENDER,
       PATIENT_COUNT
+    ) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -438,7 +459,7 @@ age_gender_extract <- function(con,
     )
   
   fact_age_gender <- fact |>
-    filter(GENDER_DESCR != "Unknown") |>
+    filter(PAT_GENDER != "Unknown") |>
     dplyr::inner_join(dplyr::tbl(con,
                                  from = dbplyr::in_schema("DIM", "AGE_DIM")),
                       by = c("CALC_AGE" = "AGE")) |>
@@ -447,13 +468,13 @@ age_gender_extract <- function(con,
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
-      `Patient Gender` = GENDER_DESCR,
+      `Patient Gender` = PAT_GENDER,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
     ) |>
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -480,8 +501,15 @@ age_gender_paragraph_extract <- function(con,
       PARAGRAPH_DESCR,
       BNF_PARAGRAPH,
       CALC_AGE,
-      GENDER_DESCR,
+      PAT_GENDER,
       PATIENT_COUNT
+    ) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -490,7 +518,7 @@ age_gender_paragraph_extract <- function(con,
     )
   
   fact_age_gender <- fact |>
-    filter(GENDER_DESCR != "Unknown") |>
+    filter(PAT_GENDER != "Unknown") |>
     dplyr::inner_join(dplyr::tbl(con,
                                  from = dbplyr::in_schema("DIM", "AGE_DIM")),
                       by = c("CALC_AGE" = "AGE")) |>
@@ -499,7 +527,7 @@ age_gender_paragraph_extract <- function(con,
     dplyr::group_by(
       `Financial Year` = FINANCIAL_YEAR,
       `Age Band` = AGE_BAND,
-      `Patient Gender` = GENDER_DESCR,
+      `Patient Gender` = PAT_GENDER,
       `Paragraph Name` = PARAGRAPH_DESCR,
       `Paragraph Code` = BNF_PARAGRAPH,
       `Identified Patient Flag` = PATIENT_IDENTIFIED
@@ -507,7 +535,7 @@ age_gender_paragraph_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -538,7 +566,7 @@ national_presentation <- function(con,
     ) |>
     summarise(
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -642,7 +670,7 @@ cost_per_icb_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
@@ -678,11 +706,11 @@ cost_per_patient_extract <- function(con,
     dplyr::summarise(
       `Total Identified Patients` = sum(PATIENT_COUNT, na.rm = T),
       `Total Items` = sum(ITEM_COUNT, na.rm = T),
-      `Total Net Ingredient Cost (GBP)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
+      `Total Net Ingredient Cost (£)` = sum(ITEM_PAY_DR_NIC, na.rm = T) /
         100,
       .groups = "drop"
     ) |>
-    dplyr::mutate(`Total NIC per patient (GBP)` = `Total Net Ingredient Cost (GBP)` /
+    dplyr::mutate(`Total NIC per patient (£)` = `Total Net Ingredient Cost (£)` /
                     `Total Identified Patients`)  |>
     dplyr::arrange(`Financial Year`) |>
     collect()

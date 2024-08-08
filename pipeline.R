@@ -33,9 +33,13 @@ if (Sys.getenv("DB_DWCP_USERNAME") == "") {
   )
 }
 
+install.packages("devtools")
+library(devtools)
+
 # install nhsbsaUtils package first as need check_and_install_packages()
 devtools::install_github("nhsbsa-data-analytics/nhsbsaUtils",
-                         auth_token = Sys.getenv("GITHUB_PAT"))
+                         auth_token = Sys.getenv("GITHUB_PAT"),
+                         force = TRUE)
 
 library(nhsbsaUtils)
 
@@ -72,21 +76,22 @@ req_pkgs <-
 nhsbsaUtils::check_and_install_packages(req_pkgs)
 
 # set up logging
-lf <-
-  logr::log_open(paste0(
-    "Y:/Official Stats/PfD/log/pfd_log",
-    format(Sys.time(), "%d%m%y%H%M%S"),
-    ".log"
-  ))
+# lf <-
+#   logr::log_open(paste0(
+#     "Y:/Official Stats/PfD/log/pfd_log",
+#     format(Sys.time(), "%d%m%y%H%M%S"),
+#     ".log"
+#   ))
 
 # load config
 config <- yaml::yaml.load_file("config.yml")
-log_print("Config loaded", hide_notes = TRUE)
-log_print(config, hide_notes = TRUE)
+
+# log_print("Config loaded", hide_notes = TRUE)
+# log_print(config, hide_notes = TRUE)
 
 # load options
 nhsbsaUtils::publication_options()
-log_print("Options loaded", hide_notes = TRUE)
+# log_print("Options loaded", hide_notes = TRUE)
 
 # 2. connect to DWH and pull max CY/FY  ----------------------------------------
 
@@ -99,126 +104,173 @@ con <- nhsbsaR::con_nhsbsa(dsn = "FBS_8192k",
 
 cost_per_icb_data <-
   cost_per_icb_extract(con = con,
-                     schema = "OST",
-                     table = "PFD_FACT_202406") |>
-  apply_sdc(rounding = F)
+                       schema = "OST",
+                       table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
+
+icb_name_lookup <- cost_per_icb_data |>
+  select(`Integrated Care Board Code`, `Integrated Care Board Name`) |>
+  distinct()
+
+cost_per_icb_overall_data <-
+  tbl(con, dbplyr::in_schema("OST", "PFD_OVERALL_ICB_FACT_202407")) |>
+  collect() |>
+  arrange(FINANCIAL_YEAR,
+          ICB_CODE,
+          DRUG_TYPE,
+          desc(PATIENT_IDENTIFIED)) |>
+  select(
+    `Financial Year` = FINANCIAL_YEAR,
+    `Drug Type` = DRUG_TYPE,
+    `Integrated Care Board Code` = ICB_CODE,
+    `Identified Patient Flag` = PATIENT_IDENTIFIED,
+    `Total Identified Patients` = PATIENTS,
+    `Total Items` = ITEMS,
+    `Total Net Ingredient Cost (£)` = NIC
+  ) |>
+  mutate(
+    `Total Identified Patients` = case_when(
+      `Identified Patient Flag` == "N" ~ 0,
+      TRUE ~ `Total Identified Patients`
+    )
+  ) |>
+  left_join(icb_name_lookup) |>
+  relocate(`Integrated Care Board Name`, .after = `Integrated Care Board Code`) |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 cost_per_pat_data <-
   cost_per_patient_extract(con = con,
-                          schema = "KIGRA",
-                          table = "PFD_FACT_202324")  |>
-  apply_sdc(rounding = F)
+                           schema = "OST",
+                           table = "PFD_FACT_202407")  |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_national_data <-
   national_extract(con = con,
-                   schema = "KIGRA",
-                   table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                   schema = "OST",
+                   table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_paragraph_data <-
   paragraph_extract(con = con,
-                    schema = "KIGRA",
-                    table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                    schema = "OST",
+                    table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_u18_data <-
   child_adult_extract(con = con,
-                      schema = "KIGRA",
-                      table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                      schema = "OST",
+                      table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_imd_data <-
   imd_extract(con = con,
-              schema = "KIGRA",
-              table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+              schema = "OST",
+              table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
+
 
 pfd_imd_paragraph_data <-
   imd_paragraph_extract(con = con,
-                        schema = "KIGRA",
-                        table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                        schema = "OST",
+                        table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_ageband_data <-
   ageband_extract(con = con,
-                  schema = "KIGRA",
-                  table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                  schema = "OST",
+                  table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_ageband_paragraph_data <-
   ageband_paragraph_extract(con = con,
-                            schema = "KIGRA",
-                            table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                            schema = "OST",
+                            table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_gender_data <-
   gender_extract(con = con,
-                 schema = "KIGRA",
-                 table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                 schema = "OST",
+                 table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_gender_paragraph_data <-
   gender_paragraph_extract(con = con,
-                           schema = "KIGRA",
-                           table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                           schema = "OST",
+                           table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_age_gender_data <-
   age_gender_extract(con = con,
-                     schema = "KIGRA",
-                     table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                     schema = "OST",
+                     table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_age_gender_paragraph_data <-
   age_gender_paragraph_extract(con = con,
-                               schema = "KIGRA",
-                               table = "PFD_FACT_202324") |>
-  apply_sdc(rounding = F)
+                               schema = "OST",
+                               table = "PFD_FACT_202407") |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 pfd_national_presentation <- national_presentation(con = con,
-                                                   schema = "KIGRA",
-                                                   table = "PFD_FACT_202324")
+                                                   schema = "OST",
+                                                   table = "PFD_FACT_202407")
 
 patient_identification_dt <-
   capture_rate_extract_dt(con = con,
-                          schema = "KIGRA",
-                          table = "PFD_FACT_202324") |>
+                          schema = "OST",
+                          table = "PFD_FACT_202407") |>
   select(1, 2, last_col(4):last_col())
 
 patient_identification <-
   capture_rate_extract(con = con,
-                       schema = "KIGRA",
-                       table = "PFD_FACT_202324")
+                       schema = "OST",
+                       table = "PFD_FACT_202407")
 
 pfd_national_overall <-
-  tbl(con, dbplyr::in_schema("KIGRA", "PFD_FACT_OVERALL_202307")) |>
+  tbl(con, dbplyr::in_schema("OST", "PFD_FACT_OVERALL_202406")) |>
   collect() |>
-  apply_sdc(rounding = F) |>
   select(
     `Financial Year` = FINANCIAL_YEAR,
     `Drug Type` = DRUG_TYPE,
     `Identified Patient Flag` = PATIENT_IDENTIFIED,
     `Total Identified Patients` = PATIENTS,
     `Total Items` = ITEMS,
-    `Total Net Ingredient Cost (GBP)` = NIC
+    `Total Net Ingredient Cost (£)` = NIC
   ) |>
-  mutate(`Total Identified Patients` = case_when(
-    is.na(`Total Identified Patients`) ~ 0,
-    TRUE ~ `Total Identified Patients`
-  ))
+  mutate(
+    `Total Identified Patients` = case_when(
+      `Identified Patient Flag` == "N" ~ 0,
+      TRUE ~ `Total Identified Patients`
+    )
+  ) |>
+  apply_sdc(rounding = F,
+            suppress_column = "Total Identified Patients")
 
 cost_per_patient_icb <- cost_per_icb_data |>
   dplyr::ungroup() |>
   dplyr::filter(`Identified Patient Flag` == "Y") |>
-  dplyr::mutate(`Total NIC per patient (GBP)` = `Total Net Ingredient Cost (GBP)` /
+  dplyr::mutate(`Total NIC per patient (£)` = `Total Net Ingredient Cost (£)` /
                   `Total Identified Patients`)  |>
   dplyr::select(
     `Financial Year`,
     `Integrated Care Board Name`,
     `Integrated Care Board Code`,
-    `Total NIC per patient (GBP)`
-  ) |>
-  apply_sdc(rounding = F)
+    `Total NIC per patient (£)`
+  )
 
 # 4. Build costs/items excel tables --------------------------------------------
 
@@ -243,8 +295,8 @@ meta_fields <- c(
   "Integrated Care Board Code",
   "Integrated Care Board Name",
   "Total Items",
-  "Total Net Ingredient Cost (GBP)",
-  "Total NIC per patient (GBP)",
+  "Total Net Ingredient Cost (£)",
+  "Total NIC per patient (£)",
   "Total Patients",
   "Drug Type"
 )
@@ -277,10 +329,10 @@ write_sheet(
   paste0(
     "Prescribing for Diabetes - 2015/16 to ",
     config$full_year,
-    " - Proportion of items for which an NHS number was recorded (%)"
+    " - Percentage of items for which an NHS number was recorded (%)"
   ),
   c(
-    "The below proportions reflect the percentage of prescription items where a PDS verified NHS number was recorded."
+    "The below percentages reflect the percentage of prescription items where a PDS verified NHS number was recorded."
   ),
   patient_identification,
   42
@@ -387,35 +439,35 @@ write_sheet(
   paste0(
     "Table 3: Prescribing for Diabetes - England 2015/16 to ",
     config$full_year,
-    "costs and items per ICB per financial year"
+    " costs and items per ICB per financial year"
   ),
   c(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. The patient counts shown in these statistics should only be analysed at the level at which they are presented. Adding together any patient counts is likely to result in an overestimate of the number of patients."
     
   ),
-  costpericb_data |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
+  cost_per_icb_overall_data,
   14
 )
 
 # left align columns A to D
 format_data(wb,
             "Cost_per_ICB",
-            c("A", "B", "C", "D"),
+            c("A", "B", "C", "D", "E"),
             "left",
             "")
 
 # right align columns E and F and round to whole numbers with thousand separator
 format_data(wb,
             "Cost_per_ICB",
-            c("E", "F"),
+            c("F", "G"),
             "right",
             "#,##0")
 
 # right align column G and round to 2dp with thousand separator
 format_data(wb,
             "Cost_per_ICB",
-            c("G"),
+            c("H"),
             "right",
             "#,##0.00")
 
@@ -433,9 +485,9 @@ write_sheet(
     "1. Field definitions can be found on the 'Metadata' tab.",
     "2. The patient counts shown in these statistics should only be analysed at the level at which they are presented. Adding together any patient counts is likely to result in an overestimate of the number of patients.",
     "3. Integrated Care Boards (ICBs) succeeded sustainability and transformation plans (STPs) and replaced the functions of clinical commissioning groups (CCGs) in July 2022 with ICB sub locations replacing CCGs during the transition period of 2022/23. This table now displays data at ICB level to reflect the current intended structure.",
-    "4. Only costs where the patient was known have been included in the Total NIC per patient (GBP) calculation. "
+    "4. Only costs where the patient was known have been included in the Total NIC per patient (£) calculation. "
   ),
-  cost_per_patienticb |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
+  cost_per_patient_icb |> filter(`Integrated Care Board Name` != "UNKNOWN ICB"),
   14
 )
 
@@ -510,7 +562,7 @@ accessibleTables::makeCoverSheet(
 
 # save file into outputs folder
 openxlsx::saveWorkbook(wb,
-                       "outputs/PfD_2022_2023_costs_and_items_v001.xlsx",
+                       "outputs/PfD_2023_2024_costs_and_items_v001.xlsx",
                        overwrite = TRUE)
 
 rm(wb)
@@ -543,8 +595,8 @@ meta_fields <- c(
   "Integrated Care Board Code",
   "Integrated Care Board Name",
   "Total Items",
-  "Total Net Ingredient Cost (GBP)",
-  "Total NIC per patient (GBP)",
+  "Total Net Ingredient Cost (£)",
+  "Total NIC per patient (£)",
   "Total Patients",
   "Drug Type",
   "Patient Gender",
@@ -585,10 +637,10 @@ write_sheet(
   paste0(
     "Prescribing for Diabetes - 2015/16 to ",
     config$full_year,
-    " - Proportion of items for which an NHS number was recorded (%)"
+    " - Percentage of items for which an NHS number was recorded (%)"
   ),
   c(
-    "The below proportions reflect the percentage of prescription items where a PDS verified NHS number was recorded."
+    "The below percentages reflect the percentage of prescription items where a PDS verified NHS number was recorded."
   ),
   patient_identification,
   42
@@ -662,7 +714,7 @@ write_sheet(
   ),
   pfd_gender_data,
   14
-) 
+)
 
 # left align columns A to D
 format_data(wb,
@@ -1036,10 +1088,27 @@ accessibleTables::makeCoverSheet(
 
 # save file into outputs folder
 openxlsx::saveWorkbook(wb,
-                       "outputs/PfD_2022_2023__patient_demographics_v001.xlsx",
+                       "outputs/PfD_2023_2024_patient_demographics_v001.xlsx",
                        overwrite = TRUE)
 
 # 6. build charts and data -----------------------------------------------------
+
+table_1 <- patient_identification_dt |>
+  mutate(across(where(is.numeric), function(x)
+    round(x, 2))) |>
+  mutate(across(where(is.numeric), function(x)
+    format(x, nsmall = 2))) |>
+  mutate(across(contains("20"), function(x)
+    paste0(x, "%"))) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    )))))
+
+table_1_data <- patient_identification |>
+  rename_with( ~ gsub(" ", "_", toupper(gsub(
+    "[^[:alnum:] £]", "", .
+  ))), everything())
 
 figure_1_data <- pfd_national_overall |>
   filter(`Drug Type` == "Diabetes") |>
@@ -1055,10 +1124,10 @@ figure_1_data <- pfd_national_overall |>
     values_to = "Value"
   ) |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
+    "[^[:alnum:] £]", "", .
   ))), everything())
 
-figure_1 <- group_chart_hc_new(
+figure_1 <- group_chart_hc(
   data = figure_1_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
@@ -1067,65 +1136,167 @@ figure_1 <- group_chart_hc_new(
   xLab = "Financial year",
   yLab = "Number of prescription items/identified patients",
   title = ""
+) |>
+  hc_subtitle(text = "M = Millions",
+              align = "left") |>
+  highcharter::hc_plotOptions(
+    series = list(
+      enableMouseTracking = FALSE
+    )
+  )
+
+figure_1$x$hc_opts$series[[1]]$dataLabels$formatter <- JS(
+  "function formatCurrency() {
+    var ynum = this.point.y/1000000;
+    var options = { maximumSignificantDigits: 3, minimumSignificantDigits: 3 };
+    return ynum.toLocaleString('en-GB', options) + 'M';
+}
+"
 )
+
+figure_1$x$hc_opts$series[[2]]$dataLabels$formatter <- JS(
+  "function formatCurrency() {
+    var ynum = this.point.y/1000000;
+    var options = { maximumSignificantDigits: 3, minimumSignificantDigits: 3 };
+    return ynum.toLocaleString('en-GB', options) + 'M';
+}
+"
+)
+
+
+table_2 <- figure_1_data |>
+  mutate(VALUE = format(VALUE, big.mark = ",")) |>
+  rename("Financial year" = 1,
+         "Measure" = 2,
+         "Value" = 3) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    ))))) |>
+  arrange(Measure)
 
 figure_2_data <- pfd_national_overall |>
   filter(`Drug Type` == "Diabetes") |>
   group_by(`Financial Year`) |>
   summarise(
-    `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
+    `Total Net Ingredient Cost (£)` = sum(`Total Net Ingredient Cost (£)`),
     .groups = "drop"
   ) |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
+    "[^[:alnum:] £]", "", .
   ))), everything())
 
 figure_2 <- basic_chart_hc(
   figure_2_data,
   x = FINANCIAL_YEAR,
-  y = TOTAL_NET_INGREDIENT_COST_GBP,
+  y = `TOTAL_NET_INGREDIENT_COST_£`,
   type = "line",
   xLab = "Financial year",
-  yLab = "Cost (GBP)",
+  yLab = "Cost (£)",
   title = "",
   currency = TRUE
+) |>
+  hc_subtitle(text = "M = Millions",
+              align = "left") |>
+  hc_yAxis(min = 700000000)|>
+  highcharter::hc_plotOptions(
+    series = list(
+      enableMouseTracking = FALSE
+    )
+  )
+
+figure_2$x$hc_opts$series[[1]]$dataLabels$formatter <- JS(
+  "function formatCurrency() {
+    var ynum = this.point.y/1000000;
+    var options = { maximumSignificantDigits: 3, minimumSignificantDigits: 3 };
+    return '£' + ynum.toLocaleString('en-GB', options) + 'M';
+}
+"
 )
+
+figure_2$x$hc_opts$xAxis$lineWidth <- 1
+figure_2$x$hc_opts$xAxis$lineColor <- "#E8EDEE"
+
+table_3 <- pfd_national_overall |>
+  filter(`Drug Type` == "Diabetes") |>
+  group_by(`Financial Year`) |>
+  summarise(
+    `Total Net Ingredient Cost (£)` = sum(`Total Net Ingredient Cost (£)`),
+    .groups = "drop"
+  ) |>
+  mutate(`Total Net Ingredient Cost (£)` = format(`Total Net Ingredient Cost (£)`, big.mark = ",")) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    )))))
 
 figure_3_data <- pfd_national_overall |>
   group_by(`Financial Year`, `Drug Type`) |>
-  
   summarise(
     `Total Items` = sum(`Total Items`),
-    `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
+    `Total Net Ingredient Cost (£)` = sum(`Total Net Ingredient Cost (£)`),
     .groups = "drop"
   ) |>
   group_by(`Financial Year`) |>
   mutate(
-    `Proportion of items` = `Total Items` / sum(`Total Items`) * 100,
-    `Proportion of costs` = `Total Net Ingredient Cost (GBP)` / sum(`Total Net Ingredient Cost (GBP)`) * 100
+    `Percentage of items` = `Total Items` / sum(`Total Items`) * 100,
+    `Percentage of costs` = `Total Net Ingredient Cost (£)` / sum(`Total Net Ingredient Cost (£)`) * 100
   ) |>
   ungroup() |>
   filter(`Drug Type` == "Diabetes") |>
-  select(-`Total Items`, -`Total Net Ingredient Cost (GBP)`) |>
+  select(-`Total Items`, -`Total Net Ingredient Cost (£)`) |>
   pivot_longer(
-    cols = c(`Proportion of items`, `Proportion of costs`),
+    cols = c(`Percentage of items`, `Percentage of costs`),
     names_to = "measure",
     values_to = "value"
   ) |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
-  ))), everything())
+    "[^[:alnum:] £]", "", .
+  ))), everything()) |>
+  select(-DRUG_TYPE)
 
-figure_3 <- group_chart_hc_new(
+figure_3 <- group_chart_hc(
   figure_3_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
   group = MEASURE,
   type = "line",
   xLab = "Financial year",
-  yLab = "Proportion (%)",
+  yLab = "Percentage (%)",
   title = ""
-)
+)|>
+  highcharter::hc_plotOptions(
+    series = list(
+      enableMouseTracking = FALSE
+    )
+  )
+
+table_4 <- pfd_national_overall |>
+  group_by(`Financial Year`, `Drug Type`) |>
+  summarise(
+    `Total Items` = sum(`Total Items`),
+    `Total Net Ingredient Cost (£)` = sum(`Total Net Ingredient Cost (£)`),
+    .groups = "drop"
+  ) |>
+  group_by(`Financial Year`) |>
+  mutate(
+    `Percentage of items` = `Total Items` / sum(`Total Items`) * 100,
+    `Percentage of costs` = `Total Net Ingredient Cost (£)` / sum(`Total Net Ingredient Cost (£)`) * 100
+  ) |>
+  ungroup() |>
+  filter(`Drug Type` == "Diabetes") |>
+  select(-`Total Items`, -`Total Net Ingredient Cost (£)`) |>
+  pivot_longer(
+    cols = c(`Percentage of items`, `Percentage of costs`),
+    names_to = "Measure",
+    values_to = "Value (%)"
+  ) |>
+  select(-`Drug Type`) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    ))))) |>
+  mutate(`Value (%)` = round(`Value (%)`, 1))
 
 figure_4_data <- pfd_paragraph_data |>
   group_by(`Financial Year`, `BNF Paragraph Name`) |>
@@ -1137,11 +1308,11 @@ figure_4_data <- pfd_paragraph_data |>
     values_to = "value"
   ) |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
+    "[^[:alnum:] £]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-figure_4 <- group_chart_hc_new(
+figure_4 <- group_chart_hc(
   figure_4_data,
   x = FINANCIAL_YEAR,
   y = ROUNDED_VALUE,
@@ -1155,44 +1326,82 @@ figure_4 <- group_chart_hc_new(
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
              sort = TRUE) |>
-  hc_legend(enabled = TRUE)
+  hc_legend(enabled = TRUE) |>
+  hc_subtitle(text = "M = Millions",
+              align = "left")
+
+table_5 <- pfd_paragraph_data |>
+  group_by(`Financial Year`, `BNF Paragraph Name`) |>
+  summarise(`Total Items` = sum(`Total Items`),
+            .groups = "drop") |>
+  pivot_longer(
+    cols = c(`Total Items`),
+    names_to = "measure",
+    values_to = "Total items"
+  ) |>
+  select(-measure) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    ))))) |>
+  mutate(`Total items` = format(`Total items`, big.mark = ","))
 
 figure_5_data <- pfd_paragraph_data |>
   group_by(`Financial Year`, `BNF Paragraph Name`) |>
   summarise(
-    `Total Net Ingredient Cost (GBP)` = sum(`Total Net Ingredient Cost (GBP)`),
+    `Total Net Ingredient Cost (£)` = sum(`Total Net Ingredient Cost (£)`),
     .groups = "drop"
   ) |>
   pivot_longer(
-    cols = c(`Total Net Ingredient Cost (GBP)`),
+    cols = c(`Total Net Ingredient Cost (£)`),
     names_to = "measure",
     values_to = "value"
   ) |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
+    "[^[:alnum:] £]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-figure_5 <- group_chart_hc_new(
+figure_5 <- group_chart_hc(
   figure_5_data,
   x = FINANCIAL_YEAR,
   y = ROUNDED_VALUE,
   group = BNF_PARAGRAPH_NAME,
   type = "line",
   xLab = "Financial year",
-  yLab = "Cost (GBP)",
+  yLab = "Cost (£)",
   title = "",
   dlOn = F
 ) |>
   hc_tooltip(enabled = TRUE,
              shared = TRUE,
              sort = TRUE) |>
-  hc_legend(enabled = TRUE)
+  hc_legend(enabled = TRUE) |>
+  hc_subtitle(text = "M = Millions",
+              align = "left")
+
+table_6 <- pfd_paragraph_data |>
+  group_by(`Financial Year`, `BNF Paragraph Name`) |>
+  summarise(
+    `Total Net Ingredient Cost (£)` = sum(`Total Net Ingredient Cost (£)`),
+    .groups = "drop"
+  ) |>
+  pivot_longer(
+    cols = c(`Total Net Ingredient Cost (£)`),
+    names_to = "measure",
+    values_to = "Total net ingredient cost (£)"
+  ) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    ))))) |>
+  mutate(`Total net ingredient cost (£)` = format(round(`Total net ingredient cost (£)`, 2), big.mark = ",")) |>
+  select(-Measure)
 
 figure_6_data <- pfd_national_overall |>
   filter(`Identified Patient Flag` == "Y", `Drug Type` == "Diabetes") |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
+    "[^[:alnum:] £]", "", .
   ))), everything()) |>
   mutate(ITEMS_PER_PATIENT = TOTAL_ITEMS  / TOTAL_IDENTIFIED_PATIENTS)
 
@@ -1204,13 +1413,49 @@ figure_6 <- basic_chart_hc(
   xLab = "Financial year",
   yLab = "Prescription items per patient",
   title = ""
+) |>
+  hc_yAxis(min = 15)|>
+  highcharter::hc_plotOptions(
+    series = list(
+      enableMouseTracking = FALSE
+    )
+  )
+
+figure_6$x$hc_opts$yAxis$tickPositioner <- JS(
+  "function() {
+                         var positions = [],
+                         tick = Math.floor(this.dataMin - 1) * 1;
+                         for (; tick - 1 <= this.dataMax; tick += 1) {
+                         positions.push(tick);
+                         }
+                         return positions;
+                         }"
 )
 
-figure_7_data_boxplot <- costpericb_data |>
+figure_6$x$hc_opts$xAxis$lineWidth <- 1
+figure_6$x$hc_opts$xAxis$lineColor <- "#E8EDEE"
+
+table_7 <- pfd_national_overall |>
+  filter(`Identified Patient Flag` == "Y", `Drug Type` == "Diabetes") |>
+  mutate("Items per patient" = `Total Items` / `Total Identified Patients`) |>
+  select(-`Drug Type`,
+         -`Identified Patient Flag`,
+         -`Total Net Ingredient Cost (£)`) |>
+  mutate(
+    `Total Identified Patients` = format(`Total Identified Patients`, big.mark = ","),
+    `Total Items` = format(`Total Items`, big.mark = ","),
+    `Items per patient` = round(`Items per patient`, 1)
+  ) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    )))))
+
+figure_7_data_boxplot <- cost_per_icb_data |>
   group_by(`Financial Year`) |>
   filter(`Identified Patient Flag` == "Y",
          `Integrated Care Board Name` != "UNKNOWN ICB") |>
-  mutate(COST_PER_PAT = `Total Net Ingredient Cost (GBP)`  / `Total Identified Patients`) |>
+  mutate(COST_PER_PAT = `Total Net Ingredient Cost (£)`  / `Total Identified Patients`) |>
   data_to_boxplot(
     var = COST_PER_PAT,
     add_outliers = T,
@@ -1242,15 +1487,15 @@ for (i in 1:length(figure_7_data_boxplot$data[[1]])) {
     bind_rows(tmp_df)
 }
 
-tooltip <- JS(
+figure_7_tooltip <- JS(
   "function () {
 
               var result = '<b>' + this.point.options.name + '</b>' +
-              '<br>Maximum: <b>£' + this.point.options.high.toFixed(2) +
-              '</b><br>Upper quartile: <b>£' + this.point.options.q3.toFixed(2) +
-              '</b><br>Median: <b>£' + this.point.options.median.toFixed(2) +
-              '</b><br>Lower quartile: <b>£' + this.point.options.q1.toFixed(2) +
-              '</b><br> Minimum: <b>£' + this.point.options.low.toFixed(2) + '</b>';
+              '<br>Maximum: <b>£' + this.point.options.high.toFixed(0) +
+              '</b><br>Upper quartile: <b>£' + this.point.options.q3.toFixed(0) +
+              '</b><br>Median: <b>£' + this.point.options.median.toFixed(0) +
+              '</b><br>Lower quartile: <b>£' + this.point.options.q1.toFixed(0) +
+              '</b><br> Minimum: <b>£' + this.point.options.low.toFixed(0) + '</b>';
 
               return result
 
@@ -1262,14 +1507,32 @@ figure_7 <- highchart() |>
   hc_xAxis(type = "category",
            title = list(text = "Financial year")) |>
   hc_yAxis(min = 0,
-           title = list(text = "Cost per patient (GBP)")) |>
+           title = list(text = "Cost per patient (£)")) |>
   hc_add_series_list(figure_7_data_boxplot) |>
   hc_legend(enabled = FALSE) |>
   hc_title(text = "",
            style = list(fontSize = "16px",
                         fontWeight = "bold")) |>
-  hc_tooltip(formatter = tooltip) |>
+  hc_tooltip(formatter = figure_7_tooltip) |>
   hc_credits(enabled = TRUE)
+
+figure_7$x$hc_opts$xAxis$lineWidth <- 1.5
+figure_7$x$hc_opts$xAxis$lineColor <- "#768692"
+figure_7$x$hc_opts$xAxis$tickWidth <- 1
+figure_7$x$hc_opts$xAxis$tickColor <- "#768692"
+figure_7$x$hc_opts$xAxis$tickmarkPlacement <- "on"
+
+table_8 <- figure_7_data_raw |>
+  rename(
+    `Financial year` = 1,
+    `Minimum (£)` = 2,
+    `Lower quartile (£)` = 3,
+    `Median (£)` = 4,
+    `Upper quartile (£)` = 5,
+    `Maximum` = 6
+  ) |>
+  mutate(across(where(is.numeric), function(x)
+    round(x, 2)))
 
 figure_8_data <- pfd_gender_data |>
   filter(`Patient Gender` != "Unknown") |>
@@ -1281,33 +1544,88 @@ figure_8_data <- pfd_gender_data |>
     values_to = "value"
   ) |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
+    "[^[:alnum:] £]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3))
 
-figure_8 <- group_chart_hc_new(
+figure_8 <- group_chart_hc(
   figure_8_data,
   x = FINANCIAL_YEAR,
   y = VALUE,
   group = PATIENT_GENDER,
-  type = "column",
+  type = "line",
   xLab = "Financial year",
   yLab = "Number of identified patients",
-  title = "",
-  dlOn = F
+  title = ""
 ) |>
-  hc_tooltip(enabled = T,
-             shared = T,
-             sort = T)
+  hc_subtitle(text = "K = Thousands",
+              align = "left")|>
+  highcharter::hc_plotOptions(
+    series = list(
+      enableMouseTracking = FALSE
+    )
+  )
+
+figure_8$x$hc_opts$series[[1]]$dataLabels$formatter <- JS(
+  "function formatCurrency() {
+    var ynum = this.point.y/1000;
+    var options = { maximumSignificantDigits: 3, minimumSignificantDigits: 3 };
+    return ynum.toLocaleString('en-GB', options) + 'K';
+}
+"
+)
+
+figure_8$x$hc_opts$series[[2]]$dataLabels$formatter <- JS(
+  "function formatCurrency() {
+    var ynum = this.point.y/1000;
+    var options = { maximumSignificantDigits: 3, minimumSignificantDigits: 3 };
+    return ynum.toLocaleString('en-GB', options) + 'K';
+}
+"
+)
+
+table_9 <- pfd_gender_data |>
+  filter(`Patient Gender` != "Unknown") |>
+  group_by(`Financial Year`, `Patient Gender`) |>
+  summarise(`Total Identified Patients` = sum(`Total Identified Patients`)) |>
+  pivot_longer(
+    cols = c(`Total Identified Patients`),
+    names_to = "measure",
+    values_to = "Total identified patients"
+  ) |>
+  select(-measure) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    ))))) |>
+  mutate(`Total identified patients` = format(`Total identified patients`, big.mark = ","))
 
 figure_9_data <- pfd_age_gender_data |>
   filter(`Financial Year` == max(`Financial Year`)) |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
-  ))), everything())
+    "[^[:alnum:] £]", "", .
+  ))), everything()) |>
+  filter(AGE_BAND != "Unknown")
 
 figure_9 <-  age_gender_chart(figure_9_data,
-                              labels = FALSE)
+                              labels = FALSE) |>
+  hc_subtitle(text = "K = Thousands",
+              align = "left")
+
+table_10 <- pfd_age_gender_data |>
+  filter(`Financial Year` == max(`Financial Year`)) |>
+  filter(`Age Band` != "Unknown") |>
+  select(
+    -`Identified Patient Flag`,
+    -`Total Items`,
+    -`Total Net Ingredient Cost (£)`,
+    -`Financial Year`
+  ) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    ))))) |>
+  mutate(`Total identified patients` = format(`Total identified patients`, big.mark = ","))
 
 figure_10_data <- pfd_imd_data |>
   ungroup() |>
@@ -1320,10 +1638,10 @@ figure_10_data <- pfd_imd_data |>
     values_to = "value"
   ) |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
+    "[^[:alnum:] £]", "", .
   ))), everything()) |>
   mutate(ROUNDED_VALUE = signif(VALUE, 3)) |>
-  select(-TOTAL_ITEMS,-TOTAL_NET_INGREDIENT_COST_GBP)
+  select(-TOTAL_ITEMS,-`TOTAL_NET_INGREDIENT_COST_£`)
 
 figure_10 <-  basic_chart_hc(
   figure_10_data,
@@ -1333,21 +1651,70 @@ figure_10 <-  basic_chart_hc(
   xLab = "IMD quintile",
   yLab = "Number of identified patients",
   title = ""
+) |>
+  hc_subtitle(text = "K = Thousands",
+              align = "left")|>
+  highcharter::hc_plotOptions(
+    series = list(
+      enableMouseTracking = FALSE
+    )
+  )
+
+figure_10$x$hc_opts$series[[1]]$dataLabels$formatter <- JS(
+  "function formatCurrency() {
+    var ynum = this.point.y/1000;
+    var options = { maximumSignificantDigits: 3, minimumSignificantDigits: 3 };
+    return ynum.toLocaleString('en-GB', options) + 'K';
+}
+"
 )
 
-table_1_data <- patient_identification |>
-  rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
-  ))), everything())
 
-table_2_data <- pfd_u18_data |>
+table_12 <- pfd_imd_data |>
+  ungroup() |>
+  filter(`Financial Year` == max(`Financial Year`),
+         `IMD Quintile` != "Unknown") |>
+  arrange(`IMD Quintile`) |>
+  pivot_longer(
+    cols = c(`Total Identified Patients`),
+    names_to = "measure",
+    values_to = "Total identified patients"
+  ) |>
+  select(-`measure`,
+         -`Total Items`,
+         -`Total Net Ingredient Cost (£)`,
+         -`Financial Year`) |>
+  rename_with(function(x)
+    paste0(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(
+      x
+    ))))) |>
+  mutate(`Total identified patients` = format(`Total identified patients`, big.mark = ",")) |>
+  rename("IMD Quintile" = 1)
+
+table_11 <- pfd_u18_data |>
+  filter(`Age Band` != "Unknown") |>
+  group_by(`Financial Year`, `Age Band`) |>
+  summarise(`Total Identified Patients` = formatC(
+    signif(sum(`Total Identified Patients`) / 1000000,
+           digits = 3),
+    digits = 3,
+    format = "fg",
+    flag = "#"
+  )) |>
+  ungroup() |>
+  tidyr::pivot_wider(names_from = `Financial Year`,
+                     values_from = `Total Identified Patients`) |>
+  select(1, last_col(4):last_col())
+
+
+table_11_data <- pfd_u18_data |>
   filter(`Age Band` != "Unknown") |>
   group_by(`Financial Year`, `Age Band`) |>
   ungroup() |>
   rename_with( ~ gsub(" ", "_", toupper(gsub(
-    "[^[:alnum:] ]", "", .
+    "[^[:alnum:] £]", "", .
   ))), everything()) |>
-  select(-TOTAL_ITEMS,-TOTAL_NET_INGREDIENT_COST_GBP)
+  select(-TOTAL_ITEMS,-`TOTAL_NET_INGREDIENT_COST_£`)
 
 # 7. create markdowns ----------------------------------------------------------
 
@@ -1355,29 +1722,33 @@ table_2_data <- pfd_u18_data |>
 # change file path to save somewhere else if needed
 rmarkdown::render("pfd_narrative.Rmd",
                   output_format = "html_document",
-                  output_file = "outputs/pfd_summary_narrative_2022_23_v001.html")
+                  output_file = "outputs/pfd_summary_narrative_2023_24_v001.html")
 
 # save copy as word document for use in quality review
 rmarkdown::render("pfd_narrative.Rmd",
                   output_format = "word_document",
-                  output_file = "outputs/pfd_summary_narrative_2022_23_v001.docx")
+                  output_file = "outputs/pfd_summary_narrative_2023_24_v001.docx")
 
 # save background document as html file into outputs folder
 # change file path to save somewhere else if needed
-rmarkdown::render("pfd_background_aug_2023.Rmd",
+rmarkdown::render("pfd_background_v001.Rmd",
                   output_format = "html_document",
                   output_file = "outputs/pfd_background_info_methodology_v001.html")
 
+rmarkdown::render("pfd_background_v001.Rmd",
+                  output_format = "word_document",
+                  output_file = "outputs/pfd_background_info_methodology_v001.docx")
+
 # save user engagement document as html file into outputs folder
 # change file path to save somewhere else if needed
-rmarkdown::render("pfd_user_engagement_2223.Rmd",
-                  output_format = "html_document",
-                  output_file = "outputs/pfd_user_engagement_2223.html")
+# rmarkdown::render("pfd_user_engagement_2223.Rmd",
+#                   output_format = "html_document",
+#                   output_file = "outputs/pfd_user_engagement_2223.html")
 
 # 8. disconnect from DWH  ------------------------------------------------------
 
 DBI::dbDisconnect(con)
-log_print("Disconnected from DWH", hide_notes = TRUE)
+# log_print("Disconnected from DWH", hide_notes = TRUE)
 
 # close log
-logr::log_close()
+# logr::log_close()
