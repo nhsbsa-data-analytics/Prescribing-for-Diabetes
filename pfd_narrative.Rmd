@@ -39,6 +39,38 @@ knitr::opts_chunk$set(echo = FALSE,
     </div>
 </div>
 
+<!-- JS to handle hiding the header on scroll -->
+<script>
+  document.addEventListener("scroll", function() {
+    var header = document.getElementById("fixed-header");
+    var toc = document.getElementById("TOC");
+    var BackTopButton = document.getElementById("backtop-button");
+    var scrollPosition = window.scrollY || document.documentElement.scrollTop;
+  if(scrollPosition > 88) {
+    header.style.top = "-200px";
+    toc.style.setProperty('margin-top', '24px', 'important');
+    BackTopButton.style.setProperty('visibility', 'visible', 'important');
+  } else
+  {
+    header.style.top = "0";
+    toc.style.setProperty('margin-top', '140px', 'important');
+    BackTopButton.style.setProperty('visibility', 'hidden', 'important');
+  }
+}
+);
+</script>
+
+<!-- JS to handle back to top button -->
+<script>
+    
+    function BackTop() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>
+
+<button onclick="BackTop()" id="backtop-button" style="opacity: 0.7; pointer-events: initial; visibility: visible;"><span aria-hidden="true">▲</span>Back to top</button>
+
 <main>
 
 # `r config$publication_sub_name` {.toc-ignore}
@@ -53,27 +85,31 @@ knitr::opts_chunk$set(echo = FALSE,
 
 ## Key findings
 
+In 2023/24:
+
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 the costs of prescribed drugs used in treating diabetes was £1.53 billion.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>The cost of prescribed items for treating diabetes was £1.67 billion.</b>", width = "100%")` 
 ::: 
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>3.4 million identified patients were prescribed a diabetes item in 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>3.6 million identified patients were prescribed a diabetes item.</b>", width = "100%")` 
 :::
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>Areas of greater deprivation had the highest number of identified patients who were being prescribed drugs used in treating diabetes in 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>Areas of greater deprivation had the highest number of identified patients who were being prescribed drugs used in treating diabetes.</b>", width = "100%")` 
 :::
 ::::
 
-In 2022/23, there were 66 million drug items used in treating diabetes prescribed in England for a cost of £1.53 billion, 15% of the total spend on all prescription items prescribed in England. This was an increase of 16 million items and £570 million from 2015/16 where 50 million diabetes items were prescribed in England for a cost of £960 million, representing 10% of the total spend on all prescription items.
+There were 71 million items prescribed for treating diabetes, an increase of 21 million items since 2015/16.
+ 
+The cost was £1.67 billion, which accounts for 15% of the total spend on all prescribed items. This compares to £960 million in 2015/16, which accounted for 10% of the total spending on all prescribed items.
 
-Antidiabetic drugs were the most prescribed drugs used in treating diabetes in England in 2022/23 with 49 million items at a cost of £880 million. The costs of antidiabetic drugs have increased by 107% since 2015/16 from £420 million.
+Antidiabetic drugs were the most prescribed drugs used in treating diabetes in England with 53 million items at a cost of £960 million. The costs of antidiabetic drugs have increased by 127% since 2015/16 from £420 million.
 
-There were 3.4 million identified patients that were prescribed drugs used in diabetes in England in 2022/23. This was a 6% increase from 3.2 million identified patients in 2021/22, and a 26% increase from 2.7 million in 2015/16.
+There were 3.6 million identified patients that were prescribed items used in diabetes in England. This was a 7% increase from 3.4 million identified patients in 2022/23, and a 34% increase from 2.7 million in 2015/16.
 
-The most common group to receive prescribing for drugs used in diabetes in 2022/23 was male patients aged 60 to 64 with 250,000 identified patients. The next most common groups were male patients aged 65 to 69 and male patients aged 70 to 74.
+The most common group to receive prescribing for items used in diabetes in 2023/24 was male patients aged 60 to 64 with 270,000 identified patients. 
 
-Areas of greater deprivation had the highest number of identified patients who were being prescribed drugs used in treating diabetes in 2021/22, 320,000 more patients receiving prescribing in the most deprived areas of the country compared to the least deprived. 
+Areas with greater deprivation had the highest number of patients prescribed items for treating diabetes. There were 340,000 more patients receiving prescribing in the most deprived areas compared to the least deprived.
 
 ---
 
@@ -113,9 +149,13 @@ These statistics use the BNF therapeutic classifications defined in the British 
 * Diabetic diagnostic and monitoring agents (060106)
 * Detection sensor interstitial fluid/gluc (2148)
 
-These medicines are classified by their primary therapeutic indication. However, it is possible that they can be prescribed for other reasons outside of this primary therapeutic indication. For example, metformin which is used to reduce blood sugar for those with type 2 diabetes is also used to treat infertility caused by polycystic ovarian syndrome (PCOS). The clinical indication of a prescription is not captured by the NHSBSA during processing, and therefore we cannot determine the reason that a prescription was issued. Insulin can be prescribed to those with type 1 and type 2 diabetes; therefore, we are unable to distinguish between patients with either type of diabetes, and drug types should not be used as a proxy for diabetes types. Due to these reasons, these statistics may not give an accurate estimation of the population who are receiving drugs specifically for diabetes and the diabetes type of the population, any inferences made from this data should take this into consideration.
+These medicines are classified by their primary therapeutic indication. However, it is possible that they can be prescribed for other reasons outside of this primary therapeutic indication. For example, metformin which is used to reduce blood sugar for those with type 2 diabetes is also used to treat infertility caused by polycystic ovarian syndrome (PCOS). 
 
-The BNF sub-paragraph for hypodermic needles is not included as part of this publication as these are often used for other clinical conditions and would unnecessarily skew the data. This is consistent with previous publications released by NHS Digital.
+It is not possible to distinguish the type of diabetes that insulin is prescribed for between patients. It is also not suitable to use drug types as an indicator of diabetes type.
+
+Due to these reasons, these statistics may not give an accurate estimation of the population who are receiving drugs specifically for diabetes and the diabetes type of the population, any inferences made from this data should take this into consideration.
+
+Hypodermic needles are not included as part of this publication as these are often used for other clinical conditions and would unnecessarily skew the data.
 
 Only data for prescribed sensors for continuous blood glucose monitoring devices is included in these statistics, as readers are usually provided to patients separately.
 
@@ -123,7 +163,7 @@ Only data for prescribed sensors for continuous blood glucose monitoring devices
 
 ::::{.row style="display: flex; margin-bottom: 24px;"} 
 :::{.col-md-12 .toc-ignore}
-`r infoBox_border(header = "Item", text = "A single unit of medication listed separately on a prescription form. For example, in this publication, an item might be listed as Paracetamol 500mg tablets x28, distinct from other medications that may be prescribed on the same form.", width = "100%")` 
+`r infoBox_border(header = "Item", text = "A single unit of medication listed separately on a prescription form. For example, in this publication, an item might be listed as Metformin 500mg tablets x28, distinct from other medications that may be prescribed on the same form.", width = "100%")` 
 ::: 
 ::::
 
@@ -141,9 +181,9 @@ Only data for prescribed sensors for continuous blood glucose monitoring devices
 
 ### 1.5. Patient identification {.toc-ignore}
 
-When the NHSBSA processes prescriptions it is not always possible to capture the NHS number of the patient. Table 1 shows the proportion of items for which a patient could be identified. This means that the data relating to patient counts represents most, but not all, patients.
+When the NHSBSA processes prescriptions it is not always possible to capture the NHS number of the patient. Table 1 shows the percentage of items for which a patient could be identified. This means that the data relating to patient counts represents most, but not all, patients.
 
-Due to an increase in digital prescription processing through the Electronic Prescription Service (EPS) during the COVID-19 pandemic, more patients were identified in 2020/21, 2021/22 and 2022/23 compared to previous years. As patient identification rates increased, any increases in the number of identified patients between periods are likely to be an overestimate of the actual increase in patient numbers. This is because the proportion of patients who could be identified has increased. Conversely, any decrease over the same period is likely to be an underestimate of the actual decrease.
+Due to an increase in digital prescription processing through the Electronic Prescription Service (EPS) during the COVID-19 pandemic, more patients were identified in 2020/21, 2021/22 and 2022/23 compared to previous years. As patient identification rates increased, any increases in the number of identified patients between periods are likely to be an overestimate of the actual increase in patient numbers. This is because the percentage of patients who could be identified has increased. Conversely, any decrease over the same period is likely to be an underestimate of the actual decrease.
 
 Where patients are identified, to assign them to a single age band their age is calculated on the 30 September of the given financial year. For patients where date of birth has not been captured, they have been included in an unknown category.
 
@@ -151,7 +191,7 @@ Gender information was not available from PDS for a small number of patients in 
 
 These statistics do not include any information that is personally identifiable. You can find more information about how the NHSBSA protect personal information in the [confidentiality and access statement](https://www.nhsbsa.nhs.uk/policies-and-procedures).
 
-**Table 1: The proportion of items for which an NHS number was recorded for listed BNF sections 2015/16 to 2022/23**
+**Table 1: The percentage of items for which an NHS number was recorded for listed BNF sections 2019/20 to 2023/24**
 
 ```{r capture_rates}
 knitr::kable(table_1, align = "llrrrrr")
@@ -167,13 +207,13 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Patient iden
 
 ### 2.1. Volume and cost
 
-#### Number of diabetes items and patients prescribed by financial year {.tabset}
+#### Number of diabetes items prescribed and identified patients by financial year {.tabset}
 
 <div class = "tabset">
 
 ##### Chart
 
-###### Figure 1:
+###### Figure 1: The number of items prescribed and identified patients have increased every year between 2015/16 and 2023/24
 
 ```{r}
 figure_1
@@ -183,10 +223,10 @@ get_download_button(title = "Download table data", data = figure_1_data, filenam
 
 ##### Table
 
-###### Table 2:
+###### Table 2: The number of items prescribed and identified patients have increased every year between 2015/16 and 2023/24
 
 ```{r}
-knitr::kable(table_2, align = "lr")
+knitr::kable(table_2, align = "llr")
 
 get_download_button(title = "Download table data", data = figure_1_data, filename = "table_2")
 ```
@@ -197,19 +237,19 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>66 million items for drugs used in diabetes prescribed in 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>71 million items for drugs used in diabetes prescribed in 2023/24.</b>", width = "100%")` 
 ::: 
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>7% increase in items from 2021/22 to 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>7% increase in items from 2022/23 to 2023/24.</b>", width = "100%")` 
 :::
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>3.4 million identified patients were prescribed a diabetes item in 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>3.6 million identified patients were prescribed a diabetes item in 2023/24.</b>", width = "100%")` 
 :::
 ::::
 
-There were 66 million items for drugs used in diabetes prescribed in 2022/23. This was a 32% increase from 50 million in 2015/16, and a 7% increase from 62 million items in 2021/22. The increase in items between 2021/22 and 2022/23 was larger than seen in previous yearly increases, which between 2015/16 and 2021/22 was an average of 4%. 
+There were 71 million items for drugs used in diabetes prescribed in 2023/24. This was a 42% increase from 50 million in 2015/16, and a 7% increase from 66 million items in 2022/23.
 
-The number of identified patients that received prescribing for drugs used in diabetes was 3.4 million in 2022/23. This was an 26% increase from 2.7 million identified patients in 2015/16, and a 6% increase from 3.2 million in 2021/22. The increase in identified patients between 2021/22 and 2022/23 was the largest increase observed in the period, with yearly increases between 2015/16 and 2021/22 averaging 3%.
+In 2023/24, an estimated 3.6 million identified patients received prescribing for drugs used in diabetes. This was a 34% increase from 2.7 million identified patients in 2015/16, and a 7% increase from 3.4 million in 2022/23.
 
 #### Cost of diabetes prescribing by financial year {.tabset}
 
@@ -217,7 +257,9 @@ The number of identified patients that received prescribing for drugs used in di
 
 ##### Chart
 
-###### FIGURE TITLE
+###### Figure 2: The cost of diabetes prescribing has increased every year between 2015/16 and 2023/24
+
+Note: The y-axis does not start at zero. This is to emphasise relative changes rather than absolute values. Please consider the scale when interpreting the data.
 
 ```{r}
 figure_2
@@ -227,10 +269,12 @@ get_download_button(title = "Download chart data", data = figure_2_data, filenam
 
 ##### Table
 
-###### TABLE TITLE
+###### Table 3: The cost of diabetes prescribing has increased every year between 2015/16 and 2023/24
 
 ```{r}
+knitr::kable(table_3, align = "lr")
 
+get_download_button(title = "Download table data", data = figure_2_data, filename = "table_3")
 ```
 
 </div>
@@ -239,22 +283,22 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 the costs of prescribed drugs used in treating diabetes was £1.53 billion.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2023/24 the costs of prescribed drugs used in treating diabetes was £1.67 billion.</b>", width = "100%")` 
 ::: 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>There was a 12% increase in costs from 2021/22 to 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>There was a 9% increase in costs from 2022/23 to 2023/24.</b>", width = "100%")` 
 :::
 ::::
 
-Costs for drugs used in diabetes increased to £1.53 billion in 2022/23. This was a 60% increase from £960 million in 2015/16, and a 12% increase from £1.36 billion in 2021/22. The increase in costs between 2021/22 and 2022/23 was larger than the previous years increases, and was greater than the average yearly increase between 2015/16 and 2021/22 of 6%.
+Costs for drugs used in diabetes increased to £1.67 billion in 2023/24. This was a 74% increase from £960 million in 2015/16, and a 9% increase from £1.53 billion in 2022/23. 
 
-#### Proportion of all prescription items and costs for drugs used in diabetes by financial year {.tabset}
+#### Percentage of all prescription items and costs for drugs used in diabetes by financial year {.tabset}
 
 <div class = "tabset">
 
 ##### Chart
   
-###### FIGURE TITLE
+###### Figure 3: The percentage of all prescription items that drugs used in diabetes have accounted for has increased each between 2015/16 and 2023/24
   
 ```{r}
 figure_3
@@ -264,10 +308,12 @@ get_download_button(title = "Download chart data", data = figure_3_data, filenam
 
 ##### Table
 
-###### TABLE TITLE
-
+###### Table 4: The percentage of all prescription items that drugs used in diabetes have accounted for has increased each between 2015/16 and 2023/24
+  
 ```{r}
+knitr::kable(table_4, align = "llr")
 
+get_download_button(title = "Download table data", data = figure_3_data, filename = "table_4")
 ```
 
 </div>
@@ -276,16 +322,16 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 the costs of prescribed drugs used in treating diabetes accounted for 15% of the total costs of all drugs prescribed.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2023/24 the costs of prescribed drugs used in treating diabetes accounted for 15% of the total costs of all drugs prescribed.</b>", width = "100%")` 
 ::: 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 prescribed drugs used in treating diabetes accounted for 6% of all items prescribed.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2023/24 prescribed drugs used in treating diabetes accounted for 6% of all items prescribed.</b>", width = "100%")` 
 :::
 ::::
 
-The proportion of all prescription items that drugs used in diabetes have accounted for has increased each year, from 5% in 2015/16 to 6% in 2022/23.
+The percentage of all prescription items that drugs used in diabetes have accounted for has increased each year, from 5% in 2015/16 to 6% in 2023/24.
 
-In 2022/23, the cost of drugs used in diabetes accounted for 15% of the total spend on all items prescribed in England. This is an increase from 2015/16 when drugs used in diabetes accounted for 10% of the total spend.
+In 2023/24, the cost of drugs used in diabetes accounted for 15% of the total spend on all items prescribed in England. This is an increase from 2015/16 when drugs used in diabetes accounted for 10% of the total spend.
 
 #### Number of diabetes items prescribed by BNF paragraph by financial year {.tabset}
 
@@ -293,7 +339,7 @@ In 2022/23, the cost of drugs used in diabetes accounted for 15% of the total sp
   
 ##### Chart
   
-###### FIGURE TITLE
+###### Figure 4: Antidiabetic drugs are the most prescribed treatment for diabetes
   
 ```{r}
 figure_4
@@ -303,10 +349,12 @@ get_download_button(title = "Download chart data", data = figure_4_data, filenam
 
 ##### Table
 
-###### TABLE TITLE
+###### Table 5: Antidiabetic drugs are the most prescribed treatment for diabetes
 
 ```{r}
+knitr::kable(table_5, align = "llr")
 
+get_download_button(title = "Download table data", data = figure_4_data, filename = "table_5")
 ```
 
 </div>
@@ -315,19 +363,24 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](`r
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>49 million antidiabetic drug items prescribed in 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>53 million antidiabetic items prescribed in 2023/24.</b>", width = "100%")` 
 ::: 
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>7% increase in antidiabetic drug items from 2021/22 to 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>8% increase in antidiabetic items from 2022/23 to 2023/24.</b>", width = "100%")` 
 :::
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>37% increase in glucose interstitial fluid detection sensor items from 2021/22 to 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>41% increase in glucose interstitial fluid detection sensor items from 2022/23 to 2023/24.</b>", width = "100%")` 
 :::
 ::::
 
-Antidiabetic drugs, such as Metformin and Gliclazide, remain the most prescribed treatment for diabetes with 49 million items in 2022/23. This was a 38% increase from 35 million items in 2015/16, and an 8% increase from 45 million items in 2021/22. The increase in antidiabetic drug items between 2021/22 and 2022/23 was greater than seen in previous yearly increases, which between 2015/16 and 2021/22 was an average of 4%.
+Antidiabetic drugs, such as Metformin and Gliclazide, remain the most prescribed treatment for diabetes with 53 million items in 2023/24. This was a 49% increase from 35 million items in 2015/16, and an 8% increase from 49 million items in 2022/23. 
 
-Prescribing of diabetic diagnostic and monitoring agents decreased by 4% from 6.9 million items in 2021/22 to 6.6 million in 2022/23. Insulin items increased by 4% from 7.8 million to 8.1 million. Medicines used for the treatment of hypoglycaemia increased by 12% from 350,000 items in 2021/22 to 390,000 in 2022/23.  Lastly, the number of glucose interstitial fluid detection sensor items prescribed was 2 million in 2022/23, a 38% increase from 1.4 million in 2021/22.
+From 2022/23 to 2023/24:
+
+*	prescribing of diabetic diagnostic and monitoring agents decreased by 5%
+*	insulin items increased by 4%
+*	medicines used to treat hypoglycemia increased by 4%
+*	glucose interstitial fluid detection sensor items increased by 41%
 
 For additional details regarding the groups, drugs, and devices mentioned, please refer to Section 3 of this publication.
 
@@ -337,7 +390,7 @@ For additional details regarding the groups, drugs, and devices mentioned, pleas
   
 ##### Chart
   
-###### FIGURE TITLE
+###### Figure 5: Antidiabetic drugs have the highest costs for treatments prescribed for diabetes
   
 ```{r}
 figure_5
@@ -347,10 +400,12 @@ get_download_button(title = "Download chart data", data = figure_5_data, filenam
 
 ##### Table
 
-###### TABLE TITLE
+###### Table 6: Antidiabetic drugs have the highest costs for treatments prescribed for diabetes
 
 ```{r}
+knitr::kable(table_6, align = "llr")
 
+get_download_button(title = "Download table data", data = figure_5_data, filename = "table_6")
 ```
 
 </div>
@@ -359,19 +414,24 @@ Source: [Prescribing for diabetes summary tables - Costs and items (Table 2)](`r
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>Costs of antidiabetic drug items prescribed in 2022/23 was £880 million.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>Costs of antidiabetic items prescribed in 2023/24 was £960 million.</b>", width = "100%")` 
 ::: 
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>18% increase in antidiabetic drug costs from 2021/22 to 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>10% increase in antidiabetic drug costs from 2022/23 to 2023/24.</b>", width = "100%")` 
 :::
 :::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>38% increase in costs of glucose interstitial fluid detection sensors prescribed from 2021/22 to 2022/23.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>38% increase in costs of glucose interstitial fluid detection sensors prescribed from 2022/23 to 2023/24.</b>", width = "100%")` 
 :::
 ::::
 
-In 2022/23, antidiabetic drugs had a cost of £880 million. This was an increase of 107% from £420 million in 2015/16, and an 18% increase from £750 million in 2021/22. These increases in cost are much greater than the respective increases in the number of prescribed items. The increase in cost for antidiabetic drugs between 2021/22 and 2022/23 was greater than the previous years increases, which between 2015/16 and 2021/22 was an average of 10%.
+In 2023/24, antidiabetic drugs had a cost of £960 million. This was an increase of 127% from £420 million in 2015/16, and an 10% increase from £880 million in 2022/23. These increases in cost are much greater than the respective increases in the number of prescribed items. 
 
-Costs of prescribing of diabetic diagnostic and monitoring agents decreased by  from £140 million items in 2021/22 to £120 million in 2022/23. Costs of insulin items increased by 3% from £360 million to £370 million. Medicines used for the treatment of hypoglycaemia increased by 17% from £4.3 million in 2021/22 to £5 million in 2022/23. Lastly, the cost of glucose interstitial fluid detection sensors was £160 million in 2022/23, a 38% increase from £110 million in 2021/22.
+From 2022/23 to 2023/24:
+
+*	costs of prescribing diabetic diagnostic and monitoring agents decreased by 13%
+*	costs of insulin items increased by 2%
+*	costs of medicines used to treat hypoglycemia increased by 11%
+*	costs of glucose interstitial fluid detection sensor items increased by 38%
 
 #### Average number of diabetes items per patient by financial year {.tabset}
 
@@ -379,8 +439,10 @@ Costs of prescribing of diabetic diagnostic and monitoring agents decreased by  
   
 ##### Chart
   
-###### FIGURE TITLE
-  
+###### Figure 6: The average number of diabetes items per patient increased year on year between 2015/16 and 2019/20 but has remained consistent between 2019/20 and 2023/24
+
+Note: The y-axis does not start at zero. This is to emphasise relative changes rather than absolute values. Please consider the scale when interpreting the data.
+
 ```{r}
 figure_6
 
@@ -389,27 +451,29 @@ get_download_button(title = "Download chart data", data = figure_6_data, filenam
 
 ##### Table
 
-###### TABLE TITLE
+###### Table 7: The average number of diabetes items per patient increased year on year between 2015/16 and 2019/20 but has remained consistent between 2019/20 and 2023/24
 
 ```{r}
+knitr::kable(table_7, align = "lrrr")
 
+get_download_button(title = "Download table data", data = figure_6_data, filename = "table_7")
 ```
 
 </div>
 
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 1)](`r config$costs_and_items_excel`)
 
-The average number of items per patient increased each year between 2015/16 and 2022/23, from 18 diabetes items per patient to 19.
+The average number of items per patient increased each year between 2015/16 and 2019/20, from 17.5 diabetes items per patient to 19.1. Between 2019/20 and 2023/24 the rate has remained consistent with only a 0.2 variation in the average number of items per patient.
 
 This measure only includes prescribing of drugs used in diabetes and does not include any items prescribed from other BNF sections.
 
-#### Cost of diabetes prescribing per patient by Integrated Care Board {.tabset}
+#### Cost of diabetes prescribing per patient by Integrated Care Board (ICB) {.tabset}
 
 <div class = "tabset">
   
 ##### Chart
   
-###### FIGURE TITLE
+###### Figure 7: The median costs per patient by ICB in 2023/24 was £460
   
 ```{r}
 figure_7
@@ -419,10 +483,12 @@ get_download_button(title = "Download chart data", data = figure_7_data_raw, fil
 
 ##### Table
 
-###### TABLE TITLE
+###### Table 8: The median costs per patient by ICB in 2023/24 was £460
 
 ```{r}
+knitr::kable(table_8, align = "lrrrr")
 
+get_download_button(title = "Download table data", data = figure_7_data_raw, filename = "table_8")
 ```
 
 </div>
@@ -430,26 +496,17 @@ get_download_button(title = "Download chart data", data = figure_7_data_raw, fil
 Source: [Prescribing for diabetes summary tables - Costs and items (Table 4)](`r config$costs_and_items_excel`)
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
-:::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>Median costs per patient by ICB in 2022/23 was £448.</b>", width = "100%")` 
-::: 
-:::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>Maximum costs per patient by ICB in 2022/23 was £507.</b>", width = "100%")` 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>Maximum costs per patient by ICB in 2023/24 was £508.</b>", width = "100%")` 
 :::
-:::{.col-md-4} 
-`r infoBox_no_border(header = "", text = "<b>Minimum costs per patient by ICB in 2022/23 was £379.</b>", width = "100%")` 
+:::{.col-md-6} 
+`r infoBox_no_border(header = "", text = "<b>Minimum costs per patient by ICB in 2023/24 was £387.</b>", width = "100%")` 
 :::
 ::::
 
 See section 4.7. Interpretation of a box plot for guidance on interpreting this chart.
 
-Prescribing that is dispensed in the community can occur in multiple settings, including from practices and cost centres linked to Integrated care board (ICB) sub locations, hospital trusts, and Independent Sector Healthcare Providers (ISHPs) amongst others. ICBs succeeded sustainability and transformation plans (STPs) and replaced the functions of clinical commissioning groups (CCGs) in July 2022 with ICB sub locations replacing CCGs during the transition period of 2022/23. 
-
-Figure 6 now displays data at ICB level to reflect the current intended structure. 
-
-Further detail can be found at the [NHS Digital Organisation Data Service](https://digital.nhs.uk/services/organisation-data-service/integrated-care-boards)
-
-The cost per patient varied across ICBs in 2022/23, from £379 to £507 with the median cost per patient per ICB being £448. There were no ICBs that were an outlier for cost per patient for 2022/23.
+The cost per patient varied across ICBs in 2023/24, from £387 to £508 with the median cost per patient per ICB being £460. There were no ICBs that were an outlier for cost per patient for 2023/24.
 
 ### 2.2. Patient demographics
 
@@ -459,7 +516,7 @@ The cost per patient varied across ICBs in 2022/23, from £379 to £507 with the
   
 ##### Chart
   
-###### FIGURE TITLE
+###### Figure 8: The overall split of male and female patients has remained consistent between 2015/16 and 2023/24
   
 ```{r}
 figure_8
@@ -469,10 +526,12 @@ get_download_button(title = "Download chart data", data = figure_8_data, filenam
 
 ##### Table
 
-###### TABLE TITLE
+###### Table 9: The overall split of male and female patients has remained consistent between 2015/16 and 2023/24
 
 ```{r}
+knitr::kable(table_9, align = "llr")
 
+get_download_button(title = "Download table data", data = figure_8_data, filename = "table_9")
 ```
 
 </div>
@@ -481,14 +540,16 @@ Source: [Prescribing for diabetes summary tables - Patient demographics (Table 2
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 55% of identified patients were male.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2023/24 55% of identified patients were male.</b>", width = "100%")` 
 ::: 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 45% of identified patients were female.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2023/24 45% of identified patients were female.</b>", width = "100%")` 
 :::
 ::::
 
-While the overall number of identified patients receiving drugs used in diabetes prescribing has increased year-on-year, the overall split of male and female patients has remained consistent. In 2015/16, 45% of identified patients were female and 55% were male. This is the same proportion to 2022/23. However, there are an additional 310,000 female identified patients than there were in 2015/16, and an additional 390,000 males.
+While the overall number of identified patients receiving drugs used in diabetes prescribing has increased year-on-year, the overall split of male and female patients has remained consistent. 
+
+In 2015/16, 45% of identified patients where gender was known were female and 55% were male. This is the same percentage to 2023/24. However, there are an additional 410,000 female identified patients than there were in 2015/16, and an additional 520,000 males.
 
 Identified patients where their gender was unknown or indeterminate have been grouped together and can be found in the summary tables that accompany this release.
 
@@ -498,7 +559,7 @@ Identified patients where their gender was unknown or indeterminate have been gr
   
 ##### Chart
   
-###### FIGURE TITLE
+###### Figure 9: Male patients aged 60 to 64 was the largest prescribing group for drugs used in diabetes in 2023/24
   
 ```{r}
 figure_9
@@ -508,50 +569,36 @@ get_download_button(title = "Download chart data", data = figure_9_data, filenam
 
 ##### Table
 
-###### TABLE TITLE
+###### Table 10: Male patients aged 60 to 64 was the largest prescribing group for drugs used in diabetes in 2023/24
 
 ```{r}
+knitr::kable(table_10, align = "llr")
 
+get_download_button(title = "Download table data", data = figure_9_data, filename = "table_10")
 ```
 
 </div>
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 6)](`r config$demographics_excel`)
 
-The most common group to receive prescribing for drugs used in diabetes in 2022/23 was male patients aged 60 to 64 with 250,000 identified patients, 7% of all identified patients. The next most common group was male patients aged 65 to 69 with 240,000 identified patients.
+In 2023/24, 270,000 identified patients were male aged 60 to 64, 7% of all identified patients where a gender was known. This was the most common group to receive prescribing for drugs used in diabetes, while male patients aged 65 to 69 were the second most common group with 260,000 identified patients.
 
 More information on how we calculate a patient's age can be found in section 4 of this summary.
 
-#### **Table 2: Number of child and adult identified patients receiving diabetes prescribing (millions of patients)**
+#### **Table 11: Number of child and adult identified patients receiving diabetes prescribing (millions of patients)**
 
 ```{r patients_by_adult_child}
 
-pfd_u18_data |>
-  filter(`Age Band` != "Unknown") |>
-  group_by(`Financial Year`,`Age Band`) |>
-  summarise(`Total Identified Patients` = formatC(signif(sum(`Total Identified Patients`)/1000000,
-                                           digits = 3),
-                                    digits = 3, format = "fg", flag = "#")) |>
-  ungroup() |>
-  tidyr::pivot_wider(names_from = `Financial Year`,
-                       values_from = `Total Identified Patients`) |>
+knitr::kable(table_11, align = "lrrrrr")
 
-  DT::datatable(
-    rownames = FALSE,
-    options = list(dom = "t",
-                   columnDefs = list(list(orderable = FALSE,
-                                          targets = "_all"),
-                                     list(className = "dt-left", targets = 0),
-                                     list(className = "dt-right", targets = 1:7)))
-  )
 
-get_download_button(title = "Download table data", data = table_2_data, filename = "table_2")
+get_download_button(title = "Download table data", data = table_11_data, filename = "table_11")
 
 ```
 
 Source: [Prescribing for diabetes summary tables - Patient demographics (Table 8)](`r config$demographics_excel`)
 
-There were 38,000 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2022/23. This was 1% of all identified patients with a captured age.
+There were 38,000 identified patients aged 17 and under that received prescribing for drugs used in diabetes in 2023/24. This was 1% of all identified patients with a captured age.
 
 #### Number of identified patients receiving diabetes prescribing by IMD quintile {.tabset}
 
@@ -559,7 +606,7 @@ There were 38,000 identified patients aged 17 and under that received prescribin
   
 ##### Chart
   
-###### FIGURE TITLE
+###### Figure 10: More people were prescribed drugs used in diabetes in more deprived areas
   
 ```{r}
 figure_10
@@ -569,10 +616,12 @@ get_download_button(title = "Download chart data", data = figure_10_data, filena
 
 ##### Table
 
-###### TABLE TITLE
+###### Table 12: More people were prescribed drugs used in diabetes in more deprived areas
 
 ```{r}
+knitr::kable(table_12, align = "lr")
 
+get_download_button(title = "Download table data", data = figure_10_data, filename = "table_12")
 ```
 
 </div>
@@ -581,14 +630,14 @@ Source: [Prescribing for diabetes summary tables - Patient demographics (Table 9
 
 ::::{.row style="display: flex; padding-bottom: 10px;"} 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 880,000 patients were from the most deprived areas in England.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2023/24 920,000 patients were from the most deprived areas in England.</b>", width = "100%")` 
 ::: 
 :::{.col-md-6} 
-`r infoBox_no_border(header = "", text = "<b>In 2022/23 550,000 patients were from the least deprived areas in England.</b>", width = "100%")` 
+`r infoBox_no_border(header = "", text = "<b>In 2023/24 590,000 patients were from the least deprived areas in England.</b>", width = "100%")` 
 :::
 ::::
 
-In 2022/23, there were 880,000 identified patients prescribed drugs in the most deprived areas in England, 320,000 more than the 550,000 identified patients in the least deprived areas. In general, more people were prescribed drugs used in diabetes in more deprived areas in 2022/23. This pattern has remained consistent since 2015/16.
+In 2023/24, there were 920,000 identified patients prescribed drugs in the most deprived areas in England, 340,000 more than the 590,000 identified patients in the least deprived areas. In general, more people were prescribed drugs used in diabetes in more deprived areas in 2023/24. This pattern has remained consistent since 2015/16.
 
 The English Indices of Deprivation have been used in this publication to provide a measure of patient deprivation. The patient’s postcode has been used to assigned them to an IMD quintile. You can find more information about this in section 4 of this summary.
 
@@ -660,9 +709,9 @@ The age and gender of patients used in these statistics is derived from data pro
 
 The English Indices of Deprivation 2019 have been used to provide a measure of patient deprivation. The English Indices of Deprivation are an official national measure of deprivation that follows an established methodological framework to capture a wide range of individuals living conditions.
 
-The reported IMD quintile, is derived from the postcode of the patient an item has been prescribed to. Quintile 1 represents the 20% most deprived areas and quintile 5 is the 20% least deprived areas. There are a small number of items each year that we have reported as having an unknown IMD quintile. These are items where we have been unable to match the patient postcode to a postcode in the National Statistics Postcode Lookup (NSPL) - May 2023.
+IMD deciles are calculated by ranking census lower-layer super output areas (LSOAs) from most deprived to least deprived and dividing them into 10 equal groups. These range from the most deprived 10% (decile 1) of small areas nationally to the least deprived 10% (decile 10) of small areas nationally. We have aggregated these deciles into quintiles in this publication, for use alongside the [NHS Core20PLUS5 approach](https://www.england.nhs.uk/about/equality/equality-hub/core20plus5/).
 
-IMD deciles are calculated by ranking census lower-layer super output areas (LSOA) from most deprived to least deprived and dividing them into 10 equal groups. These range from the most deprived 10% (decile 1) of small areas nationally to the least deprived 10% (decile 10) of small areas nationally. We have aggregated these deciles into quintiles in this publication, for use alongside the [NHS Core20PLUS5 approach](https://www.england.nhs.uk/about/equality/equality-hub/national-healthcare-inequalities-improvement-programme/core20plus5/).
+The reported IMD quintile is derived from the postcode of the patient an item has been prescribed to. When a patient postcode is unknown but we hold a postcode for the prescribing practice, this will be used instead. Quintile 1 represents the 20% most deprived areas and quintile 5 is the 20% least deprived areas. There are a small number of items each year that we have reported as having an unknown IMD quintile. These are items where we have been unable to match the patient postcode or practice postcode to a postcode in the NSPL May 2024 edition.
 
 ### 4.4. Geographies included in this publication {.toc-ignore}
 
@@ -670,17 +719,13 @@ The patient deprivation measures given in these statistics are based upon the LS
 
 ### 4.5. Changes made to this publication {.toc-ignore}
 
-In previous releases of this publication the cost per patient was reported at clinical commissioning group (CCG) level. Changes to the NHS Organisational Structure mean that Integrated care boards (ICBs) will succeed sustainability and transformation plans (STPs) and replace the functions of clinical commissioning groups (CCGs) from July 2022. The cost per patient is now reported at ICB level.
+For this release we have changed some of the underlying methodology used to join patient demographic data to our prescriptions data. This has been done to align with best practices in reporting patient gender, and to be consistent with other statistical outputs from across the NHS. When we can match an identified patient’s NHS number with Patient Demographic Service (PDS) data, we now use the latest recorded gender for that patient. If we receive new information on gender for a patient, this will be applied to all previous prescribing for the patient. For example, this will affect data involving patients whose gender was previously not known in PDS, but subsequently becomes known. This may impact historical figures as patients can move between gender categories.
 
-For this release statistics on prescribed sensors for continuous blood glucose monitoring devices have been included. Only data for prescribed sensors for continuous blood glucose monitoring devices is included. Readers are usually provided to patients separately. 
+The ICB level tables included in the supporting tables for this release now include statistics on the costs and items for non-diabetes prescribing. 
 
 For full details of the changes made please refer to the Background Information and Methodology note released alongside these statistics.
 
-### 4.6. Planned changes to this publication {.toc-ignore}
-
-This is an experimental official statistic release. Experimental statistics are newly developed or innovative statistics. These are published so that users and stakeholders can be involved in the assessment of their suitability and quality at an early stage. More information on how users can give us their feedback can be found in section 7 of this summary. We will regularly be reviewing the methodology used within the statistics.
-
-### 4.7. Interpretation of a box plot {.toc-ignore}
+### 4.6. Interpretation of a box plot {.toc-ignore}
 
 Box plots are used to help visualise not just averages, but also how data is spread out. If all data points were arranged from the smallest to the biggest, halfway along this line in the middle would be the median. The middle line in the box is the median. The top section of the box includes the 25% of numbers directly above the median, the bottom includes the 25% directly below the median.
 
