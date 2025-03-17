@@ -88,7 +88,12 @@ child_adult_extract <- function(con,
   fact <- dplyr::tbl(con,
                      from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
-                                            TRUE ~ 0)) |>
+                                            TRUE ~ 0),
+                  #apply fix to age of 169
+                  CALC_AGE = case_when(
+                    CALC_AGE == 169 ~ 69,
+                    TRUE ~ CALC_AGE
+                  )) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
@@ -233,7 +238,12 @@ ageband_extract <- function(con,
   fact <- dplyr::tbl(con,
                      from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
-                                            TRUE ~ 0)) |>
+                                            TRUE ~ 0),
+                  #apply fix to age of 169
+                  CALC_AGE = case_when(
+                    CALC_AGE == 169 ~ 69,
+                    TRUE ~ CALC_AGE
+                  )) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
@@ -279,7 +289,12 @@ ageband_paragraph_extract <- function(con,
   fact <- dplyr::tbl(con,
                      from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
-                                            TRUE ~ 0)) |>
+                                            TRUE ~ 0),
+                  #apply fix to age of 169
+                  CALC_AGE = case_when(
+                    CALC_AGE == 169 ~ 69,
+                    TRUE ~ CALC_AGE
+                  )) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
@@ -332,19 +347,19 @@ gender_extract <- function(con,
                      from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
-    dplyr::group_by(
-      FINANCIAL_YEAR,
-      IDENTIFIED_PATIENT_ID,
-      PATIENT_IDENTIFIED,
-      PAT_GENDER,
-      PATIENT_COUNT
-    ) |>
     dplyr::mutate(
       PAT_GENDER = case_when(
         PAT_GENDER == "Female" ~ "Female",
         PAT_GENDER == "Male" ~ "Male",
         TRUE ~ "Unknown"
       )
+    ) |>
+    dplyr::group_by(
+      FINANCIAL_YEAR,
+      IDENTIFIED_PATIENT_ID,
+      PATIENT_IDENTIFIED,
+      PAT_GENDER,
+      PATIENT_COUNT
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -381,6 +396,13 @@ gender_paragraph_extract <- function(con,
                      from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
                                             TRUE ~ 0)) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
+    ) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
@@ -389,13 +411,6 @@ gender_paragraph_extract <- function(con,
       BNF_PARAGRAPH,
       PAT_GENDER,
       PATIENT_COUNT
-    ) |>
-    dplyr::mutate(
-      PAT_GENDER = case_when(
-        PAT_GENDER == "Female" ~ "Female",
-        PAT_GENDER == "Male" ~ "Male",
-        TRUE ~ "Unknown"
-      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -429,14 +444,25 @@ gender_paragraph_extract <- function(con,
   
 }
 
-
 age_gender_extract <- function(con,
                                schema,
                                table) {
   fact <- dplyr::tbl(con,
                      from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
-                                            TRUE ~ 0)) |>
+                                            TRUE ~ 0),
+                  #apply fix to age of 169
+                  CALC_AGE = case_when(
+                    CALC_AGE == 169 ~ 69,
+                    TRUE ~ CALC_AGE
+                  )) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
+    ) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
@@ -444,13 +470,6 @@ age_gender_extract <- function(con,
       CALC_AGE,
       PAT_GENDER,
       PATIENT_COUNT
-    ) |>
-    dplyr::mutate(
-      PAT_GENDER = case_when(
-        PAT_GENDER == "Female" ~ "Female",
-        PAT_GENDER == "Male" ~ "Male",
-        TRUE ~ "Unknown"
-      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
@@ -493,7 +512,19 @@ age_gender_paragraph_extract <- function(con,
   fact <- dplyr::tbl(con,
                      from = dbplyr::in_schema(schema, table)) |>
     dplyr::mutate(PATIENT_COUNT = case_when(PATIENT_IDENTIFIED == "Y" ~ 1,
-                                            TRUE ~ 0)) |>
+                                            TRUE ~ 0),
+                  #apply fix to age of 169
+                  CALC_AGE = case_when(
+                    CALC_AGE == 169 ~ 69,
+                    TRUE ~ CALC_AGE
+                  )) |>
+    dplyr::mutate(
+      PAT_GENDER = case_when(
+        PAT_GENDER == "Female" ~ "Female",
+        PAT_GENDER == "Male" ~ "Male",
+        TRUE ~ "Unknown"
+      )
+    ) |>
     dplyr::group_by(
       FINANCIAL_YEAR,
       IDENTIFIED_PATIENT_ID,
@@ -503,13 +534,6 @@ age_gender_paragraph_extract <- function(con,
       CALC_AGE,
       PAT_GENDER,
       PATIENT_COUNT
-    ) |>
-    dplyr::mutate(
-      PAT_GENDER = case_when(
-        PAT_GENDER == "Female" ~ "Female",
-        PAT_GENDER == "Male" ~ "Male",
-        TRUE ~ "Unknown"
-      )
     ) |>
     dplyr::summarise(
       ITEM_COUNT = sum(ITEM_COUNT, na.rm = T),
